@@ -1195,14 +1195,14 @@ function capturarGps() {
       msg.textContent = `✅ ${utm.E.toFixed(2)} m E / ${utm.N.toFixed(2)} m N – Zona ${utm.zona}  (precisão ±${Math.round(pos.coords.accuracy)} m)`;
       msg.style.color = 'var(--verde)';
       btn.disabled = false;
-      btn.textContent = '📍 Capturar localização pelo GPS';
+      btn.textContent = '📍 OBTER COORDENADAS';
     },
     err => {
       const erros = { 1: 'Permissão negada.', 2: 'Localização indisponível.', 3: 'Tempo esgotado.' };
       msg.textContent = '❌ ' + (erros[err.code] || 'Erro ao obter localização.');
       msg.style.color = 'var(--vermelho)';
       btn.disabled = false;
-      btn.textContent = '📍 Capturar localização pelo GPS';
+      btn.textContent = '📍 OBTER COORDENADAS';
     },
     { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
   );
