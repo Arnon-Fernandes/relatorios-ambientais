@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1F4E79">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Relatórios Ambientais</title>
+<style>
+  :root {
+    --azul: #1F4E79;
+    --azul-claro: #2E75B6;
+    --azul-bg: #DEEAF1;
+    --cinza-bg: #F4F6F8;
+    --borda: #CBD5E0;
+    --texto: #1A202C;
+    --texto-leve: #718096;
+    --verde: #276749;
+    --vermelho: #C53030;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--cinza-bg); color: var(--texto); font-size: 15px; }
+
+  /* HEADER */
+  header { background: var(--azul); color: #fff; padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.3); }
+  header h1 { font-size: 17px; font-weight: 700; flex: 1; }
+  header .logo { width: 32px; height: 32px; background: rgba(255,255,255,.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+  /* TABS */
+  .tabs { display: flex; background: var(--azul); border-top: 1px solid rgba(255,255,255,.15); }
+  .tab { flex: 1; padding: 10px 4px; text-align: center; color: rgba(255,255,255,.6); font-size: 12px; cursor: pointer; border: none; background: none; transition: .2s; }
+  .tab.active { color: #fff; border-bottom: 3px solid #fff; font-weight: 600; }
+  .tab svg { display: block; margin: 0 auto 3px; }
+
+  /* PAGES */
+  .page { display: none; padding: 16px; animation: fadeIn .2s; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* CARDS */
+  .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .card-title { font-weight: 700; font-size: 14px; color: var(--azul); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .card-title span { background: var(--azul-bg); color: var(--azul); border-radius: 6px; padding: 2px 8px; font-size: 11px; }
+
+  /* FORM */
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--texto-leve); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 5px; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 10px 12px; border: 1.5px solid var(--borda); border-radius: 8px;
+    font-size: 15px; background: #fff; color: var(--texto); transition: border-color .2s; -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--azul-claro); box-shadow: 0 0 0 3px rgba(46,117,182,.15); }
+  .field textarea { resize: vertical; min-height: 80px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .section-title { font-size: 12px; font-weight: 700; color: var(--azul); text-transform: uppercase; letter-spacing: .5px; padding: 8px 0 4px; border-bottom: 2px solid var(--azul-bg); margin: 16px 0 14px; }
+
+  /* BOTÕES */
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: .2s; width: 100%; }
+  .btn-primary { background: var(--azul); color: #fff; }
+  .btn-primary:hover, .btn-primary:active { background: var(--azul-claro); }
+  .btn-outline { background: #fff; color: var(--azul); border: 2px solid var(--azul); }
+  .btn-sm { padding: 8px 14px; font-size: 13px; width: auto; border-radius: 8px; }
+  .btn-verde { background: var(--verde); color: #fff; }
+  .btn-danger { background: var(--vermelho); color: #fff; font-size: 13px; padding: 6px 12px; width: auto; border-radius: 6px; }
+
+  /* CHIPS DE SELEÇÃO */
+  .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .doc-chip { background: #fff; border: 2px solid var(--borda); border-radius: 12px; padding: 12px; cursor: pointer; transition: .2s; position: relative; }
+  .doc-chip.selected { border-color: var(--azul); background: var(--azul-bg); }
+  .doc-chip .chip-icon { font-size: 22px; margin-bottom: 6px; }
+  .doc-chip .chip-nome { font-size: 12px; font-weight: 700; color: var(--texto); line-height: 1.3; }
+  .doc-chip .chip-check { position: absolute; top: 8px; right: 8px; width: 18px; height: 18px; border-radius: 50%; background: var(--azul); display: none; align-items: center; justify-content: center; }
+  .doc-chip.selected .chip-check { display: flex; }
+  .doc-chip .chip-check::after { content: '✓'; color: #fff; font-size: 11px; font-weight: 700; }
+
+  /* STATUS EMPREENDIMENTO */
+  .empresa-badge { display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--azul-bg); border-radius: 10px; margin-bottom: 14px; }
+  .empresa-badge .nome { font-weight: 700; font-size: 14px; color: var(--azul); }
+  .empresa-badge .detalhe { font-size: 12px; color: var(--texto-leve); }
+  .empresa-badge .icone { font-size: 24px; }
+
+  /* LISTA DE DOCS SELECIONADOS */
+  .doc-item { display: flex; align-items: center; gap: 10px; padding: 12px; background: #fff; border-radius: 10px; margin-bottom: 8px; border: 1.5px solid var(--borda); cursor: pointer; transition: .2s; }
+  .doc-item:hover { border-color: var(--azul-claro); }
+  .doc-item .di-icone { font-size: 20px; width: 36px; text-align: center; }
+  .doc-item .di-info { flex: 1; }
+  .doc-item .di-nome { font-weight: 600; font-size: 14px; }
+  .doc-item .di-status { font-size: 12px; color: var(--texto-leve); }
+  .di-arrow { color: var(--azul-claro); font-size: 18px; }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: flex-end; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #fff; border-radius: 20px 20px 0 0; width: 100%; max-height: 90vh; overflow-y: auto; padding: 20px 16px 32px; animation: slideUp .25s; }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: none; } }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .modal-header h2 { font-size: 17px; font-weight: 700; color: var(--azul); }
+  .modal-close { background: var(--cinza-bg); border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+  /* GERAR */
+  .gerar-item { display: flex; align-items: center; gap: 12px; padding: 14px; background: #fff; border-radius: 10px; margin-bottom: 8px; border: 1.5px solid var(--borda); }
+  .gerar-item .gi-icone { font-size: 22px; }
+  .gerar-item .gi-info { flex: 1; }
+  .gerar-item .gi-nome { font-weight: 600; font-size: 14px; }
+  .gerar-item .gi-status { font-size: 12px; margin-top: 2px; }
+  .status-ok { color: var(--verde); font-weight: 600; }
+  .status-erro { color: var(--vermelho); }
+  .status-gerando { color: var(--azul-claro); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1A202C; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 14px; z-index: 999; display: none; white-space: nowrap; }
+  .toast.show { display: block; animation: toastAnim .3s; }
+  @keyframes toastAnim { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%); } }
+
+  /* MISC */
+  .hint { font-size: 12px; color: var(--texto-leve); margin-top: 4px; }
+  .empty { text-align: center; padding: 40px 20px; color: var(--texto-leve); }
+  .empty .e-icon { font-size: 48px; margin-bottom: 12px; }
+  .divider { height: 1px; background: var(--borda); margin: 16px 0; }
+  .badge { display: inline-block; background: var(--azul-bg); color: var(--azul); border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+  .salvando { color: var(--texto-leve); font-size: 12px; text-align: right; padding: 4px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🌿</div>
+  <h1>Relatórios Ambientais</h1>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="showPage('empresa')" id="tab-empresa">
+    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4v-9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
+    Empresa
+  </button>
+  <button class="tab" onclick="showPage('documentos')" id="tab-documentos">
+    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h8v2H8zm0-4h8v2H8zm0-4h5v2H8z"/></svg>
+    Documentos
+  </button>
+  <button class="tab" onclick="showPage('gerar')" id="tab-gerar">
+    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+    Gerar
+  </button>
+</div>
+
+<!-- ===== PÁGINA: EMPRESA ===== -->
+<div class="page active" id="page-empresa">
+  <div class="card">
+    <div class="card-title">🏢 Dados do Empreendimento</div>
+
+    <div class="section-title">Identificação</div>
+    <div class="field"><label>Razão Social *</label><input id="razaoSocial" placeholder="Ex: AUTO POSTO EXEMPLO LTDA" oninput="salvarAuto()"></div>
+    <div class="field"><label>Nome Fantasia</label><input id="nomeFantasia" placeholder="Ex: POSTO EXEMPLO" oninput="salvarAuto()"></div>
+    <div class="row">
+      <div class="field"><label>CNPJ *</label><input id="cnpj" placeholder="00.000.000/0000-00" oninput="salvarAuto()"></div>
+      <div class="field"><label>Inscrição Estadual</label><input id="inscricaoEstadual" placeholder="Opcional" oninput="salvarAuto()"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Registro ANP</label><input id="registroAnp" placeholder="Nº ANP" oninput="salvarAuto()"></div>
+      <div class="field"><label>Bandeira</label><input id="bandeira" placeholder="Ex: IPIRANGA" oninput="salvarAuto()"></div>
+    </div>
+
+    <div class="section-title">Localização</div>
+    <div class="field"><label>Endereço *</label><input id="endereco" placeholder="Rua, número, bairro" oninput="salvarAuto()"></div>
+    <div class="row">
+      <div class="field"><label>Município *</label><input id="municipio" placeholder="Ex: FEIRA DE SANTANA" oninput="salvarAuto()"></div>
+      <div class="field"><label>UF</label><input id="uf" value="BA" oninput="salvarAuto()"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>CEP</label><input id="cep" placeholder="44.000-000" oninput="salvarAuto()"></div>
+      <div class="field"><label>Telefone</label><input id="telefone" placeholder="(75) 99999-9999" oninput="salvarAuto()"></div>
+    </div>
+    <div class="field"><label>E-mail</label><input id="email" type="email" placeholder="posto@email.com" oninput="salvarAuto()"></div>
+
+    <div class="section-title">Coordenadas UTM (SIRGAS 2000)</div>
+    <div class="row">
+      <div class="field"><label>Coord. E (m)</label><input id="coordE" placeholder="507427.00" oninput="salvarAuto()"></div>
+      <div class="field"><label>Coord. N (m)</label><input id="coordN" placeholder="8644776.00" oninput="salvarAuto()"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Zona UTM</label><input id="zonaUtm" value="24L" oninput="salvarAuto()"></div>
+      <div class="field"><label>Início de Operação</label><input id="inicioOperacao" placeholder="Ex: 2015" oninput="salvarAuto()"></div>
+    </div>
+
+    <div class="section-title">Áreas</div>
+    <div class="row">
+      <div class="field"><label>Área Construída (m²)</label><input id="areaConstruida" placeholder="274,88" oninput="salvarAuto()"></div>
+      <div class="field"><label>Área Total (m²)</label><input id="areaTotal" placeholder="1942,30" oninput="salvarAuto()"></div>
+    </div>
+
+    <div class="section-title">Responsável pelo Empreendimento</div>
+    <div class="field"><label>Nome / Razão Social</label><input id="respNome" placeholder="Nome do sócio responsável" oninput="salvarAuto()"></div>
+    <div class="row">
+      <div class="field"><label>CPF / CNPJ</label><input id="respCpf" oninput="salvarAuto()"></div>
+      <div class="field"><label>Telefone</label><input id="respTelefone" oninput="salvarAuto()"></div>
+    </div>
+
+    <div class="section-title">Licenciamento</div>
+    <div class="row">
+      <div class="field"><label>Nº Portaria / LO</label><input id="portaria" placeholder="Ex: 26.102" oninput="salvarAuto()"></div>
+      <div class="field"><label>Data da Portaria</label><input id="dataPortaria" placeholder="Ex: 02/01/2023" oninput="salvarAuto()"></div>
+    </div>
+    <div class="field"><label>Nº Processo</label><input id="numProcesso" placeholder="Ex: LO031/2023" oninput="salvarAuto()"></div>
+    <div class="field"><label>Mês/Ano do Relatório</label><input id="mesAno" placeholder="Ex: Maio / 2026" oninput="salvarAuto()"></div>
+
+    <div class="section-title">Técnico Responsável</div>
+    <div class="field"><label>Nome</label><input id="tecNome" value="ARNON DE OLIVEIRA FERNANDES" oninput="salvarAuto()"></div>
+    <div class="field"><label>RNP</label><input id="tecRnp" value="05292828521" oninput="salvarAuto()"></div>
+
+    <p class="salvando" id="salvandoMsg"></p>
+  </div>
+</div>
+
+<!-- ===== PÁGINA: DOCUMENTOS ===== -->
+<div class="page" id="page-documentos">
+  <div class="card">
+    <div class="card-title">📋 Selecione os documentos</div>
+    <div class="doc-grid" id="docGrid"></div>
+  </div>
+
+  <div id="docsConfigurar"></div>
+
+  <div id="semDocs" class="empty" style="display:none">
+    <div class="e-icon">📄</div>
+    <p>Selecione ao menos um documento acima para configurar seus dados.</p>
+  </div>
+</div>
+
+<!-- ===== PÁGINA: GERAR ===== -->
+<div class="page" id="page-gerar">
+  <div id="gerarConteudo"></div>
+</div>
+
+<!-- ===== MODAIS ===== -->
+<div class="modal-overlay" id="modalOverlay" onclick="fecharModal(event)">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
