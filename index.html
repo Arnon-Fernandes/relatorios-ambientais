@@ -125,6 +125,15 @@
   .divider { height: 1px; background: var(--borda); margin: 16px 0; }
   .badge { display: inline-block; background: var(--azul-bg); color: var(--azul); border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
   .salvando { color: var(--texto-leve); font-size: 12px; text-align: right; padding: 4px 0; }
+
+  /* EMPRESAS SALVAS */
+  .empresa-salva-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border: 1.5px solid var(--borda); border-radius: 8px; margin-bottom: 6px; gap: 8px; }
+  .esi-nome { flex: 1; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .esi-nome:hover { color: var(--azul-claro); }
+
+  /* LOGO */
+  #logoPreview { max-height: 80px; max-width: 100%; border-radius: 6px; border: 1.5px solid var(--borda); margin-top: 8px; display: none; }
+  .logo-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 </style>
 </head>
 <body>
@@ -151,12 +160,30 @@
 
 <!-- ===== PÁGINA: EMPRESA ===== -->
 <div class="page active" id="page-empresa">
+
+  <!-- Card Empresas Salvas -->
+  <div class="card">
+    <div class="card-title">📂 Empresas Salvas</div>
+    <div id="empresasSalvasLista"></div>
+    <button class="btn btn-outline btn-sm" onclick="salvarEmpresaAtual()" type="button">💾 Salvar empresa atual</button>
+  </div>
+
   <div class="card">
     <div class="card-title">🏢 Dados do Empreendimento</div>
 
     <div class="section-title">Identificação</div>
     <div class="field"><label>Razão Social *</label><input id="razaoSocial" placeholder="Ex: AUTO POSTO EXEMPLO LTDA" oninput="salvarAuto()"></div>
     <div class="field"><label>Nome Fantasia</label><input id="nomeFantasia" placeholder="Ex: POSTO EXEMPLO" oninput="salvarAuto()"></div>
+    <div class="field">
+      <label>Logo da Empresa</label>
+      <div class="logo-row">
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('logoInput').click()" type="button">🖼️ Escolher imagem</button>
+        <button class="btn btn-danger" id="btnRemoveLogo" onclick="removerLogo()" type="button" style="display:none">✕ Remover</button>
+      </div>
+      <input type="file" id="logoInput" accept="image/*" onchange="handleLogoUpload(event)" style="display:none">
+      <img id="logoPreview" alt="Logo">
+      <p class="hint">Aparece no topo de todos os documentos. Será redimensionada automaticamente.</p>
+    </div>
     <div class="field">
       <label>CNPJ *</label>
       <div style="display:flex;gap:8px;align-items:center">
@@ -177,10 +204,15 @@
       <div class="field"><label>Município *</label><input id="municipio" placeholder="Ex: FEIRA DE SANTANA" oninput="salvarAuto()"></div>
       <div class="field"><label>UF</label><input id="uf" value="BA" oninput="salvarAuto()"></div>
     </div>
-    <div class="row">
-      <div class="field"><label>CEP</label><input id="cep" placeholder="44.000-000" oninput="salvarAuto()"></div>
-      <div class="field"><label>Telefone</label><input id="telefone" placeholder="(75) 99999-9999" oninput="salvarAuto()"></div>
+    <div class="field">
+      <label>CEP</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="cep" placeholder="44.000-000" oninput="salvarAuto()" style="flex:1">
+        <button class="btn btn-outline btn-sm" onclick="buscarCep()" type="button" id="btnCep">🔍</button>
+      </div>
+      <p class="hint" id="cepMsg"></p>
     </div>
+    <div class="field"><label>Telefone</label><input id="telefone" placeholder="(75) 99999-9999" oninput="salvarAuto()"></div>
     <div class="field"><label>E-mail</label><input id="email" type="email" placeholder="posto@email.com" oninput="salvarAuto()"></div>
 
     <div class="section-title">Coordenadas UTM (SIRGAS 2000)</div>
@@ -221,7 +253,10 @@
       <div class="field"><label>Data da Portaria</label><input id="dataPortaria" placeholder="Ex: 02/01/2023" oninput="salvarAuto()"></div>
     </div>
     <div class="field"><label>Nº Processo</label><input id="numProcesso" placeholder="Ex: LO031/2023" oninput="salvarAuto()"></div>
-    <div class="field"><label>Mês/Ano do Relatório</label><input id="mesAno" placeholder="Ex: Maio / 2026" oninput="salvarAuto()"></div>
+    <div class="row">
+      <div class="field"><label>Nº do Relatório</label><input id="numRelatorio" placeholder="Ex: 001/2026" oninput="salvarAuto()"></div>
+      <div class="field"><label>Mês/Ano do Relatório</label><input id="mesAno" placeholder="Ex: Maio / 2026" oninput="salvarAuto()"></div>
+    </div>
 
     <div class="section-title">Técnico Responsável</div>
     <div class="field"><label>Nome</label><input id="tecNome" value="ARNON DE OLIVEIRA FERNANDES" oninput="salvarAuto()"></div>
@@ -229,6 +264,18 @@
 
     <p class="salvando" id="salvandoMsg"></p>
   </div>
+
+  <!-- Card Export / Import -->
+  <div class="card">
+    <div class="card-title">🔄 Backup dos Dados</div>
+    <p class="hint" style="margin-bottom:12px">Exporte todos os dados para um arquivo JSON (backup) ou importe de um backup anterior.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-outline btn-sm" onclick="exportarEstado()" type="button">⬇️ Exportar backup</button>
+      <button class="btn btn-outline btn-sm" onclick="importarEstado()" type="button">⬆️ Importar backup</button>
+    </div>
+    <input type="file" id="inputImportJson" accept=".json" onchange="handleImportJson(event)" style="display:none">
+  </div>
+
 </div>
 
 <!-- ===== PÁGINA: DOCUMENTOS ===== -->

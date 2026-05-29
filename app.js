@@ -19,8 +19,10 @@ const DOCS = [
 // ============================================================
 let estado = {
   empresa: {},
+  empresasSalvas: [],       // [{ id, empresa:{} }]
   selecionados: [],
-  dados: {},     // { rce: {...}, pgrs: {...}, ... }
+  dados: {},                // { rce: {...}, pgrs: {...}, ... }
+  contadorRelatorio: 0,     // incrementa a cada geração
 };
 
 // ============================================================
@@ -32,6 +34,13 @@ window.addEventListener('DOMContentLoaded', () => {
   renderDocsSelecionados();
   renderGerar();
   preencherFormEmpresa();
+  renderEmpresasSalvas();
+  atualizarPreviewLogo();
+  // Auto-preenche número do relatório se ainda não tem
+  if (!estado.empresa.numRelatorio) {
+    const el = document.getElementById('numRelatorio');
+    if (el && !el.value) el.value = proximoNumRelatorio();
+  }
 });
 
 // ============================================================
@@ -65,7 +74,7 @@ function coletarEmpresa() {
     'endereco','municipio','uf','cep','telefone','email',
     'coordE','coordN','zonaUtm','inicioOperacao','areaConstruida','areaTotal',
     'respNome','respCpf','respTelefone',
-    'portaria','dataPortaria','numProcesso','mesAno',
+    'portaria','dataPortaria','numProcesso','numRelatorio','mesAno',
     'tecNome','tecRnp'];
   ids.forEach(id => {
     const el = document.getElementById(id);
@@ -427,9 +436,12 @@ function renderGerar() {
     </div>
 
     <button class="btn btn-verde" onclick="gerarTodos()" style="margin-bottom:10px">
-      ⚡ Gerar todos os documentos
+      ⚡ Gerar e baixar um a um
     </button>
-    <p class="hint" style="text-align:center">Os arquivos .docx serão baixados um a um no seu dispositivo.</p>
+    <button class="btn btn-outline" onclick="gerarZipTodos()" style="margin-bottom:10px">
+      📦 Baixar todos em ZIP
+    </button>
+    <p class="hint" style="text-align:center">Os arquivos .docx serão baixados no seu dispositivo.</p>
   `;
 }
 
@@ -438,6 +450,25 @@ function renderGerar() {
 // ============================================================
 async function gerarTodos() {
   coletarEmpresa();
+  const v = validarParaGerar();
+  if (!v.ok) {
+    const cont = document.getElementById('gerarConteudo');
+    cont.insertAdjacentHTML('afterbegin', `
+      <div class="card" style="border:2px solid var(--vermelho);margin-bottom:12px">
+        <div class="card-title" style="color:var(--vermelho)">⚠️ Campos obrigatórios faltando</div>
+        ${v.faltando.map(f => `<div style="color:var(--vermelho);padding:2px 0">• ${f}</div>`).join('')}
+        <p class="hint" style="margin-top:8px">Preencha na aba <strong>Empresa</strong> antes de gerar.</p>
+      </div>`);
+    return;
+  }
+  // Incrementa número do relatório
+  estado.contadorRelatorio = (estado.contadorRelatorio || 0) + 1;
+  if (!estado.empresa.numRelatorio) {
+    estado.empresa.numRelatorio = proximoNumRelatorio();
+    const el = document.getElementById('numRelatorio');
+    if (el) el.value = estado.empresa.numRelatorio;
+  }
+  salvarLocal();
   for (const id of estado.selecionados) {
     setStatus(id, 'gerando', '⏳ Gerando…');
     try {
@@ -559,6 +590,7 @@ function rodape() {
 
 function cabecalhoDoc(titulo, subtitulo = '') {
   return `
+    ${logoDocXml()}
     ${p(titulo, {bold:true, center:true, size:'36', space:'120'})}
     ${empty()}
     ${p(e('razaoSocial').toUpperCase(), {bold:true, center:true, size:'28'})}
@@ -566,6 +598,7 @@ function cabecalhoDoc(titulo, subtitulo = '') {
     ${p('CNPJ: ' + e('cnpj'), {center:true})}
     ${p(e('municipio') + ' – ' + e('uf'), {center:true})}
     ${p(e('mesAno') || new Date().getFullYear().toString(), {center:true})}
+    ${e('numRelatorio') ? p('Nº ' + e('numRelatorio'), {center:true, size:'20'}) : ''}
     ${subtitulo ? p(subtitulo, {center:true, size:'20'}) : ''}
   `;
 }
@@ -588,7 +621,11 @@ function dadosEmpresaTabela() {
 // ============================================================
 function xmlBase(titulo, bodyExtra) {
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+  xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+  xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+  xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+  xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
 <w:body>
   ${cabecalhoDoc(titulo)}
   ${pb()}
@@ -596,9 +633,10 @@ function xmlBase(titulo, bodyExtra) {
   ${dadosEmpresaTabela()}
   ${empty()}
   ${bodyExtra}
+  ${referencias()}
   ${rodape()}
   <w:sectPr>
-    <w:headerReference w:type="default" r:id="rId2" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+    <w:headerReference w:type="default" r:id="rId2"/>
     <w:pgSz w:w="11906" w:h="16838"/>
     <w:pgMar w:top="1701" w:right="1134" w:bottom="1134" w:left="1701"/>
   </w:sectPr>
@@ -978,11 +1016,15 @@ function xmlFoto() {
     `;
   }
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+  xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+  xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+  xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+  xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
 <w:body>
   ${paginas}
   <w:sectPr>
-    <w:headerReference w:type="default" r:id="rId2" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+    <w:headerReference w:type="default" r:id="rId2"/>
     <w:pgSz w:w="11906" w:h="16838"/>
     <w:pgMar w:top="1701" w:right="1134" w:bottom="1134" w:left="1701"/>
   </w:sectPr>
@@ -994,11 +1036,15 @@ function xmlFoto() {
 // CRIAÇÃO DO ARQUIVO .DOCX (ZIP com XML)
 // ============================================================
 function criarDocx(documentXml) {
+  const logoDataUrl = estado.empresa.logo || '';
+  const logoBytes = logoDataUrl ? base64ToBytes(logoDataUrl) : null;
+
   const files = {
     '[Content_Types].xml': `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
+  ${logoBytes ? '<Default Extension="jpeg" ContentType="image/jpeg"/>' : ''}
   <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
   <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
   <Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/>
@@ -1011,11 +1057,13 @@ function criarDocx(documentXml) {
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
   <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" Target="header1.xml"/>
+  ${logoBytes ? '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo.jpeg"/>' : ''}
 </Relationships>`,
     'word/document.xml': documentXml,
     'word/styles.xml': estilos(),
     'word/header1.xml': cabecalhoPagina(),
   };
+  if (logoBytes) files['word/media/logo.jpeg'] = logoBytes;
   return zipFiles(files);
 }
 
@@ -1057,7 +1105,7 @@ function zipFiles(files) {
 
   for (const [name, content] of Object.entries(files)) {
     const nameBytes = enc.encode(name);
-    const dataBytes = enc.encode(content);
+    const dataBytes = content instanceof Uint8Array ? content : enc.encode(content);
     const crc = crc32(dataBytes);
     const localHeader = localFileHeader(nameBytes, dataBytes, crc);
     const centralEntry = centralDirEntry(nameBytes, dataBytes, crc, offset);
@@ -1136,8 +1184,9 @@ function crc32(data) {
   return (crc ^ 0xFFFFFFFF) >>> 0;
 }
 
-function baixarArquivo(bytes, nome) {
-  const blob = new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+function baixarArquivo(bytes, nome, tipo) {
+  const mimeType = tipo || 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  const blob = new Blob([bytes], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -1165,8 +1214,287 @@ function carregarLocal() {
       estado.empresa = salvo.empresa || {};
       estado.selecionados = salvo.selecionados || [];
       estado.dados = salvo.dados || {};
+      estado.empresasSalvas = salvo.empresasSalvas || [];
+      estado.contadorRelatorio = salvo.contadorRelatorio || 0;
     }
   } catch(e) {}
+}
+
+// ============================================================
+// BUSCA POR CEP
+// ============================================================
+async function buscarCep() {
+  const cep = (document.getElementById('cep').value || '').replace(/\D/g, '');
+  const msg = document.getElementById('cepMsg');
+  const btn = document.getElementById('btnCep');
+  if (cep.length !== 8) {
+    msg.textContent = 'Digite o CEP completo (8 dígitos).';
+    msg.style.color = 'var(--vermelho)'; return;
+  }
+  btn.disabled = true; btn.textContent = '⏳';
+  msg.textContent = '';
+  try {
+    const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    if (!res.ok) throw new Error('CEP não encontrado');
+    const dados = await res.json();
+    if (dados.erro) throw new Error('CEP não encontrado');
+    const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+    const end = [dados.logradouro, dados.bairro].filter(Boolean).join(', ');
+    if (end) set('endereco', end);
+    set('municipio', dados.localidade);
+    set('uf', dados.uf);
+    coletarEmpresa(); salvarLocal();
+    msg.textContent = '✅ Endereço preenchido!';
+    msg.style.color = 'var(--verde)';
+  } catch(err) {
+    msg.textContent = '❌ ' + err.message;
+    msg.style.color = 'var(--vermelho)';
+  } finally {
+    btn.disabled = false; btn.textContent = '🔍';
+  }
+}
+
+// ============================================================
+// MÚLTIPLAS EMPRESAS SALVAS
+// ============================================================
+function renderEmpresasSalvas() {
+  const cont = document.getElementById('empresasSalvasLista');
+  if (!cont) return;
+  if (!estado.empresasSalvas.length) {
+    cont.innerHTML = '<p class="hint" style="padding:4px 0;margin-bottom:8px">Nenhuma empresa salva. Preencha os dados e clique em salvar.</p>';
+    return;
+  }
+  cont.innerHTML = estado.empresasSalvas.map(emp => `
+    <div class="empresa-salva-item">
+      <div class="esi-nome" onclick="carregarEmpresaSalva('${emp.id}')">
+        🏢 <strong>${esc(emp.empresa.razaoSocial || 'Sem nome')}</strong>
+        ${emp.empresa.municipio ? `<span class="badge">${esc(emp.empresa.municipio)}</span>` : ''}
+      </div>
+      <button class="btn-danger" onclick="excluirEmpresaSalva('${emp.id}')">✕</button>
+    </div>
+  `).join('');
+}
+
+function salvarEmpresaAtual() {
+  coletarEmpresa();
+  if (!estado.empresa.razaoSocial) { toast('Preencha ao menos a Razão Social.'); return; }
+  const idx = estado.empresasSalvas.findIndex(x => x.empresa.cnpj && x.empresa.cnpj === estado.empresa.cnpj);
+  if (idx >= 0) {
+    estado.empresasSalvas[idx].empresa = { ...estado.empresa };
+    toast('Empresa atualizada!');
+  } else {
+    estado.empresasSalvas.push({ id: Date.now().toString(), empresa: { ...estado.empresa } });
+    toast('Empresa salva!');
+  }
+  salvarLocal(); renderEmpresasSalvas();
+}
+
+function carregarEmpresaSalva(id) {
+  const emp = estado.empresasSalvas.find(x => x.id === id);
+  if (!emp) return;
+  estado.empresa = { ...emp.empresa };
+  preencherFormEmpresa();
+  atualizarPreviewLogo();
+  salvarLocal();
+  toast(`${emp.empresa.razaoSocial || 'Empresa'} carregada!`);
+}
+
+function excluirEmpresaSalva(id) {
+  if (!confirm('Remover esta empresa da lista?')) return;
+  estado.empresasSalvas = estado.empresasSalvas.filter(x => x.id !== id);
+  salvarLocal(); renderEmpresasSalvas();
+  toast('Empresa removida.');
+}
+
+// ============================================================
+// LOGO DA EMPRESA
+// ============================================================
+function handleLogoUpload(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  comprimirLogo(file, base64 => {
+    estado.empresa.logo = base64;
+    salvarLocal(); atualizarPreviewLogo();
+    toast('Logo carregada!');
+  });
+}
+
+function comprimirLogo(file, callback) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX_W = 400, MAX_H = 200;
+      let w = img.width, h = img.height;
+      if (w > MAX_W) { h = Math.round(h * MAX_W / w); w = MAX_W; }
+      if (h > MAX_H) { w = Math.round(w * MAX_H / h); h = MAX_H; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', 0.75));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function atualizarPreviewLogo() {
+  const preview = document.getElementById('logoPreview');
+  const btnRemove = document.getElementById('btnRemoveLogo');
+  if (!preview) return;
+  if (estado.empresa.logo) {
+    preview.src = estado.empresa.logo;
+    preview.style.display = 'block';
+    if (btnRemove) btnRemove.style.display = 'inline-flex';
+  } else {
+    preview.style.display = 'none';
+    if (btnRemove) btnRemove.style.display = 'none';
+  }
+}
+
+function removerLogo() {
+  estado.empresa.logo = '';
+  salvarLocal(); atualizarPreviewLogo();
+  const inp = document.getElementById('logoInput');
+  if (inp) inp.value = '';
+  toast('Logo removida.');
+}
+
+function base64ToBytes(dataUrl) {
+  const b64 = dataUrl.includes(',') ? dataUrl.split(',')[1] : dataUrl;
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+
+function logoDocXml() {
+  if (!estado.empresa.logo) return '';
+  const cx = 1440000, cy = 576000; // 4cm x 1.6cm em EMU
+  return `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="120" w:line="240" w:lineRule="auto"/></w:pPr><w:r><w:drawing>
+  <wp:inline distT="0" distB="0" distL="0" distR="0">
+    <wp:extent cx="${cx}" cy="${cy}"/>
+    <wp:docPr id="1" name="Logo"/>
+    <wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr>
+    <a:graphic>
+      <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+        <pic:pic>
+          <pic:nvPicPr><pic:cNvPr id="1" name="Logo"/><pic:cNvPicPr/></pic:nvPicPr>
+          <pic:blipFill>
+            <a:blip r:embed="rId3"/>
+            <a:stretch><a:fillRect/></a:stretch>
+          </pic:blipFill>
+          <pic:spPr>
+            <a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm>
+            <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+          </pic:spPr>
+        </pic:pic>
+      </a:graphicData>
+    </a:graphic>
+  </wp:inline>
+</w:drawing></w:r></w:p>`;
+}
+
+// ============================================================
+// NÚMERO SEQUENCIAL DE RELATÓRIO
+// ============================================================
+function proximoNumRelatorio() {
+  const n = (estado.contadorRelatorio || 0) + 1;
+  return String(n).padStart(3, '0') + '/' + new Date().getFullYear();
+}
+
+// ============================================================
+// VALIDAÇÃO ANTES DE GERAR
+// ============================================================
+function validarParaGerar() {
+  const obrigatorios = [
+    { id: 'razaoSocial', label: 'Razão Social' },
+    { id: 'cnpj',        label: 'CNPJ' },
+    { id: 'municipio',   label: 'Município' },
+    { id: 'uf',          label: 'UF' },
+  ];
+  const faltando = obrigatorios.filter(f => !e(f.id)).map(f => f.label);
+  return { ok: faltando.length === 0, faltando };
+}
+
+// ============================================================
+// DOWNLOAD EM ZIP ÚNICO
+// ============================================================
+async function gerarZipTodos() {
+  coletarEmpresa();
+  const v = validarParaGerar();
+  if (!v.ok) { toast('Preencha: ' + v.faltando.join(', ')); return; }
+  if (!estado.selecionados.length) { toast('Selecione ao menos um documento.'); return; }
+  toast('Montando ZIP…');
+  const emp = (e('razaoSocial') || 'RELATORIOS').replace(/[^A-Z0-9]/gi, '_').toUpperCase().substring(0, 20);
+  const dt = new Date();
+  const data = `${String(dt.getDate()).padStart(2,'0')}${String(dt.getMonth()+1).padStart(2,'0')}${dt.getFullYear()}`;
+  const arquivos = {};
+  for (const id of estado.selecionados) {
+    arquivos[nomeArquivo(id)] = criarDocx(buildDocXml(id));
+  }
+  const zipBytes = zipFiles(arquivos);
+  baixarArquivo(zipBytes, `RELATORIOS_${emp}_${data}.zip`, 'application/zip');
+  toast(`ZIP com ${estado.selecionados.length} documento(s) baixado!`);
+}
+
+// ============================================================
+// EXPORT / IMPORT DE DADOS
+// ============================================================
+function exportarEstado() {
+  const dados = JSON.stringify(estado, null, 2);
+  const blob = new Blob([dados], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const dt = new Date();
+  a.href = url;
+  a.download = `backup_relatorios_${dt.getFullYear()}${String(dt.getMonth()+1).padStart(2,'0')}${String(dt.getDate()).padStart(2,'0')}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('Backup exportado!');
+}
+
+function importarEstado() {
+  document.getElementById('inputImportJson').click();
+}
+
+function handleImportJson(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const dados = JSON.parse(e.target.result);
+      estado.empresa = dados.empresa || {};
+      estado.selecionados = dados.selecionados || [];
+      estado.dados = dados.dados || {};
+      estado.empresasSalvas = dados.empresasSalvas || [];
+      estado.contadorRelatorio = dados.contadorRelatorio || 0;
+      salvarLocal();
+      preencherFormEmpresa(); atualizarPreviewLogo();
+      renderEmpresasSalvas(); renderDocGrid();
+      renderDocsSelecionados(); renderGerar();
+      toast('Dados importados com sucesso!');
+    } catch(err) { toast('Erro ao importar: arquivo inválido.'); }
+  };
+  reader.readAsText(file);
+  evt.target.value = '';
+}
+
+// ============================================================
+// REFERÊNCIAS BIBLIOGRÁFICAS (ABNT)
+// ============================================================
+function referencias() {
+  return `
+    ${pb()}
+    ${h1('REFERÊNCIAS')}
+    ${p('ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. NBR 10719: Apresentação de relatórios técnico-científicos. Rio de Janeiro: ABNT, 2011.', {justify:true})}
+    ${p('BRASIL. Conselho Nacional do Meio Ambiente. Resolução CONAMA nº 273, de 29 de novembro de 2000. Dispõe sobre prevenção e controle da poluição em postos de combustíveis e serviços. Brasília: MMA, 2000.', {justify:true})}
+    ${p('BRASIL. Conselho Nacional do Meio Ambiente. Resolução CONAMA nº 430, de 13 de maio de 2011. Dispõe sobre condições e padrões de lançamento de efluentes. Brasília: MMA, 2011.', {justify:true})}
+    ${p('BRASIL. Conselho Nacional do Meio Ambiente. Resolução CONAMA nº 362, de 23 de junho de 2005. Dispõe sobre o recolhimento, coleta e destinação final de óleo lubrificante usado. Brasília: MMA, 2005.', {justify:true})}
+    ${p('BRASIL. Lei Federal nº 12.305, de 2 de agosto de 2010. Institui a Política Nacional de Resíduos Sólidos e dá outras providências. Brasília: Presidência da República, 2010.', {justify:true})}
+    ${p('BAHIA. Conselho Estadual de Meio Ambiente. Resolução CEPRAM nº 4.578, de 19 de dezembro de 2017. Estabelece critérios, procedimentos e competências do licenciamento ambiental no Estado da Bahia. Salvador: SEMA, 2017.', {justify:true})}
+  `;
 }
 
 // ============================================================
