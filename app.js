@@ -1170,6 +1170,104 @@ function carregarLocal() {
 }
 
 // ============================================================
+// GPS → UTM (SIRGAS 2000 = WGS84 para fins práticos)
+// ============================================================
+function capturarGps() {
+  const btn = document.getElementById('btnGps');
+  const msg = document.getElementById('gpsMsg');
+  if (!navigator.geolocation) {
+    msg.textContent = '❌ Geolocalização não suportada neste dispositivo.';
+    msg.style.color = 'var(--vermelho)';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = '📍 Obtendo localização…';
+  msg.textContent = '';
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const { latitude: lat, longitude: lon } = pos.coords;
+      const utm = latLonParaUtm(lat, lon);
+      document.getElementById('coordE').value = utm.E.toFixed(2);
+      document.getElementById('coordN').value = utm.N.toFixed(2);
+      document.getElementById('zonaUtm').value = utm.zona;
+      coletarEmpresa();
+      salvarLocal();
+      msg.textContent = `✅ ${utm.E.toFixed(2)} m E / ${utm.N.toFixed(2)} m N – Zona ${utm.zona}  (precisão ±${Math.round(pos.coords.accuracy)} m)`;
+      msg.style.color = 'var(--verde)';
+      btn.disabled = false;
+      btn.textContent = '📍 Capturar localização pelo GPS';
+    },
+    err => {
+      const erros = { 1: 'Permissão negada.', 2: 'Localização indisponível.', 3: 'Tempo esgotado.' };
+      msg.textContent = '❌ ' + (erros[err.code] || 'Erro ao obter localização.');
+      msg.style.color = 'var(--vermelho)';
+      btn.disabled = false;
+      btn.textContent = '📍 Capturar localização pelo GPS';
+    },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+  );
+}
+
+function latLonParaUtm(lat, lon) {
+  const a = 6378137.0, f = 1 / 298.257223563;
+  const k0 = 0.9996, E0 = 500000;
+  const b = a * (1 - f);
+  const e2 = 1 - (b * b) / (a * a);
+  const e2l = e2 / (1 - e2);
+  const zona = Math.floor((lon + 180) / 6) + 1;
+  const lon0 = (zona - 1) * 6 - 180 + 3;
+  const latR = lat * Math.PI / 180;
+  const lonR = lon * Math.PI / 180;
+  const lon0R = lon0 * Math.PI / 180;
+  const N = a / Math.sqrt(1 - e2 * Math.sin(latR) ** 2);
+  const T = Math.tan(latR) ** 2;
+  const C = e2l * Math.cos(latR) ** 2;
+  const A = Math.cos(latR) * (lonR - lon0R);
+  const M = a * ((1 - e2/4 - 3*e2**2/64 - 5*e2**3/256) * latR
+    - (3*e2/8 + 3*e2**2/32 + 45*e2**3/1024) * Math.sin(2*latR)
+    + (15*e2**2/256 + 45*e2**3/1024) * Math.sin(4*latR)
+    - (35*e2**3/3072) * Math.sin(6*latR));
+  const E = E0 + k0 * N * (A + (1-T+C)*A**3/6 + (5-18*T+T**2+72*C-58*e2l)*A**5/120);
+  const N0 = lat < 0 ? 10000000 : 0;
+  const Nv = N0 + k0 * (M + N * Math.tan(latR) * (A**2/2 + (5-T+9*C+4*C**2)*A**4/24 + (61-58*T+T**2+600*C-330*e2l)*A**6/720));
+  const letra = 'CDEFGHJKLMNPQRSTUVWX'[Math.floor((lat + 80) / 8)] || 'Z';
+  return { E, N: Nv, zona: `${zona}${letra}` };
+}
+
+// ============================================================
+// BUSCA POR CPF
+// ============================================================
+function buscarCpf() {
+  const cpf = (document.getElementById('respCpf').value || '').replace(/\D/g, '');
+  const msg = document.getElementById('cpfMsg');
+  const btn = document.getElementById('btnCpf');
+  if (cpf.length !== 11 || !validarCpf(cpf)) {
+    msg.textContent = '⚠️ CPF inválido. Verifique os dígitos.';
+    msg.style.color = 'var(--vermelho)';
+    return;
+  }
+  // Formata e salva — não há API pública de CPF no Brasil (LGPD)
+  const cpfFmt = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  document.getElementById('respCpf').value = cpfFmt;
+  coletarEmpresa();
+  salvarLocal();
+  msg.textContent = '✅ CPF válido e formatado. Preencha o nome manualmente (não há API pública de CPF no Brasil).';
+  msg.style.color = 'var(--verde)';
+}
+
+function validarCpf(cpf) {
+  if (/^(\d)\1+$/.test(cpf)) return false;
+  let s = 0;
+  for (let i = 0; i < 9; i++) s += +cpf[i] * (10 - i);
+  let r = (s * 10) % 11; if (r === 10 || r === 11) r = 0;
+  if (r !== +cpf[9]) return false;
+  s = 0;
+  for (let i = 0; i < 10; i++) s += +cpf[i] * (11 - i);
+  r = (s * 10) % 11; if (r === 10 || r === 11) r = 0;
+  return r === +cpf[10];
+}
+
+// ============================================================
 // BUSCA POR CNPJ
 // ============================================================
 async function buscarCnpj() {
