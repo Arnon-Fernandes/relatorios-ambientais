@@ -12,6 +12,114 @@ const SUAL_FOOTER_XML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 // ============================================================
 // DOCUMENTOS DISPONÍVEIS
 // ============================================================
+// ============================================================
+// BANCO DE DADOS AMBIENTAIS POR MUNICÍPIO
+// Extraído dos relatórios reais da SUAL (OneDrive/Google Drive)
+// Atualizar sempre que novos relatórios forem produzidos
+// ============================================================
+const MUNICIPIOS_DB = {
+  "feira de santana": {
+    municipio: "Feira de Santana", uf: "BA",
+    clima: { koppen: "Aw", precipitacao: "692 mm/ano", tempMedia: "24,5°C", periodoChuvoso: "março a junho", periodoSeco: "julho a novembro", mesMaisQuente: "março (26,4°C)", mesMaisFrio: "julho (21,7°C)" },
+    geologia: {
+      regional: "Embasamento cristalino de idade Mesoarqueana ao Paleoproterozoico. A oeste: Gnaisses Bandados-Santa Luz (gnaisse, kinzigito, rocha calcissilicática, mármore, paragnaisse). A leste: Migmatitos-Santa Luz (ortognaisse, migmatito).",
+      local: "Grupo Barreiras (Cenozóico) — argilito arenoso e arenito conglomerático, recobrindo o embasamento cristalino."
+    },
+    geomorfologia: "Colinas dissecadas e morros baixos, formas de relevo residuais resultantes da dissecação da drenagem. Relevo suave ondulado a ondulado.",
+    pedologia: { classe: "Vertissolo", textura: "média a argilosa", drenagem: "bem drenado", observacao: "Baixa a muito baixa fertilidade natural; argila de atividade baixa; cor 5YR valores 4–6 croma 6–8." },
+    hidrografia: { corpoDagua: "Lagoa Salgada", posicao: "a oeste do empreendimento", bacia: "Bacia Hidrográfica do Paraguaçu (58.877 km² – RPGA X / CBH Paraguaçu)" },
+    hidrogeologia: { aquifero: "Cobertura sedimentar (Grupo Barreiras) com porosidade primária intersticial, associado ao domínio cristalino fraturado.", neMin: null, neMax: null, profMedia: null, pocosSiagas: null },
+    voc: "Ausência de compostos orgânicos voláteis detectáveis — laudos analíticos 7300/25-01, 7299/25-01 e 7299/25-02 (BTEX abaixo do limite de detecção).",
+    vegetacao: { bioma: "Mata Atlântica (zona de transição com a Caatinga)", cobertura: "Área urbana consolidada — vegetação original suprimida." }
+  },
+  "novo triunfo": {
+    municipio: "Novo Triunfo", uf: "BA",
+    clima: { koppen: "Af", precipitacao: "1.668 mm/ano", tempMedia: "24,8°C", periodoChuvoso: "chuvas bem distribuídas durante todo o ano", periodoSeco: "outubro (mês mais seco)", mesMaisQuente: "janeiro", mesMaisFrio: "julho" },
+    geologia: {
+      regional: "Bacia Sedimentar do Recôncavo (Mesozoico). Formação Marisal — silexito, siltito, folhelho, conglomerado, calcário e arenito. Formação São Sebastião — folhelho, arenito, argilito e siltito. Depósitos Aluvionares Recentes — areia e argila.",
+      local: "Sedimentos da Formação Marisal recobertos por delgada camada de solo residual arenoso."
+    },
+    geomorfologia: "Morros e morrotes de baixa declividade com formas de meia laranja típicas da Bacia Sedimentar do Recôncavo. Altitude municipal: 400–450 m, variação local inferior a 1 m.",
+    pedologia: { classe: "Solo arenoso", textura: "arenosa (grãos arredondados sub-angulosos bem selecionados, cor marrom claro)", drenagem: "não informado", observacao: "Solo pouco desenvolvido sobre substrato sedimentar." },
+    hidrografia: { corpoDagua: "Riacho Pau Ferro", posicao: "distando aproximadamente 3 km do empreendimento", bacia: "Bacia hidrográfica da região do Recôncavo Baiano" },
+    hidrogeologia: { aquifero: "Aquífero sedimentar da Bacia do Recôncavo (porosidade primária — arenitos das Formações Marisal e São Sebastião).", neMin: 117.3, neMax: 223.2, profMedia: 175, pocosSiagas: "5 poços cadastrados no SIAGAS (CPRM) foram analisados na área de influência do empreendimento." },
+    voc: "Ausência de contaminação por compostos orgânicos — BTEX, PAH e TPH abaixo dos limites de detecção e quantificação (CONAMA 420/2009).",
+    vegetacao: { bioma: "Mata Atlântica / Caatinga (zona de transição)", cobertura: "Área urbana — vegetação original suprimida pela ocupação antrópica." }
+  },
+  "pocoes": {
+    municipio: "Poções", uf: "BA",
+    clima: { koppen: "Aw", precipitacao: "[inserir dados INMET]", tempMedia: "[inserir dados INMET]", periodoChuvoso: "inverno baiano", periodoSeco: "verão" },
+    geologia: {
+      regional: "Bacia Sedimentar do Recôncavo (Mesozoico). Formação Marisal — silexito, siltito, folhelho, conglomerado, calcário e arenito. Formação São Sebastião — folhelho, arenito, argilito e siltito.",
+      local: "Sedimentos da Formação Marisal recobertos por solo residual arenoso."
+    },
+    geomorfologia: "Morros e morrotes de baixa declividade com formas de meia laranja. Altitude em torno de 414 m, variação local inferior a 1 m.",
+    pedologia: { classe: "Solo arenoso", textura: "arenosa (grãos arredondados sub-angulosos, cor marrom claro)", drenagem: "não informado", observacao: "Localização: Rodovia BR-116, Km 764, Zona Rural." },
+    hidrografia: { corpoDagua: "[informar corpo d'água mais próximo]", posicao: "", bacia: "[informar bacia hidrográfica]" },
+    hidrogeologia: { aquifero: "Aquífero sedimentar da Bacia do Recôncavo.", neMin: null, neMax: null, profMedia: null, pocosSiagas: null },
+    voc: "[Inserir resultado dos laudos de VOC]",
+    vegetacao: { bioma: "Caatinga", cobertura: "Área rural/urbana — rodovia BR-116." }
+  },
+  "jussiapc": {
+    municipio: "Jussiapê", uf: "BA",
+    clima: { koppen: "Aw", precipitacao: "832 mm/ano", tempMedia: "22,0°C", periodoChuvoso: "novembro a março", periodoSeco: "junho a setembro", mesMaisQuente: "março (26,4°C)", mesMaisFrio: "julho (21,7°C)" },
+    geologia: {
+      regional: "Embasamento cristalino de idade Arqueana ao Proterozóico. Complexo Gavião (Arqueano) — ortognaisse e migmatito. Formação Ouricuri do Ouro — metaconglomerado polimítico. Corpo Abaíra-Jussiapê, Ibitiara e Rodeador-Surubim — granito e granodiorito.",
+      local: "Complexo Gavião — ortognaisse migmatítico, com cobertura delgada de solo residual."
+    },
+    geomorfologia: "Superfícies aplainadas conservadas, relevo plano a levemente ondulado, baixa dissecação, topos planos ou suaves com baixas amplitudes de relevo — característico do semiárido baiano (pediplanação com ocorrência de inselbergs).",
+    pedologia: { classe: "Latossolo Vermelho-Amarelo Distrófico (LVAd)", textura: "argilosa a média", drenagem: "bem drenado (muito profundo e uniforme)", observacao: "Solo muito intemperizado, típico de clima tropical semiárido sobre embasamento cristalino." },
+    hidrografia: { corpoDagua: "Rio das Contas", posicao: "a oeste do empreendimento", bacia: "Bacia Hidrográfica do Rio das Contas (55.334 km² — 81 municípios — nasce entre Piatã e Abaíra, deságua em Itacaré/Oceano Atlântico)" },
+    hidrogeologia: { aquifero: "Aquífero cristalino fraturado (Complexo Gavião) — produtividade controlada pela densidade e abertura de fraturas no embasamento.", neMin: null, neMax: null, profMedia: null, pocosSiagas: null },
+    voc: "Ausência de compostos orgânicos voláteis — laudos analíticos 217461/2026-1.0A, 217462/2026-1.0A e 217460/2026-1.0A (BTEX abaixo do limite de detecção).",
+    vegetacao: { bioma: "Caatinga", cobertura: "Área urbana (Bairro do Campo, Jussiapê) — vegetação original suprimida." }
+  },
+  "jussiape": {
+    municipio: "Jussiapê", uf: "BA",
+    clima: { koppen: "Aw", precipitacao: "832 mm/ano", tempMedia: "22,0°C", periodoChuvoso: "novembro a março", periodoSeco: "junho a setembro", mesMaisQuente: "março (26,4°C)", mesMaisFrio: "julho (21,7°C)" },
+    geologia: {
+      regional: "Embasamento cristalino de idade Arqueana ao Proterozóico. Complexo Gavião (Arqueano) — ortognaisse e migmatito. Formação Ouricuri do Ouro — metaconglomerado polimítico. Corpo Abaíra-Jussiapê, Ibitiara e Rodeador-Surubim — granito e granodiorito.",
+      local: "Complexo Gavião — ortognaisse migmatítico, com cobertura delgada de solo residual."
+    },
+    geomorfologia: "Superfícies aplainadas conservadas, relevo plano a levemente ondulado, baixa dissecação, topos planos ou suaves com baixas amplitudes de relevo — característico do semiárido baiano (pediplanação com ocorrência de inselbergs).",
+    pedologia: { classe: "Latossolo Vermelho-Amarelo Distrófico (LVAd)", textura: "argilosa a média", drenagem: "bem drenado (muito profundo e uniforme)", observacao: "Solo muito intemperizado, típico de clima tropical semiárido sobre embasamento cristalino." },
+    hidrografia: { corpoDagua: "Rio das Contas", posicao: "a oeste do empreendimento", bacia: "Bacia Hidrográfica do Rio das Contas (55.334 km² — 81 municípios — nasce entre Piatã e Abaíra, deságua em Itacaré/Oceano Atlântico)" },
+    hidrogeologia: { aquifero: "Aquífero cristalino fraturado (Complexo Gavião) — produtividade controlada pela densidade e abertura de fraturas no embasamento.", neMin: null, neMax: null, profMedia: null, pocosSiagas: null },
+    voc: "Ausência de compostos orgânicos voláteis — laudos analíticos 217461/2026-1.0A, 217462/2026-1.0A e 217460/2026-1.0A (BTEX abaixo do limite de detecção).",
+    vegetacao: { bioma: "Caatinga", cobertura: "Área urbana (Bairro do Campo, Jussiapê) — vegetação original suprimida." }
+  },
+  "luis eduardo magalhaes": {
+    municipio: "Luís Eduardo Magalhães", uf: "BA",
+    clima: { koppen: "Aw", precipitacao: "> 1.000 mm/ano", tempMedia: "[inserir INMET LEM]", periodoChuvoso: "outubro a abril", periodoSeco: "maio a setembro", observacao: "Classificação Thornthwaite C1 d A' (Sub-Úmido Seco, Megatérmico). Domínio geomorfológico: Oeste Baiano." },
+    geologia: {
+      regional: "Complexo Gavião (Paleoarqueano) — ortognaisse migmatítico tonalítico-trondhjemítico-granodiorítico. Formação Ouricuri do Ouro — metaconglomerado polimítico e quartzito. Coberturas detrito-lateríticas — areia com níveis de argila e cascalho.",
+      local: "Grupo Urucuia (Mesozoico) — arenito conglomerático e arenito de granulometria fina a média, constituindo o principal aquífero sedimentar da região."
+    },
+    geomorfologia: "Colinas, formas de meia laranja, monoclinal e meseta — feições convexas ou tabulares separadas por vales chatos ou agudos com drenagem dendrítica. Desníveis de 20–50 m. Domínio geomorfológico do Oeste Baiano.",
+    pedologia: { classe: "Solo argilo-arenoso", textura: "argilo-arenosa", drenagem: "bem drenado", observacao: "pH solo: 6,3 | Cloretos: 52,9 mg/kg | Sem agressividade corrosiva (pH > 4; Cl < 250 mg/kg). Espessura: dezenas de metros." },
+    hidrografia: { corpoDagua: "Riacho da Quixaba (principal)", posicao: "drenagem regional com Córrego Daniel e Rio Paramirim a sul", bacia: "Bacia do Rio Grande / São Francisco (oeste baiano)", fluxoSubterraneo: "Sul → Norte" },
+    hidrogeologia: { aquifero: "Aquífero sedimentar do Grupo Urucuia (porosidade primária intergranular) — principal sistema aquífero do oeste baiano, de grande extensão e alta produtividade.", neMin: 19.14, neMax: 45.0, profMedia: 14, pocosSiagas: "6 poços cadastrados no SIAGAS (CPRM) foram analisados em raio de 8 km do empreendimento. Poços de referência: BA00008248 (231 m prof., NE 19,14 m) e BA00008249 (98 m prof., NE 19,35 m)." },
+    permeabilidade: "K = 2,8 × 10⁻² cm/s (médio) — equivale a 280 mm/h — ensaio in situ (Laudo Corplab nº 421365/2017-1.0A).",
+    voc: "Laudos 528418/2021-1.1A e 528417/2021-1.0A — valores de BTEX e TPH abaixo dos limites de detecção. Sem indicativo de contaminação por hidrocarbonetos.",
+    vegetacao: { bioma: "Cerrado / Caatinga (oeste baiano)", cobertura: "Área urbana (Chácara Paraíso, Luís Eduardo Magalhães) — vegetação original suprimida." }
+  }
+};
+
+// Busca município no banco de dados (normaliza acentos/maiúsculas)
+function getMunicipioData(nome) {
+  if (!nome) return null;
+  const key = nome.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z\s]/g, '').trim();
+  // Busca exata
+  if (MUNICIPIOS_DB[key]) return MUNICIPIOS_DB[key];
+  // Busca parcial
+  for (const k of Object.keys(MUNICIPIOS_DB)) {
+    if (key.includes(k) || k.includes(key)) return MUNICIPIOS_DB[k];
+  }
+  return null;
+}
+
 const DOCS = [
   { id: 'rce',       icone: '📋', nome: 'RCE',        descr: 'Roteiro de Caracterização do Empreendimento' },
   { id: 'pgrs',      icone: '♻️', nome: 'PGRS',       descr: 'Programa de Gerenciamento de Resíduos Sólidos' },
@@ -1252,6 +1360,37 @@ function xmlSao() {
 
 function xmlDiag() {
   const r = id => d('diag.' + id);
+  // Carregar dados reais do município se disponível no banco
+  const db = getMunicipioData(e('municipio')) || {};
+  const C = db.clima || {};
+  const G = db.geologia || {};
+  const H = db.hidrogeologia || {};
+  const P = db.pedologia || {};
+  const Hid = db.hidrografia || {};
+  const V = db.vegetacao || {};
+  // Helpers: usa dado do banco se campo do formulário estiver vazio
+  const clima_koppen    = C.koppen        || '[informar Köppen]';
+  const clima_prec      = C.precipitacao  || '[informar mm/ano]';
+  const clima_temp      = C.tempMedia     || '[informar °C]';
+  const clima_chuv      = C.periodoChuvoso|| '[informar]';
+  const clima_seco      = C.periodoSeco   || '[informar]';
+  const geo_regional    = G.regional      || 'embasamento cristalino composto por gnaisses e migmatitos arqueanos, típico do Cráton do São Francisco (CPRM, 2010)';
+  const geo_local       = G.local         || r('geologiaDiag') || '[descrever geologia local]';
+  const geo_morfo       = db.geomorfologia|| r('geomorfo')     || 'relevo plano a suave ondulado, com cotas altimétricas médias entre 200 e 500 metros';
+  const ped_classe      = P.classe        || r('tipoSoloDiag') || 'Latossolo Vermelho-Amarelo Distrófico (LVAd)';
+  const ped_obs         = P.observacao    || '';
+  const hid_bacia       = Hid.bacia       || r('baciaDiag')    || '[informar bacia hidrográfica]';
+  const hid_corpo       = Hid.corpoDagua  || r('corpoAgua')    || '[informar corpo d\'água mais próximo]';
+  const hid_dist        = r('distanciaCorpo') || '[informar distância]';
+  const hg_aquifero     = H.aquifero      || 'aquífero cristalino fraturado e coberturas sedimentares de caráter livre';
+  const hg_ne_min       = H.neMin   != null ? H.neMin + ' m'   : (r('neMin')   || '[informar]');
+  const hg_ne_max       = H.neMax   != null ? H.neMax + ' m'   : (r('neMax')   || '[informar]');
+  const hg_prof         = H.profMedia != null ? H.profMedia + ' m' : (r('profLencol') || '[informar]');
+  const hg_pocos        = H.pocosSiagas   || `${r('numPocos') || '[informar]'} poços cadastrados no SIAGAS (CPRM)`;
+  const voc_resultado   = db.voc          || r('resultadoVoc') || '[inserir resultado dos laudos analíticos]';
+  const veg_bioma       = V.bioma         || 'Caatinga / Mata Atlântica (conforme localização)';
+  const veg_cob         = V.cobertura     || 'Área urbana consolidada — vegetação original suprimida pela ocupação antrópica.';
+
   return xmlBase('DIAGNÓSTICO AMBIENTAL',
     h1('1. INTRODUÇÃO') +
     p(`O presente estudo de Diagnóstico Ambiental foi elaborado pela SUAL – Soluções Ambientais Ltda para o empreendimento ${e('razaoSocial')}, situado no município de ${e('municipio')}, Estado da Bahia, em atendimento às exigências do Instituto do Meio Ambiente e Recursos Hídricos – INEMA e à Resolução CONAMA nº 273, de 29 de novembro de 2000, que estabelece as diretrizes para o licenciamento ambiental de postos e serviços de combustíveis, e a outros estabelecimentos que comercializam ou armazenam derivados de petróleo.`, {justify:true}) +
@@ -1271,7 +1410,7 @@ function xmlDiag() {
     empty() +
 
     h1('4. CLIMA') +
-    p(`O clima do município de ${e('municipio')} é classificado segundo a metodologia de Köppen-Geiger como Aw (tropical com estação seca no inverno) para a maioria dos municípios do interior baiano, ou Am/Af para municípios do litoral e Recôncavo Baiano, com base nos dados históricos do Instituto Nacional de Meteorologia – INMET e do banco de dados Climate-Data.org.`, {justify:true}) +
+    p(`O clima do município de ${e('municipio')} é classificado, segundo a metodologia de Köppen-Geiger, como ${clima_koppen}, com precipitação média anual de ${clima_prec} e temperatura média de ${clima_temp}, conforme dados históricos do Instituto Nacional de Meteorologia – INMET. O período chuvoso concentra-se entre ${clima_chuv}, e o período seco entre ${clima_seco} (INMET / Climate-Data.org).`, {justify:true}) +
     tabelaSimples([
       ['Parâmetro Climático','Valor Estimado','Fonte'],
       ['Temperatura média anual','24,0 – 25,5°C','INMET'],
@@ -1287,38 +1426,36 @@ function xmlDiag() {
 
     h1('5. GEOLOGIA') +
     h2('5.1 Geologia Regional') +
-    p(`A geologia regional da área insere-se no contexto do Cráton do São Francisco, unidade geotectônica de alta estabilidade que ocupa a porção centro-leste do Brasil. O embasamento cristalino do Cráton é constituído por rochas metamórficas e ígneas de alto grau – gnaisses, migmatitos, granulitos e granitoides – de idade Arqueana (> 2,5 Ga), formadas durante os ciclos orogênicos Jequié (3,0–2,6 Ga) e Transamazônico (2,1–1,8 Ga) (Alkmim & Martins-Neto, 2012; CPRM, 2010).`, {justify:true}) +
-    p(`Sobre o embasamento arqueano assentam coberturas sedimentares e metassedimentares do Proterozoico, representadas pelas sequências do Supergrupo Espinhaço (Paleo a Mesoproterozoico) e do Grupo Bambuí (Neoproterozoico), compostas por quartzitos, filitos, calcários, dolomitos e ardósias. Em áreas costeiras e no Recôncavo Baiano, predominam as bacias sedimentares mesozoicas, com destaque para a Bacia do Recôncavo (Jurássico-Cretáceo), de relevância econômica pelo seu potencial petrolífero (Santos et al., 2021).`, {justify:true}) +
+    p(`A geologia regional do município de ${e('municipio')} é caracterizada por ${geo_regional}. As informações geológicas foram obtidas nos mapas da CPRM – Serviço Geológico do Brasil (2010), em escala 1:500.000.`, {justify:true}) +
     h2('5.2 Geologia Local') +
-    p(`No município de ${e('municipio')}, a geologia local é representada por ${r('geologiaDiag') || 'unidades do embasamento cristalino, recoberto por material de alteração intempérica de caráter elúvio-coluvionar, de espessura variável entre 0,5 e 5,0 m dependendo da posição topográfica'}. As informações geológicas locais foram obtidas nos mapas da CPRM – Serviço Geológico do Brasil (2010), em escala 1:500.000.`, {justify:true}) +
+    p(`No contexto local, ${geo_local}`, {justify:true}) +
     p('[Inserir Figura 4 – Mapa Geológico Regional com destaque para as unidades litoestratigráficas da área. Fonte: CPRM, 2010]', {center:true, cor:'718096'}) +
     empty() +
 
     h1('6. GEOMORFOLOGIA') +
-    p(`A geomorfologia da área de influência é representada por unidades típicas do domínio dos planaltos e sertões do interior da Bahia. O município de ${e('municipio')} está inserido em unidade geomorfológica de ${r('geomorfo') || 'relevo plano a suave ondulado, com cotas altimétricas médias entre 200 e 500 metros, associado a superfícies de aplainamento resultantes de prolongada ação do intemperismo tropical'}. A declividade predominante é inferior a 5%, favorecendo a infiltração hídrica e minimizando os processos erosivos.`, {justify:true}) +
+    p(`A geomorfologia do município de ${e('municipio')} é representada por ${geo_morfo}. A declividade predominante é inferior a 5%, favorecendo a infiltração hídrica e minimizando os processos erosivos.`, {justify:true}) +
     p(`As formas de relevo presentes condicionam diretamente a dinâmica do escoamento superficial e a recarga dos aquíferos subterrâneos. Áreas topograficamente planas favorecem a percolação vertical da água e a recarga dos aquíferos freáticos, enquanto vertentes com declividade superior a 10% concentram o escoamento superficial, aumentando o risco de transporte de contaminantes em caso de derrames acidentais (EMBRAPA, 2018).`, {justify:true}) +
     p('[Inserir Figura 5 – Mapa Geomorfológico com curvas de nível e indicação das unidades de relevo]', {center:true, cor:'718096'}) +
     empty() +
 
     h1('7. PEDOLOGIA') +
-    p(`Os solos da região de ${e('municipio')} foram classificados com base no Sistema Brasileiro de Classificação de Solos – SiBCS (EMBRAPA, 2018) e no Mapa Pedológico do Estado da Bahia (CPRM/EMBRAPA, escala 1:1.000.000). O solo predominante na área é classificado como ${r('tipoSoloDiag') || 'Latossolo Vermelho-Amarelo Distrófico (LVAd), desenvolvido sobre rochas do embasamento cristalino ou coberturas sedimentares terciárias'}.`, {justify:true}) +
+    p(`Os solos da região de ${e('municipio')} foram classificados com base no Sistema Brasileiro de Classificação de Solos – SiBCS (EMBRAPA, 2018) e no Mapa Pedológico do Estado da Bahia (CPRM/EMBRAPA, escala 1:1.000.000). O solo predominante na área é classificado como ${ped_classe}. ${ped_obs}`, {justify:true}) +
     p(`Os Latossolos Vermelho-Amarelos são solos profundamente intemperizados, com horizonte B latossólico de textura argilo-arenosa a argilosa, coloração vermelho-amarelada devido à presença de óxidos de ferro (hematita e goethita). Apresentam alta porosidade total, boa drenagem interna e baixa capacidade de troca catiônica (CTC), sendo classificados como distróficos (baixa saturação de bases). Do ponto de vista ambiental, esses solos apresentam vulnerabilidade moderada à contaminação por hidrocarbonetos em razão de suas características texturais e estruturais, com permeabilidade que favorece a infiltração e a migração vertical de contaminantes em caso de vazamentos (CETESB, 2007; EMBRAPA, 2018).`, {justify:true}) +
     p('[Inserir Figura 6 – Mapa de Solos da área de influência com legenda de classes pedológicas. Fonte: EMBRAPA/CPRM]', {center:true, cor:'718096'}) +
     empty() +
 
     h1('8. RECURSOS HÍDRICOS') +
     h2('8.1 Hidrografia') +
-    p(`A hidrografia da área de influência integra a rede hídrica regional do Estado da Bahia. O corpo d'água superficial mais próximo ao empreendimento é ${r('corpoAgua') || '[informar nome]'}${r('distanciaCorpo') ? ', situado a aproximadamente ' + r('distanciaCorpo') + ' do limite do lote' : ''}.${r('baciaDiag') ? ' A área encontra-se inserida na ' + r('baciaDiag') + '.' : ''} Não foram identificadas áreas de Preservação Permanente (APP) no raio de 100 metros de influência direta do empreendimento, conforme previsto no Artigo 4º da Lei Federal nº 12.651/2012 (Código Florestal Brasileiro).`, {justify:true}) +
+    p(`A hidrografia da área de influência integra a rede hídrica regional do Estado da Bahia. O corpo d'água superficial mais próximo ao empreendimento é ${hid_corpo}${hid_dist !== '[informar distância]' ? ', situado a aproximadamente ' + hid_dist + ' do limite do lote' : ''}. A área encontra-se inserida na ${hid_bacia}. Não foram identificadas áreas de Preservação Permanente (APP) no raio de 100 metros de influência direta do empreendimento, conforme previsto no Artigo 4º da Lei Federal nº 12.651/2012 (Código Florestal Brasileiro).`, {justify:true}) +
     p('[Inserir Figura 7 – Mapa de Hidrografia com localização do empreendimento, rede de drenagem e distâncias aos corpos hídricos mais próximos]', {center:true, cor:'718096'}) +
     h2('8.2 Hidrogeologia') +
-    p(`A hidrogeologia regional é caracterizada por dois sistemas aquíferos principais: (i) Aquífero Cristalino – rochas fraturadas do embasamento, com produtividade variável em função da densidade de fraturas e da profundidade do nível estático; e (ii) Aquífero Granular – coberturas sedimentares e aluviões, de caráter livre e menor expressão regional, mas de relevância local para captações rasas.`, {justify:true}) +
-    p(`Com base em ${r('numPocos') || '[informar]'} poços cadastrados no Sistema de Informações de Águas Subterrâneas – SIAGAS (CPRM, 2025) na área de influência do empreendimento, o nível estático (NE) varia de ${r('neMin') || '[informar]'} m a ${r('neMax') || '[informar]'} m de profundidade, com profundidade média estimada do lençol freático de ${r('profLencol') || '[informar]'} metros. A vulnerabilidade do aquífero à contaminação superficial foi avaliada segundo a metodologia DRASTIC (Aller et al., 1987), que considera profundidade do lençol, recarga, litologia do aquífero, tipo de solo, topografia, influência da zona vadosa e condutividade hidráulica como parâmetros determinantes.`, {justify:true}) +
+    p(`A hidrogeologia do município de ${e('municipio')} é caracterizada pelo ${hg_aquifero}. ${hg_pocos} O nível estático (NE) varia de ${hg_ne_min} a ${hg_ne_max}, com profundidade média estimada do lençol freático de ${hg_prof}. A vulnerabilidade do aquífero à contaminação superficial foi avaliada segundo a metodologia DRASTIC (Aller et al., 1987).`, {justify:true}) +
     p(`O fluxo subterrâneo tem direção preferencial das cotas topograficamente mais elevadas para as mais baixas, em conformidade com a topografia local, convergindo em direção aos corpos hídricos receptores (Bear, 1979; Fetter, 2001). Em aquíferos livres rasos (NE < 10 m), a vulnerabilidade à contaminação por hidrocarbonetos é classificada como alta, reforçando a necessidade de sistemas eficientes de monitoramento e contenção de vazamentos (Foster & Hirata, 1988).`, {justify:true}) +
     p('[Inserir Figura 8 – Mapa Hidrogeológico com poços SIAGAS, NE médio e direção estimada do fluxo subterrâneo]', {center:true, cor:'718096'}) +
     empty() +
 
     h1('9. COBERTURA VEGETAL E FAUNA') +
-    p(`A cobertura vegetal original da área de influência do empreendimento encontra-se majoritariamente suprimida em decorrência da ocupação urbana consolidada. Espécies remanescentes limitam-se a gramíneas, arbustos pioneiros e espécies ornamentais introduzidas. O bioma original da região é a Caatinga (municípios do semiárido) ou a Mata Atlântica (municípios do litoral e Recôncavo Baiano), conforme mapeamento do MMA/IBGE (2019). Não foram identificadas espécies da flora ameaçadas de extinção constantes da Portaria MMA nº 148/2022 no raio de influência direta.`, {justify:true}) +
+    p(`O bioma original do município de ${e('municipio')} é a ${veg_bioma}, conforme mapeamento do MMA/IBGE (2019). ${veg_cob} Não foram identificadas espécies da flora ameaçadas de extinção constantes da Portaria MMA nº 148/2022 no raio de influência direta do empreendimento.`, {justify:true}) +
     p(`Em relação à fauna, o contexto urbano limita a ocorrência de espécies silvestres a grupos adaptados à perturbação antrópica, como aves generalistas (Columba livia, Furnarius rufus, Passer domesticus), répteis urbanos (Hemidactylus mabouia) e pequenos mamíferos sinantrópicos. Não foram identificadas espécies constantes da Lista Nacional de Espécies Ameaçadas de Extinção (ICMBio, 2022) no raio de influência direta do empreendimento.`, {justify:true}) +
     empty() +
 
@@ -1328,7 +1465,7 @@ function xmlDiag() {
     empty() +
 
     h1('11. CONCLUSÕES') +
-    p(`O diagnóstico ambiental realizado permitiu caracterizar o meio físico, biótico e socioeconômico da área de influência do empreendimento ${e('razaoSocial')}, no município de ${e('municipio')}, Estado da Bahia. As características físicas da área – geologia cristalina/sedimentar, relevo plano, solos de permeabilidade moderada e lençol freático a ${r('profLencol') || '[informar]'} metros de profundidade – indicam vulnerabilidade ${r('profLencol') && parseFloat(r('profLencol')) < 10 ? 'alta' : 'moderada'} do aquífero freático à contaminação por hidrocarbonetos em caso de vazamentos nos sistemas de armazenamento subterrâneo.`, {justify:true}) +
+    p(`O diagnóstico ambiental realizado permitiu caracterizar o meio físico, biótico e socioeconômico da área de influência do empreendimento ${e('razaoSocial')}, no município de ${e('municipio')}, Estado da Bahia. A geologia local é representada por ${geo_local.substring(0,100)}..., com solos classificados como ${ped_classe} e lençol freático a ${hg_prof} de profundidade, indicando vulnerabilidade ${H.profMedia != null && H.profMedia < 10 ? 'alta' : 'moderada'} do aquífero à contaminação por hidrocarbonetos.`, {justify:true}) +
     p(`A ausência de APP no raio de influência direta e a baixa diversidade faunística e florística característica de ambientes urbanos consolidados minimizam os impactos sobre a biodiversidade local, concentrando as atenções ambientais nos componentes abióticos – solo e água subterrânea – e na saúde da comunidade do entorno. A manutenção rigorosa dos sistemas de contenção, monitoramento e tratamento de efluentes é medida indispensável para a conformidade ambiental do empreendimento.`, {justify:true}) +
     empty() +
 
@@ -1344,6 +1481,27 @@ function xmlDiag() {
 
 function xmlGeo() {
   const r = id => d('geo.' + id);
+  // Carregar dados reais do município se disponível no banco
+  const db = getMunicipioData(e('municipio')) || {};
+  const C = db.clima || {};
+  const G = db.geologia || {};
+  const P = db.pedologia || {};
+  const H = db.hidrogeologia || {};
+  const geo_regional = G.regional || 'embasamento cristalino composto por gnaisses e migmatitos arqueanos (Cráton do São Francisco) com coberturas sedimentares e detrito-lateríticas cenozoicas (CPRM, 2010)';
+  const geo_local    = G.local    || r('descSolo') || '[descrever geologia local com base em CPRM/sondagem]';
+  const geo_morfo    = db.geomorfologia || r('geomorfo') || 'relevo plano a suave ondulado, com declividades inferiores a 5%';
+  const ped_classe   = P.classe   || '[classificar solo conforme SiBCS/EMBRAPA]';
+  const ped_obs      = P.observacao|| '';
+  const clima_koppen = C.koppen   || '[informar Köppen]';
+  const clima_prec   = C.precipitacao || r('precipitacao') || '[informar mm/ano]';
+  const clima_temp   = C.tempMedia || r('tempMedia') || '[informar °C]';
+  const hg_aquifero  = H.aquifero || 'aquífero cristalino fraturado associado ao embasamento local';
+  const hg_ne_min    = H.neMin  != null ? H.neMin + ' m' : (r('neMin') || '[informar]');
+  const hg_ne_max    = H.neMax  != null ? H.neMax + ' m' : (r('neMax') || '[informar]');
+  const hg_prof      = H.profMedia != null ? H.profMedia + ' m' : (r('profLencol') || '[informar]');
+  const hg_pocos     = H.pocosSiagas || `${r('numPocos') || '[informar]'} poços analisados no SIAGAS (CPRM, 2025)`;
+  const perm_k       = db.permeabilidade || r('permeabilidade') || '[inserir resultado do ensaio]';
+  const voc_res      = db.voc    || r('resultadoVoc') || 'Não detectado (< 0,1 ppm)';
   return xmlBase('CARACTERIZAÇÃO GEOLÓGICA',
     h1('1. INTRODUÇÃO') +
     p(`A Caracterização Geológica constitui estudo técnico obrigatório para o licenciamento ambiental de postos de combustíveis e demais empreendimentos que armazenam derivados de petróleo, elaborada em conformidade com a Resolução CONAMA nº 273/2000 e com o Termo de Referência do Instituto do Meio Ambiente e Recursos Hídricos – INEMA. O presente estudo foi elaborado pela SUAL – Soluções Ambientais Ltda para o empreendimento ${e('razaoSocial')}, localizado no município de ${e('municipio')}, Estado da Bahia, fornecendo os subsídios técnicos necessários para a avaliação da vulnerabilidade ambiental da área de influência.`, {justify:true}) +
@@ -1360,11 +1518,11 @@ function xmlGeo() {
     empty() +
 
     h1('4. CLIMA') +
-    p(`O regime climático do município de ${e('municipio')} foi analisado com base nos dados históricos do Instituto Nacional de Meteorologia – INMET e da estação meteorológica convencional mais próxima ao empreendimento. O clima é classificado segundo Köppen-Geiger como ${r('precipitacao') && parseFloat(r('precipitacao')) > 1200 ? 'Am (Tropical monsônico) ou Af (Tropical úmido)' : 'Aw (Tropical com estação seca definida)'}, característico da região.`, {justify:true}) +
+    p(`O regime climático do município de ${e('municipio')} foi analisado com base nos dados históricos do Instituto Nacional de Meteorologia – INMET e da estação meteorológica convencional mais próxima. O clima é classificado segundo Köppen-Geiger como ${clima_koppen}, com precipitação média anual de ${clima_prec} e temperatura média de ${clima_temp}.`, {justify:true}) +
     tabelaSimples([
       ['Parâmetro','Valor Registrado','Fonte / Referência'],
-      ['Precipitação média anual', r('precipitacao') || '[informar mm/ano]','INMET / Climate-Data'],
-      ['Temperatura média anual', r('tempMedia') || '[informar °C]','INMET'],
+      ['Precipitação média anual', clima_prec,'INMET / Climate-Data'],
+      ['Temperatura média anual', clima_temp,'INMET'],
       ['Temperatura máxima absoluta','> 38°C (eventos extremos)','INMET'],
       ['Evapotranspiração potencial anual','> 1.500 mm/ano (estimado)','Thornthwaite (1948)'],
       ['Balanço hídrico','Déficit hídrico no período seco','Thornthwaite & Mather (1955)'],
@@ -1375,13 +1533,12 @@ function xmlGeo() {
     empty() +
 
     h1('5. GEOLOGIA REGIONAL') +
-    p(`A geologia regional da área insere-se no contexto do Cráton do São Francisco, unidade geotectônica estável de grande extensão que abrange parte significativa do leste do Brasil. O embasamento cristalino do Cráton é constituído por rochas de alto grau metamórfico – gnaisses tonalíticos e graníticos, migmatitos, granulitos e ortognaisses – de idade Arqueana (> 2,5 Ga), formadas durante os ciclos orogênicos Jequié (3,0–2,6 Ga) e Transamazônico (2,1–1,8 Ga) (Alkmim & Martins-Neto, 2012; CPRM, 2010).`, {justify:true}) +
-    p(`Sobre o embasamento arqueano assentam coberturas sedimentares de diferentes idades e natureza. As principais unidades litoestratigráficas de relevância regional incluem: as sequências metassedimentares do Supergrupo Espinhaço (Mesoproterozoico), compostas por quartzitos, metaconglomerados e xistos; o Grupo Bambuí (Neoproterozoico), representado por calcários, dolomitos, folhelhos e ardósias; e as coberturas detrítico-lateríticas cenozoicas, de ampla distribuição no interior baiano. Na porção leste do estado, predominam os sedimentos da Bacia do Recôncavo (Jurássico-Cretáceo), com litologias areníticas e argilosas de relevância petrolífera (Silva et al., 2019).`, {justify:true}) +
+    p(`A geologia regional do município de ${e('municipio')} é caracterizada por ${geo_regional} (CPRM, 2010).`, {justify:true}) +
     p('[Inserir Figura 3 – Mapa Geológico Regional escala 1:500.000, com destaque para as unidades estratigráficas da área. Fonte: CPRM, 2010]', {center:true, cor:'718096'}) +
     empty() +
 
     h1('6. GEOLOGIA LOCAL E ESTRATIGRAFIA') +
-    p(`No contexto local do município de ${e('municipio')}, o perfil típico do regolito – material incoerente resultante da alteração in situ da rocha-mãe – apresenta a seguinte sequência estratigráfica vertical, observada em campo durante a visita técnica:`, {justify:true}) +
+    p(`No contexto local do município de ${e('municipio')}, ${geo_local}. O perfil de alteração apresenta a seguinte sequência estratigráfica, observada em campo:`, {justify:true}) +
     tabelaSimples([
       ['Horizonte','Profundidade (m)','Descrição Litológica'],
       ['Solo residual (A+B)','0,0 – 0,8 m','Argila siltosa avermelhada, raízes, matéria orgânica'],
@@ -1395,12 +1552,12 @@ function xmlGeo() {
     empty() +
 
     h1('7. GEOMORFOLOGIA') +
-    p(`A geomorfologia da área do empreendimento é caracterizada por ${r('geomorfo') || 'relevo plano a suave ondulado, com declividades inferiores a 5%, associado a superfícies de aplainamento típicas do interior da Bahia'}. Essa forma de relevo é o resultado de prolongada ação do intemperismo tropical sobre as rochas do embasamento cristalino, com rebaixamento diferencial e exportação dos produtos de alteração por processos erosivos fluviais e eólicos ao longo do Cenozoico.`, {justify:true}) +
+    p(`A geomorfologia do município de ${e('municipio')} é representada por ${geo_morfo}. Essa forma de relevo resulta de prolongada ação do intemperismo tropical com rebaixamento diferencial ao longo do Cenozoico.`, {justify:true}) +
     p(`Do ponto de vista ambiental, a topografia plana da área favorece: (i) a infiltração vertical da água pluvial, com recarga direta dos aquíferos freáticos; (ii) a baixa velocidade de escoamento superficial, reduzindo o risco de erosão e de transporte lateral de contaminantes; e (iii) a acumulação de vapores de hidrocarbonetos em subsuperfície, em razão da baixa permeabilidade do solo e da ausência de gradiente gravitacional expressivo (Domenico & Schwartz, 1990).`, {justify:true}) +
     empty() +
 
     h1('8. PEDOLOGIA') +
-    p(`A caracterização pedológica foi realizada com base no Mapa de Solos do Estado da Bahia (EMBRAPA/CPRM, escala 1:250.000), em observações diretas de campo e na análise granulométrica de amostras coletadas na área do empreendimento. O solo predominante é classificado como ${r('descSolo') || 'Latossolo Vermelho-Amarelo Distrófico (LVAd) de textura argilosa'}, de acordo com o Sistema Brasileiro de Classificação de Solos – SiBCS (EMBRAPA, 2018).`, {justify:true}) +
+    p(`A caracterização pedológica foi realizada com base no Mapa de Solos do Estado da Bahia (EMBRAPA/CPRM, escala 1:250.000) e observações diretas em campo. O solo predominante é classificado como ${ped_classe} (SiBCS – EMBRAPA, 2018). ${ped_obs}`, {justify:true}) +
     p(`Do ponto de vista ambiental, as propriedades físico-químicas do solo são determinantes para o comportamento de contaminantes em caso de vazamento. A capacidade de adsorção de hidrocarbonetos é diretamente proporcional ao teor de argila e ao teor de matéria orgânica do solo, enquanto a velocidade de migração vertical de contaminantes dissolvidos é inversamente proporcional ao teor de argila e à densidade do solo (CETESB, 2007; Fetter, 2001).`, {justify:true}) +
     p('[Inserir Figura 5 – Mapa Pedológico da área de influência com legenda de classes de solos. Fonte: EMBRAPA/CPRM]', {center:true, cor:'718096'}) +
     empty() +
@@ -1409,7 +1566,7 @@ function xmlGeo() {
     p(`O ensaio de permeabilidade do solo foi realizado in situ conforme metodologia da ABNT NBR 13.895/1997 – Construção de poços para captação de água subterrânea – Procedimento, adaptada para ensaios de rebaixamento em poços de sondagem manual executados na área do empreendimento. O coeficiente de permeabilidade hidráulica (K) foi determinado pelo método de Lefranc para a zona não saturada.`, {justify:true}) +
     tabelaSimples([
       ['Parâmetro do Ensaio','Resultado / Valor','Referência'],
-      ['Coeficiente de Permeabilidade (K)', r('permeabilidade') || '[inserir cm/s]','NBR 13.895/1997'],
+      ['Coeficiente de Permeabilidade (K)', perm_k,'NBR 13.895/1997'],
       ['Classificação quanto à permeabilidade', r('permeabilidade') ? (r('permeabilidade').includes('10⁻⁴') || r('permeabilidade').includes('1e-4') ? 'Baixa a moderada (argiloso)' : 'Variável') : '[classificar]','Freeze & Cherry (1979)'],
       ['Granulometria predominante','Argilosa a areno-argilosa','Ensaio granulométrico'],
       ['Profundidade do ensaio','0,5 – 1,5 m','Campo'],
@@ -1422,12 +1579,12 @@ function xmlGeo() {
     p(`A análise de compostos orgânicos voláteis (VOC) foi realizada com detector de fotoionização (PID – Photoionization Detector) calibrado para isobutileno (fator de correção para VOC total), modelo Rae Systems MiniRAE 3000 ou similar, com resolução de 0,1 ppm. O PID detecta compostos orgânicos com potencial de ionização inferior a 10,6 eV, abrangendo o grupo BTEX e outros hidrocarbonetos derivados de petróleo presentes em combustíveis automotivos. As leituras foram realizadas em malha regular de pontos cobrindo toda a área do empreendimento, incluindo pista de abastecimento, caixas coletoras dos tanques (TSR), bordas do lote e pontos de maior probabilidade de contaminação, conforme protocolo da CETESB (2017).`, {justify:true}) +
     tabelaSimples([
       ['Ponto de Leitura','Descrição do Ponto','Resultado VOC (ppm)','Interpretação'],
-      ['P-01','Ilha de abastecimento – bomba 1', r('resultadoVoc') || 'ND (< 0,1)','Sem detecção de vapores livres'],
-      ['P-02','Ilha de abastecimento – bomba 2', r('resultadoVoc') || 'ND (< 0,1)','Sem detecção de vapores livres'],
-      ['P-03','Caixa coletora do TAS – gasolina', r('resultadoVoc') || 'ND (< 0,1)','Sem indícios de vazamento'],
-      ['P-04','Caixa coletora do TAS – diesel', r('resultadoVoc') || 'ND (< 0,1)','Sem indícios de vazamento'],
-      ['P-05','Área periférica – montante', r('resultadoVoc') || 'ND (< 0,1)','Ausência de contaminação'],
-      ['P-06','Área periférica – jusante', r('resultadoVoc') || 'ND (< 0,1)','Ausência de contaminação'],
+      ['P-01','Ilha de abastecimento – bomba 1', voc_res,'—'],
+      ['P-02','Ilha de abastecimento – bomba 2', voc_res,'—'],
+      ['P-03','Caixa coletora do TAS – gasolina', voc_res,'Sem indícios de vazamento'],
+      ['P-04','Caixa coletora do TAS – diesel', voc_res,'Sem indícios de vazamento'],
+      ['P-05','Área periférica – montante', voc_res,'—'],
+      ['P-06','Área periférica – jusante', voc_res,'—'],
     ]) +
     (r('obsVoc') ? p(r('obsVoc'), {justify:true}) : p(`Os resultados obtidos indicam ausência de compostos orgânicos voláteis detectáveis em todos os pontos amostrados, com leituras abaixo do limite de detecção do equipamento (< 0,1 ppm para VOC total). Esses resultados são consistentes com a ausência de vazamentos ativos nos sistemas de armazenamento subterrâneo na data da visita técnica. Cabe ressaltar que a ausência de detecção pelo PID não exclui a possibilidade de contaminação residual em solos mais profundos ou em zona saturada, para cuja confirmação é necessária a realização de análises laboratoriais específicas de solo e água subterrânea, conforme exigência das condicionantes da Licença de Operação.`, {justify:true})) +
     p('[Inserir Figura 7 – Croqui com os pontos de leitura VOC e respectivos resultados (em ppm)]', {center:true, cor:'718096'}) +
