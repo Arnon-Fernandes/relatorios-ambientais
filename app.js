@@ -505,8 +505,9 @@ function p(txt, opts = {}) {
   const sz = opts.size || '24';
   const b = opts.bold ? '<w:b/>' : '';
   const cor = opts.cor ? `<w:color w:val="${opts.cor}"/>` : '';
-  const sp = opts.space ? `<w:spacing w:before="${opts.space}" w:after="0"/>` : '<w:spacing w:before="60" w:after="60"/>';
-  return `<w:p><w:pPr>${jc}${sp}</w:pPr><w:r><w:rPr>${b}<w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/>${cor}</w:rPr><w:t xml:space="preserve">${esc(txt)}</w:t></w:r></w:p>`;
+  const sp = opts.space ? `<w:spacing w:before="${opts.space}" w:after="0" w:line="360" w:lineRule="auto"/>` : '<w:spacing w:before="60" w:after="60" w:line="360" w:lineRule="auto"/>';
+  const ind = opts.justify ? '<w:ind w:firstLine="709"/>' : '';
+  return `<w:p><w:pPr>${jc}${sp}${ind}</w:pPr><w:r><w:rPr>${b}<w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/>${cor}</w:rPr><w:t xml:space="preserve">${esc(txt)}</w:t></w:r></w:p>`;
 }
 function h1(txt) {
   return `<w:p><w:pPr><w:spacing w:before="240" w:after="120"/></w:pPr>
@@ -597,8 +598,9 @@ function xmlBase(titulo, bodyExtra) {
   ${bodyExtra}
   ${rodape()}
   <w:sectPr>
+    <w:headerReference w:type="default" r:id="rId2" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
     <w:pgSz w:w="11906" w:h="16838"/>
-    <w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1701"/>
+    <w:pgMar w:top="1701" w:right="1134" w:bottom="1134" w:left="1701"/>
   </w:sectPr>
 </w:body>
 </w:document>`;
@@ -980,8 +982,9 @@ function xmlFoto() {
 <w:body>
   ${paginas}
   <w:sectPr>
+    <w:headerReference w:type="default" r:id="rId2" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
     <w:pgSz w:w="11906" w:h="16838"/>
-    <w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1701"/>
+    <w:pgMar w:top="1701" w:right="1134" w:bottom="1134" w:left="1701"/>
   </w:sectPr>
 </w:body>
 </w:document>`;
@@ -998,6 +1001,7 @@ function criarDocx(documentXml) {
   <Default Extension="xml" ContentType="application/xml"/>
   <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
   <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
+  <Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/>
 </Types>`,
     '_rels/.rels': `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
@@ -1006,11 +1010,27 @@ function criarDocx(documentXml) {
     'word/_rels/document.xml.rels': `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" Target="header1.xml"/>
 </Relationships>`,
     'word/document.xml': documentXml,
     'word/styles.xml': estilos(),
+    'word/header1.xml': cabecalhoPagina(),
   };
   return zipFiles(files);
+}
+
+function cabecalhoPagina() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:hdr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr><w:jc w:val="right"/></w:pPr>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> PAGE </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>1</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:hdr>`;
 }
 
 function estilos() {
@@ -1147,6 +1167,47 @@ function carregarLocal() {
       estado.dados = salvo.dados || {};
     }
   } catch(e) {}
+}
+
+// ============================================================
+// BUSCA POR CNPJ
+// ============================================================
+async function buscarCnpj() {
+  const cnpj = (document.getElementById('cnpj').value || '').replace(/\D/g, '');
+  const msg = document.getElementById('cnpjMsg');
+  const btn = document.getElementById('btnCnpj');
+  if (cnpj.length !== 14) {
+    msg.textContent = 'Digite o CNPJ completo (14 dígitos) antes de buscar.';
+    msg.style.color = 'var(--vermelho)';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = '⏳ Buscando…';
+  msg.textContent = '';
+  try {
+    const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
+    if (!res.ok) throw new Error('CNPJ não encontrado');
+    const dados = await res.json();
+    const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+    set('razaoSocial', dados.razao_social);
+    set('nomeFantasia', dados.nome_fantasia || dados.razao_social);
+    const end = [dados.logradouro, dados.numero, dados.complemento, dados.bairro].filter(Boolean).join(', ');
+    set('endereco', end);
+    set('municipio', dados.municipio);
+    set('uf', dados.uf);
+    set('cep', (dados.cep || '').replace(/(\d{5})(\d{3})/, '$1-$2'));
+    set('telefone', dados.ddd_telefone_1 ? `(${dados.ddd_telefone_1.slice(0,2)}) ${dados.ddd_telefone_1.slice(2)}` : '');
+    coletarEmpresa();
+    salvarLocal();
+    msg.textContent = '✅ Dados preenchidos automaticamente!';
+    msg.style.color = 'var(--verde)';
+  } catch(err) {
+    msg.textContent = '❌ ' + (err.message || 'Erro ao buscar CNPJ');
+    msg.style.color = 'var(--vermelho)';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔍 Buscar';
+  }
 }
 
 // ============================================================

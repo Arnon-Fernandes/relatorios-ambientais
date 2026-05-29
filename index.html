@@ -153,10 +153,15 @@
     <div class="section-title">Identificação</div>
     <div class="field"><label>Razão Social *</label><input id="razaoSocial" placeholder="Ex: AUTO POSTO EXEMPLO LTDA" oninput="salvarAuto()"></div>
     <div class="field"><label>Nome Fantasia</label><input id="nomeFantasia" placeholder="Ex: POSTO EXEMPLO" oninput="salvarAuto()"></div>
-    <div class="row">
-      <div class="field"><label>CNPJ *</label><input id="cnpj" placeholder="00.000.000/0000-00" oninput="salvarAuto()"></div>
-      <div class="field"><label>Inscrição Estadual</label><input id="inscricaoEstadual" placeholder="Opcional" oninput="salvarAuto()"></div>
+    <div class="field">
+      <label>CNPJ *</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="cnpj" placeholder="00.000.000/0000-00" oninput="salvarAuto()" style="flex:1">
+        <button class="btn btn-outline btn-sm" onclick="buscarCnpj()" type="button" id="btnCnpj">🔍 Buscar</button>
+      </div>
+      <p class="hint" id="cnpjMsg"></p>
     </div>
+    <div class="field"><label>Inscrição Estadual</label><input id="inscricaoEstadual" placeholder="Opcional" oninput="salvarAuto()"></div>
     <div class="row">
       <div class="field"><label>Registro ANP</label><input id="registroAnp" placeholder="Nº ANP" oninput="salvarAuto()"></div>
       <div class="field"><label>Bandeira</label><input id="bandeira" placeholder="Ex: IPIRANGA" oninput="salvarAuto()"></div>
