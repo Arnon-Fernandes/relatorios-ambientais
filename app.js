@@ -552,16 +552,17 @@ function p(txt, opts = {}) {
   return `<w:p><w:pPr>${jc}${sp}${ind}</w:pPr><w:r><w:rPr>${b}<w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/>${cor}</w:rPr><w:t xml:space="preserve">${esc(txt)}</w:t></w:r></w:p>`;
 }
 function h1(txt) {
-  return `<w:p><w:pPr><w:spacing w:before="280" w:after="140" w:line="240" w:lineRule="auto"/></w:pPr>
-  <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria" w:cs="Cambria"/><w:b/><w:sz w:val="28"/><w:szCs w:val="28"/><w:color w:val="1F497D"/></w:rPr><w:t>${esc(txt)}</w:t></w:r></w:p>`;
+  // Arial, preto, negrito, com estilo Heading1 para sumário automático
+  return `<w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
+  <w:r><w:t>${esc(txt)}</w:t></w:r></w:p>`;
 }
 function h2(txt) {
-  return `<w:p><w:pPr><w:spacing w:before="200" w:after="100" w:line="240" w:lineRule="auto"/></w:pPr>
-  <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria" w:cs="Cambria"/><w:b/><w:sz w:val="24"/><w:szCs w:val="24"/><w:color w:val="4F81BD"/></w:rPr><w:t>${esc(txt)}</w:t></w:r></w:p>`;
+  return `<w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr>
+  <w:r><w:t>${esc(txt)}</w:t></w:r></w:p>`;
 }
 function h3(txt) {
-  return `<w:p><w:pPr><w:spacing w:before="160" w:after="80" w:line="240" w:lineRule="auto"/></w:pPr>
-  <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria" w:cs="Cambria"/><w:b/><w:i/><w:sz w:val="24"/><w:szCs w:val="24"/><w:color w:val="1F497D"/></w:rPr><w:t>${esc(txt)}</w:t></w:r></w:p>`;
+  return `<w:p><w:pPr><w:pStyle w:val="Heading3"/></w:pPr>
+  <w:r><w:t>${esc(txt)}</w:t></w:r></w:p>`;
 }
 function pb() { return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>'; }
 function empty() { return '<w:p><w:pPr><w:spacing w:before="120" w:after="120"/></w:pPr></w:p>'; }
@@ -602,43 +603,91 @@ function tabelaSimples(linhas) {
 function rodape() {
   return `
     ${empty()}
-    ${p('Salvador, ' + (e('mesAno') || new Date().getFullYear().toString()), {center:true})}
-    ${empty()}
-    ${p('_'.repeat(50), {center:true})}
-    ${p(e('tecNome') || 'ARNON DE OLIVEIRA FERNANDES', {bold:true, center:true})}
-    ${p('Técnico em Geologia – RNP: ' + (e('tecRnp') || '05292828521'), {center:true})}
-    ${p('SUAL – Soluções Ambientais Ltda', {center:true, cor:'1F497D'})}
+    ${pc('Salvador, ' + (e('mesAno') || new Date().getFullYear().toString()), '22', false, '120', '240')}
+    ${pc('_'.repeat(50), '22', false, '0', '0')}
+    ${pc(e('tecNome') || 'ARNON DE OLIVEIRA FERNANDES', '22', true, '0', '40')}
+    ${pc('Técnico em Geologia – RNP: ' + (e('tecRnp') || '05292828521'), '22', false, '0', '40')}
+    ${pc('SUAL – Soluções Ambientais Ltda', '22', false, '0', '120')}
   `;
 }
 
+// Helper: parágrafo centralizado simples (para capa/folha de rosto) — fonte Arial, preta
+function pc(txt, sz = '24', bold = false, spBefore = '120', spAfter = '80') {
+  const b = bold ? '<w:b/>' : '';
+  return `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="${spBefore}" w:after="${spAfter}" w:line="240" w:lineRule="auto"/></w:pPr>
+    <w:r><w:rPr>${b}<w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/><w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/><w:color w:val="000000"/></w:rPr>
+    <w:t xml:space="preserve">${esc(txt)}</w:t></w:r></w:p>`;
+}
+function linhaHoriz(cor = '000000', sz = '6') {
+  return `<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="${sz}" w:space="1" w:color="${cor}"/></w:pBdr><w:spacing w:before="80" w:after="80"/></w:pPr></w:p>`;
+}
+
 function cabecalhoDoc(titulo, subtitulo = '') {
-  // Capa no padrão SUAL: logo (se houver), linha azul, título, cliente, local/data
-  const linhaAzul = `<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="12" w:space="1" w:color="1F497D"/></w:pBdr><w:spacing w:before="0" w:after="80"/></w:pPr></w:p>`;
-  const linhaFina = `<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="4" w:space="1" w:color="4BACC6"/></w:pBdr><w:spacing w:before="80" w:after="80"/></w:pPr></w:p>`;
+  // CAPA: logo SUAL via header, título e dados do cliente em preto bem distribuídos
   return `
     ${logoDocXml()}
-    ${linhaAzul}
-    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="480" w:after="120" w:line="240" w:lineRule="auto"/></w:pPr>
-      <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:sz w:val="40"/><w:szCs w:val="40"/><w:color w:val="1F497D"/></w:rPr>
-        <w:t>${esc(titulo)}</w:t></w:r></w:p>
-    ${subtitulo ? `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="240"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:sz w:val="26"/><w:color w:val="4F81BD"/></w:rPr><w:t>${esc(subtitulo)}</w:t></w:r></w:p>` : ''}
-    ${linhaFina}
-    ${empty()}
-    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="360" w:after="80" w:line="240" w:lineRule="auto"/></w:pPr>
-      <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:sz w:val="30"/><w:szCs w:val="30"/><w:color w:val="1F497D"/></w:rPr>
-        <w:t>${esc((e('razaoSocial') || '').toUpperCase())}</w:t></w:r></w:p>
-    ${e('nomeFantasia') ? `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="24"/><w:color w:val="4F81BD"/></w:rPr><w:t>${esc(e('nomeFantasia'))}</w:t></w:r></w:p>` : ''}
-    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="60"/></w:pPr>
-      <w:r><w:rPr><w:sz w:val="22"/><w:color w:val="718096"/></w:rPr><w:t>CNPJ: ${esc(e('cnpj'))}</w:t></w:r></w:p>
-    ${e('numRelatorio') ? `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="22"/><w:color w:val="718096"/></w:rPr><w:t>Relatório Nº ${esc(e('numRelatorio'))}</w:t></w:r></w:p>` : ''}
-    ${e('numProcesso') ? `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="22"/><w:color w:val="718096"/></w:rPr><w:t>Processo INEMA: ${esc(e('numProcesso'))}</w:t></w:r></w:p>` : ''}
-    ${linhaFina}
-    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="240" w:after="80"/></w:pPr>
-      <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:sz w:val="24"/><w:color w:val="1F497D"/></w:rPr>
-        <w:t>${esc(e('municipio') + (e('uf') ? ' – ' + e('uf') : ''))}</w:t></w:r></w:p>
-    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="480"/></w:pPr>
-      <w:r><w:rPr><w:sz w:val="24"/><w:color w:val="1F497D"/></w:rPr>
-        <w:t>${esc(e('mesAno') || new Date().getFullYear().toString())}</w:t></w:r></w:p>
+    ${linhaHoriz('000000','8')}
+    ${pc(titulo, '36', true, '600', '120')}
+    ${subtitulo ? pc(subtitulo, '26', true, '0', '200') : ''}
+    ${linhaHoriz('000000','8')}
+    ${pc('', '24', false, '480', '0')}
+    ${pc((e('razaoSocial') || '').toUpperCase(), '28', true, '0', '80')}
+    ${e('nomeFantasia') ? pc(e('nomeFantasia'), '24', false, '0', '60') : ''}
+    ${pc('CNPJ: ' + esc(e('cnpj')), '22', false, '60', '60')}
+    ${e('endereco') ? pc(e('endereco'), '22', false, '0', '40') : ''}
+    ${pc(e('municipio') + (e('uf') ? ' – ' + e('uf') : ''), '22', false, '0', '40')}
+    ${e('portaria') ? pc('Licença de Operação Nº ' + esc(e('portaria')), '22', false, '60', '40') : ''}
+    ${e('numProcesso') ? pc('Processo INEMA: ' + esc(e('numProcesso')), '22', false, '0', '40') : ''}
+    ${e('numRelatorio') ? pc('Relatório Nº ' + esc(e('numRelatorio')), '22', false, '0', '40') : ''}
+    ${linhaHoriz('000000','4')}
+    ${pc(e('municipio') + (e('uf') ? ' – ' + e('uf') : ''), '24', true, '360', '80')}
+    ${pc(e('mesAno') || new Date().getFullYear().toString(), '24', false, '0', '480')}
+  `;
+}
+
+function folhaDeRosto(titulo) {
+  // FOLHA DE ROSTO — ABNT NBR 10719
+  const nota = `Relatório técnico elaborado para fins de licenciamento ambiental junto ao Instituto do Meio Ambiente e Recursos Hídricos – INEMA, Estado da Bahia, conforme Resolução CONAMA nº 273/2000 e Resolução CEPRAM nº 4.578/2017.`;
+  return `
+    ${logoDocXml()}
+    ${linhaHoriz('000000','8')}
+    ${pc('SUAL – SOLUÇÕES AMBIENTAIS LTDA', '26', true, '360', '120')}
+    ${pc('CNPJ: 17.XXX.XXX/0001-XX', '20', false, '0', '480')}
+    ${linhaHoriz('000000','4')}
+    ${pc(titulo, '32', true, '600', '120')}
+    ${linhaHoriz('000000','4')}
+    ${pc('', '24', false, '360', '0')}
+    <w:p>
+      <w:pPr><w:ind w:left="4320"/><w:spacing w:before="0" w:after="80" w:line="276" w:lineRule="auto"/></w:pPr>
+      <w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:sz w:val="20"/><w:color w:val="000000"/></w:rPr>
+        <w:t xml:space="preserve">${esc(nota)}</w:t></w:r>
+    </w:p>
+    ${pc('', '24', false, '480', '0')}
+    ${pc(e('tecNome') || 'ARNON DE OLIVEIRA FERNANDES', '22', true, '0', '40')}
+    ${pc('Técnico em Geologia – RNP: ' + (e('tecRnp') || '05292828521'), '22', false, '0', '480')}
+    ${linhaHoriz('000000','4')}
+    ${pc(e('municipio') + (e('uf') ? ' – ' + e('uf') : ''), '22', true, '240', '80')}
+    ${pc(e('mesAno') || new Date().getFullYear().toString(), '22', false, '0', '480')}
+  `;
+}
+
+function indicePagina() {
+  // SUMÁRIO — campo TOC do Word (atualizado automaticamente com Ctrl+A → F9)
+  return `
+    ${pc('SUMÁRIO', '28', true, '360', '240')}
+    ${linhaHoriz('000000','4')}
+    <w:p><w:pPr><w:spacing w:before="120" w:after="60"/></w:pPr>
+      <w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:sz w:val="20"/><w:color w:val="555555"/><w:i/></w:rPr>
+        <w:t>[ Para atualizar o sumário: selecione tudo (Ctrl+A) e pressione F9 ]</w:t></w:r>
+    </w:p>
+    <w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr>
+      <w:r><w:fldChar w:fldCharType="begin" w:dirty="true"/></w:r>
+      <w:r><w:instrText xml:space="preserve"> TOC \\o "1-2" \\h \\z \\u </w:instrText></w:r>
+      <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+      <w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:sz w:val="24"/><w:color w:val="000000"/></w:rPr>
+        <w:t>Gerando sumário…</w:t></w:r>
+      <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    </w:p>
   `;
 }
 
@@ -667,6 +716,10 @@ function xmlBase(titulo, bodyExtra) {
   xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
 <w:body>
   ${cabecalhoDoc(titulo)}
+  ${pb()}
+  ${folhaDeRosto(titulo)}
+  ${pb()}
+  ${indicePagina()}
   ${pb()}
   ${h1('DADOS DO EMPREENDIMENTO')}
   ${dadosEmpresaTabela()}
@@ -1620,14 +1673,86 @@ function estilos() {
 <w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
   <w:docDefaults>
     <w:rPrDefault><w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>
+      <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>
       <w:sz w:val="24"/><w:szCs w:val="24"/>
+      <w:color w:val="000000"/>
       <w:lang w:val="pt-BR"/>
     </w:rPr></w:rPrDefault>
     <w:pPrDefault><w:pPr>
       <w:spacing w:after="120" w:line="360" w:lineRule="auto"/>
     </w:pPr></w:pPrDefault>
   </w:docDefaults>
+
+  <w:style w:type="paragraph" w:default="1" w:styleId="Normal">
+    <w:name w:val="Normal"/>
+    <w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/><w:color w:val="000000"/></w:rPr>
+  </w:style>
+
+  <w:style w:type="paragraph" w:styleId="Heading1">
+    <w:name w:val="Heading 1"/>
+    <w:basedOn w:val="Normal"/>
+    <w:next w:val="Normal"/>
+    <w:pPr>
+      <w:outlineLvl w:val="0"/>
+      <w:spacing w:before="280" w:after="140" w:line="240" w:lineRule="auto"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>
+      <w:b/><w:sz w:val="28"/><w:szCs w:val="28"/>
+      <w:color w:val="000000"/>
+    </w:rPr>
+  </w:style>
+
+  <w:style w:type="paragraph" w:styleId="Heading2">
+    <w:name w:val="Heading 2"/>
+    <w:basedOn w:val="Normal"/>
+    <w:next w:val="Normal"/>
+    <w:pPr>
+      <w:outlineLvl w:val="1"/>
+      <w:spacing w:before="200" w:after="100" w:line="240" w:lineRule="auto"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>
+      <w:b/><w:sz w:val="24"/><w:szCs w:val="24"/>
+      <w:color w:val="000000"/>
+    </w:rPr>
+  </w:style>
+
+  <w:style w:type="paragraph" w:styleId="Heading3">
+    <w:name w:val="Heading 3"/>
+    <w:basedOn w:val="Normal"/>
+    <w:next w:val="Normal"/>
+    <w:pPr>
+      <w:outlineLvl w:val="2"/>
+      <w:spacing w:before="160" w:after="80" w:line="240" w:lineRule="auto"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>
+      <w:b/><w:i/><w:sz w:val="24"/><w:szCs w:val="24"/>
+      <w:color w:val="000000"/>
+    </w:rPr>
+  </w:style>
+
+  <w:style w:type="paragraph" w:styleId="TOC1">
+    <w:name w:val="toc 1"/>
+    <w:basedOn w:val="Normal"/>
+    <w:pPr>
+      <w:spacing w:before="60" w:after="60" w:line="276" w:lineRule="auto"/>
+      <w:tabs><w:tab w:val="right" w:leader="dot" w:pos="9071"/></w:tabs>
+    </w:pPr>
+    <w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:sz w:val="24"/><w:color w:val="000000"/></w:rPr>
+  </w:style>
+
+  <w:style w:type="paragraph" w:styleId="TOC2">
+    <w:name w:val="toc 2"/>
+    <w:basedOn w:val="Normal"/>
+    <w:pPr>
+      <w:ind w:left="480"/>
+      <w:spacing w:before="40" w:after="40" w:line="276" w:lineRule="auto"/>
+      <w:tabs><w:tab w:val="right" w:leader="dot" w:pos="9071"/></w:tabs>
+    </w:pPr>
+    <w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:sz w:val="22"/><w:color w:val="000000"/></w:rPr>
+  </w:style>
 </w:styles>`;
 }
 
