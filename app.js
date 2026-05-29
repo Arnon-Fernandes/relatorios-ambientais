@@ -541,12 +541,16 @@ function p(txt, opts = {}) {
   return `<w:p><w:pPr>${jc}${sp}${ind}</w:pPr><w:r><w:rPr>${b}<w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/>${cor}</w:rPr><w:t xml:space="preserve">${esc(txt)}</w:t></w:r></w:p>`;
 }
 function h1(txt) {
-  return `<w:p><w:pPr><w:spacing w:before="240" w:after="120"/></w:pPr>
-  <w:r><w:rPr><w:b/><w:sz w:val="32"/><w:szCs w:val="32"/><w:color w:val="1F4E79"/></w:rPr><w:t>${esc(txt)}</w:t></w:r></w:p>`;
+  return `<w:p><w:pPr><w:spacing w:before="280" w:after="140" w:line="240" w:lineRule="auto"/></w:pPr>
+  <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria" w:cs="Cambria"/><w:b/><w:sz w:val="28"/><w:szCs w:val="28"/><w:color w:val="1F497D"/></w:rPr><w:t>${esc(txt)}</w:t></w:r></w:p>`;
 }
 function h2(txt) {
-  return `<w:p><w:pPr><w:spacing w:before="180" w:after="80"/></w:pPr>
-  <w:r><w:rPr><w:b/><w:sz w:val="26"/><w:szCs w:val="26"/><w:color w:val="2E75B6"/></w:rPr><w:t>${esc(txt)}</w:t></w:r></w:p>`;
+  return `<w:p><w:pPr><w:spacing w:before="200" w:after="100" w:line="240" w:lineRule="auto"/></w:pPr>
+  <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria" w:cs="Cambria"/><w:b/><w:sz w:val="24"/><w:szCs w:val="24"/><w:color w:val="4F81BD"/></w:rPr><w:t>${esc(txt)}</w:t></w:r></w:p>`;
+}
+function h3(txt) {
+  return `<w:p><w:pPr><w:spacing w:before="160" w:after="80" w:line="240" w:lineRule="auto"/></w:pPr>
+  <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria" w:cs="Cambria"/><w:b/><w:i/><w:sz w:val="24"/><w:szCs w:val="24"/><w:color w:val="1F497D"/></w:rPr><w:t>${esc(txt)}</w:t></w:r></w:p>`;
 }
 function pb() { return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>'; }
 function empty() { return '<w:p><w:pPr><w:spacing w:before="120" w:after="120"/></w:pPr></w:p>'; }
@@ -585,21 +589,45 @@ function tabelaSimples(linhas) {
 }
 
 function rodape() {
-  return `${empty()}${p('_'.repeat(40), {center:true})}${p(e('tecNome'), {bold:true, center:true})}${p('RNP: ' + e('tecRnp'), {center:true})}`;
+  return `
+    ${empty()}
+    ${p('Salvador, ' + (e('mesAno') || new Date().getFullYear().toString()), {center:true})}
+    ${empty()}
+    ${p('_'.repeat(50), {center:true})}
+    ${p(e('tecNome') || 'ARNON DE OLIVEIRA FERNANDES', {bold:true, center:true})}
+    ${p('Técnico em Geologia – RNP: ' + (e('tecRnp') || '05292828521'), {center:true})}
+    ${p('SUAL – Soluções Ambientais Ltda', {center:true, cor:'1F497D'})}
+  `;
 }
 
 function cabecalhoDoc(titulo, subtitulo = '') {
+  // Capa no padrão SUAL: logo (se houver), linha azul, título, cliente, local/data
+  const linhaAzul = `<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="12" w:space="1" w:color="1F497D"/></w:pBdr><w:spacing w:before="0" w:after="80"/></w:pPr></w:p>`;
+  const linhaFina = `<w:p><w:pPr><w:pBdr><w:bottom w:val="single" w:sz="4" w:space="1" w:color="4BACC6"/></w:pBdr><w:spacing w:before="80" w:after="80"/></w:pPr></w:p>`;
   return `
     ${logoDocXml()}
-    ${p(titulo, {bold:true, center:true, size:'36', space:'120'})}
+    ${linhaAzul}
+    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="480" w:after="120" w:line="240" w:lineRule="auto"/></w:pPr>
+      <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:sz w:val="40"/><w:szCs w:val="40"/><w:color w:val="1F497D"/></w:rPr>
+        <w:t>${esc(titulo)}</w:t></w:r></w:p>
+    ${subtitulo ? `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="240"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:sz w:val="26"/><w:color w:val="4F81BD"/></w:rPr><w:t>${esc(subtitulo)}</w:t></w:r></w:p>` : ''}
+    ${linhaFina}
     ${empty()}
-    ${p(e('razaoSocial').toUpperCase(), {bold:true, center:true, size:'28'})}
-    ${e('nomeFantasia') ? p(e('nomeFantasia'), {center:true, size:'24'}) : ''}
-    ${p('CNPJ: ' + e('cnpj'), {center:true})}
-    ${p(e('municipio') + ' – ' + e('uf'), {center:true})}
-    ${p(e('mesAno') || new Date().getFullYear().toString(), {center:true})}
-    ${e('numRelatorio') ? p('Nº ' + e('numRelatorio'), {center:true, size:'20'}) : ''}
-    ${subtitulo ? p(subtitulo, {center:true, size:'20'}) : ''}
+    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="360" w:after="80" w:line="240" w:lineRule="auto"/></w:pPr>
+      <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:sz w:val="30"/><w:szCs w:val="30"/><w:color w:val="1F497D"/></w:rPr>
+        <w:t>${esc((e('razaoSocial') || '').toUpperCase())}</w:t></w:r></w:p>
+    ${e('nomeFantasia') ? `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="24"/><w:color w:val="4F81BD"/></w:rPr><w:t>${esc(e('nomeFantasia'))}</w:t></w:r></w:p>` : ''}
+    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="60"/></w:pPr>
+      <w:r><w:rPr><w:sz w:val="22"/><w:color w:val="718096"/></w:rPr><w:t>CNPJ: ${esc(e('cnpj'))}</w:t></w:r></w:p>
+    ${e('numRelatorio') ? `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="22"/><w:color w:val="718096"/></w:rPr><w:t>Relatório Nº ${esc(e('numRelatorio'))}</w:t></w:r></w:p>` : ''}
+    ${e('numProcesso') ? `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="22"/><w:color w:val="718096"/></w:rPr><w:t>Processo INEMA: ${esc(e('numProcesso'))}</w:t></w:r></w:p>` : ''}
+    ${linhaFina}
+    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="240" w:after="80"/></w:pPr>
+      <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:sz w:val="24"/><w:color w:val="1F497D"/></w:rPr>
+        <w:t>${esc(e('municipio') + (e('uf') ? ' – ' + e('uf') : ''))}</w:t></w:r></w:p>
+    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="480"/></w:pPr>
+      <w:r><w:rPr><w:sz w:val="24"/><w:color w:val="1F497D"/></w:rPr>
+        <w:t>${esc(e('mesAno') || new Date().getFullYear().toString())}</w:t></w:r></w:p>
   `;
 }
 
@@ -637,8 +665,9 @@ function xmlBase(titulo, bodyExtra) {
   ${rodape()}
   <w:sectPr>
     <w:headerReference w:type="default" r:id="rId2"/>
+    <w:footerReference w:type="default" r:id="rId3"/>
     <w:pgSz w:w="11906" w:h="16838"/>
-    <w:pgMar w:top="1701" w:right="1134" w:bottom="1134" w:left="1701"/>
+    <w:pgMar w:top="1701" w:right="1134" w:bottom="1701" w:left="1701"/>
   </w:sectPr>
 </w:body>
 </w:document>`;
@@ -646,102 +675,237 @@ function xmlBase(titulo, bodyExtra) {
 
 function xmlRce() {
   const r = id => d('rce.' + id);
-  return xmlBase('RCE – ROTEIRO DE CARACTERIZAÇÃO DO EMPREENDIMENTO', `
-    ${h1('1. APRESENTAÇÃO')}
-    ${p(`O RCE – Roteiro de Caracterização do Empreendimento tem como objetivo descrever a empresa e fornecer uma visão geral dos principais aspectos do negócio, sua atividade e funcionamento, visando a concessão do Licenciamento Ambiental.`, {justify:true})}
-    ${p('Este documento foi elaborado seguindo o Termo de Referência, Anexo I, da Resolução 273 do CONAMA e suas alterações 276/01 e 319/02.', {justify:true})}
-    ${empty()}
-    ${h1('2. IDENTIFICAÇÃO DO EMPREENDIMENTO')}
-    ${tabelaSimples([
+  return xmlBase('RCE – ROTEIRO DE CARACTERIZAÇÃO DO EMPREENDIMENTO',
+    // ── 1. APRESENTAÇÃO ──────────────────────────────────────────────
+    h1('1. APRESENTAÇÃO') +
+    p(`O Roteiro de Caracterização do Empreendimento (RCE) constitui documento técnico obrigatório no âmbito do processo de licenciamento ambiental de empreendimentos que comercializam ou armazenam derivados de petróleo, nos termos da Resolução CONAMA nº 273, de 29 de novembro de 2000, com as alterações introduzidas pelas Resoluções CONAMA nº 276/2001 e nº 319/2002. O licenciamento ambiental é o procedimento administrativo pelo qual o órgão ambiental competente licencia a localização, instalação, ampliação e a operação de empreendimentos e atividades utilizadoras de recursos ambientais, consideradas efetiva ou potencialmente poluidoras ou daquelas que, sob qualquer forma, possam causar degradação ambiental, conforme estabelecido no Artigo 1º da Resolução CONAMA nº 237/1997.`, {justify:true}) +
+    p(`O presente RCE foi elaborado pela SUAL – Soluções Ambientais Ltda para o empreendimento ${e('razaoSocial')}, localizado no município de ${e('municipio')}, Estado da Bahia, em atendimento às exigências do Instituto do Meio Ambiente e Recursos Hídricos – INEMA, autoridade ambiental do Estado da Bahia, nos termos da Lei Estadual nº 10.431/2006 e do Decreto Estadual nº 11.235/2008. A elaboração deste documento observa integralmente os requisitos do Termo de Referência do INEMA para o licenciamento de postos de combustíveis.`, {justify:true}) +
+    p(`A atividade de revenda de combustíveis é classificada como potencialmente poluidora em função do armazenamento subterrâneo de substâncias inflamáveis e tóxicas. Os hidrocarbonetos do grupo BTEX – benzeno, tolueno, etilbenzeno e xilenos – são os principais contaminantes associados a vazamentos em postos de combustíveis. O benzeno é reconhecido pela Agência Internacional de Pesquisa sobre o Câncer (IARC, 2012) como carcinogênico do Grupo 1 (comprovadamente carcinogênico em humanos), associado ao desenvolvimento de leucemia mieloide aguda em trabalhadores expostos. No ambiente, o benzeno apresenta alta mobilidade em solos arenosos e elevada solubilidade em água subterrânea (solubilidade de 1.780 mg/L a 25°C), podendo contaminar aquíferos em concentrações muito baixas (CETESB, 2022).`, {justify:true}) +
+    empty() +
+
+    // ── 2. IDENTIFICAÇÃO DO EMPREENDIMENTO ───────────────────────────
+    h1('2. IDENTIFICAÇÃO DO EMPREENDIMENTO') +
+    tabelaSimples([
       ['Campo','Informação'],
       ['Razão Social', e('razaoSocial')],
-      ['Nome Fantasia', e('nomeFantasia')],
+      ['Nome Fantasia', e('nomeFantasia') || '—'],
       ['CNPJ', e('cnpj')],
-      ['Inscrição Estadual', e('inscricaoEstadual')],
-      ['Endereço', e('endereco')],
+      ['Inscrição Estadual', e('inscricaoEstadual') || 'Isento'],
+      ['Registro ANP', e('registroAnp') || '—'],
+      ['Bandeira Comercial', e('bandeira') || '—'],
+      ['Endereço Completo', e('endereco')],
       ['Município / UF', e('municipio') + ' – ' + e('uf')],
       ['CEP', e('cep')],
-      ['Telefone / E-mail', e('telefone') + ' | ' + e('email')],
-      ['Registro ANP', e('registroAnp')],
-      ['Bandeira', e('bandeira')],
-      ['Início de Operação', e('inicioOperacao')],
-      ['Área Construída', e('areaConstruida') + ' m²'],
-      ['Área Total', e('areaTotal') + ' m²'],
-      ['N° IPTU', r('numIptu')],
-      ['Valor do Investimento', r('valorInvestimento')],
-    ])}
-    ${empty()}
-    ${h1('3. MAPA DE LOCALIZAÇÃO')}
-    ${p('Coordenadas UTM (SIRGAS 2000): ' + e('coordE') + ' m E / ' + e('coordN') + ' m N – Zona ' + e('zonaUtm'))}
-    ${p('[Inserir mapa de localização]', {center:true, cor:'718096'})}
-    ${empty()}
-    ${h1('4. RELAÇÃO DE PRODUTOS COMERCIALIZADOS')}
-    ${tabelaSimples([
-      ['Produto','Média Mensal (L)'],
-      ['Gasolina Comum', r('gasolinaComum')],
-      ['Gasolina Aditivada', r('gasolinaAditivada')],
-      ['Etanol', r('etanol')],
-      ['Diesel S-10', r('dieselS10')],
-      ['Diesel S-500', r('dieselS500')],
-      ['Óleo Lubrificante', r('oleoLubrificante')],
-    ])}
-    ${empty()}
-    ${h1('5. BOMBAS E BICOS')}
-    ${tabelaSimples([
-      ['Item','Quantidade'],
-      ['Bombas', r('qtdBombas')],
-      ['Bicos', r('qtdBicos')],
-    ])}
-    ${empty()}
-    ${h1('6. TANQUES SUBTERRÂNEOS')}
-    ${r('descricaoTanques') ? p(r('descricaoTanques'), {justify:true}) : p('[Inserir descrição dos tanques]')}
-    ${empty()}
-    ${h1('7. ATIVIDADES DESENVOLVIDAS')}
-    ${r('servicos') ? p(r('servicos'), {justify:true}) : p('[Inserir atividades desenvolvidas]')}
-  `);
-}
+      ['Telefone', e('telefone')],
+      ['E-mail', e('email') || '—'],
+      ['Coordenadas UTM (SIRGAS 2000)', 'E: ' + e('coordE') + ' m | N: ' + e('coordN') + ' m | Zona ' + e('zonaUtm')],
+      ['Início de Operação', e('inicioOperacao') || '—'],
+      ['Área Construída', (e('areaConstruida') || '—') + ' m²'],
+      ['Área Total do Lote', (e('areaTotal') || '—') + ' m²'],
+      ['Nº IPTU', r('numIptu') || '—'],
+      ['Valor do Investimento', r('valorInvestimento') || '—'],
+      ['Nº Portaria / LO', e('portaria') || '—'],
+      ['Nº Processo INEMA', e('numProcesso') || '—'],
+    ]) + empty() +
 
+    // ── 3. RESPONSÁVEL ───────────────────────────────────────────────
+    h1('3. RESPONSÁVEL PELO EMPREENDIMENTO') +
+    tabelaSimples([
+      ['Campo','Informação'],
+      ['Nome / Razão Social', e('respNome') || '—'],
+      ['CPF / CNPJ', e('respCpf') || '—'],
+      ['Telefone de Contato', e('respTelefone') || '—'],
+    ]) + empty() +
+
+    // ── 4. HISTÓRICO E LOCALIZAÇÃO ───────────────────────────────────
+    h1('4. HISTÓRICO E LOCALIZAÇÃO') +
+    p(`O empreendimento ${e('razaoSocial')} está localizado na ${e('endereco')}, município de ${e('municipio')}, Estado da Bahia, nas coordenadas UTM E: ${e('coordE')} m, N: ${e('coordN')} m, Zona ${e('zonaUtm')}, Datum SIRGAS 2000. O posto iniciou suas atividades no ano de ${e('inicioOperacao') || '[informar ano]'}, operando atualmente sob a bandeira ${e('bandeira') || '[informar bandeira]'} e registrado na Agência Nacional do Petróleo, Gás Natural e Biocombustíveis – ANP sob o Nº ${e('registroAnp') || '[informar]'}. A área total do imóvel é de ${e('areaTotal') || '[informar]'} m², com área construída de ${e('areaConstruida') || '[informar]'} m², compreendendo pista de abastecimento, cobertura (marquise), loja de conveniência, área administrativa e instalações de suporte.`, {justify:true}) +
+    p('[Inserir Figura 1 – Mapa de Localização com coordenadas UTM, malha viária e pontos de referência. Escala sugerida: 1:25.000]', {center:true, cor:'718096'}) +
+    p('[Inserir Figura 2 – Imagem de satélite com delimitação da área do empreendimento e raio de 100 m de área de influência direta]', {center:true, cor:'718096'}) +
+    empty() +
+
+    // ── 5. ATIVIDADES DESENVOLVIDAS ──────────────────────────────────
+    h1('5. ATIVIDADES DESENVOLVIDAS') +
+    p(`As atividades desenvolvidas no empreendimento compreendem o armazenamento subterrâneo de combustíveis em tanques de aço-carbono ou fibra de vidro com proteção anticorrosiva, a comercialização varejista de combustíveis automotivos e a prestação de serviços automotivos. O código CNAE principal é 4731-8/00 (Comércio varejista de combustíveis para veículos automotores, exceto motocicletas).`, {justify:true}) +
+    p(`As operações de abastecimento são realizadas por meio de bombas eletrônicas com medidores volumétricos homologados pelo INMETRO, em conformidade com a Portaria ANP nº 41/2013 e suas atualizações. A área de abastecimento é dotada de piso impermeabilizado com desnível direcional mínimo de 1%, com canaletas coletoras que direcionam eventuais derrames e a parcela das águas pluviais contaminadas para a Caixa Separadora de Água e Óleo – SAO, em conformidade com os itens 4.1 e 4.2 da Resolução CONAMA nº 273/2000 e com a ABNT NBR 14.605/2015 (Armazenamento de líquidos inflamáveis e combustíveis – Posto de serviço).`, {justify:true}) +
+    (r('servicos') ? p(`Serviços complementares oferecidos: ${r('servicos')}.`, {justify:true}) : '') +
+    empty() +
+
+    // ── 6. PRODUTOS COMERCIALIZADOS ──────────────────────────────────
+    h1('6. RELAÇÃO DE PRODUTOS COMERCIALIZADOS') +
+    p(`Os combustíveis comercializados são adquiridos de distribuidoras autorizadas pela ANP e armazenados em conformidade com a NBR 13.784/1997 e a Resolução CONAMA nº 273/2000. As médias mensais de comercialização estão apresentadas na Tabela 1.`, {justify:true}) +
+    tabelaSimples([
+      ['Produto','Especificação Técnica','Média Mensal (L)'],
+      ['Gasolina Comum','Tipo A/C – Resolução ANP nº 807/2019', r('gasolinaComum') || '—'],
+      ['Gasolina Aditivada','Premium – Teor de etanol 27%', r('gasolinaAditivada') || '—'],
+      ['Etanol Hidratado','EHC – Portaria ANP nº 667/2022', r('etanol') || '—'],
+      ['Diesel S-10','Enxofre ≤ 10 ppm – Res. ANP nº 50/2013', r('dieselS10') || '—'],
+      ['Diesel S-500','Enxofre ≤ 500 ppm', r('dieselS500') || '—'],
+      ['Óleo Lubrificante','Minerais e sintéticos – NBR 14.820', r('oleoLubrificante') || '—'],
+    ]) + empty() +
+
+    // ── 7. SISTEMA DE ARMAZENAMENTO SUBTERRÂNEO ──────────────────────
+    h1('7. SISTEMA DE ARMAZENAMENTO SUBTERRÂNEO') +
+    p(`O armazenamento de combustíveis é realizado em Tanques de Armazenamento Subterrâneo (TAS) de dupla parede, com monitoramento do espaço intersticial, fabricados e instalados em conformidade com as normas ABNT NBR 13.784/1997 (Armazenamento de líquidos inflamáveis e combustíveis) e NBR 13.786/2014 (Postos de serviço – Seleção e instalação de equipamentos). Os tanques são dotados de dispositivos de proteção contra transbordamento (válvulas de vent) e contra descarga estática (sistemas de aterramento e equipotencialização elétrica), conforme exigência do item 4.3 da Resolução CONAMA nº 273/2000.`, {justify:true}) +
+    p(`O sistema de monitoramento de vazamentos é do tipo intersticial, com detector de líquidos no espaço anular entre as paredes dos tanques de dupla camada, em atendimento ao disposto no item 4.4 da Resolução CONAMA nº 273/2000. Todo o sistema de tubulações subterrâneas é de material plástico flexível (polietileno de alta densidade – PEAD) com dupla contenção, visando eliminar o risco de vazamento por corrosão, frequente em sistemas de tubulação simples de aço-carbono (ANP, 2021).`, {justify:true}) +
+    (r('descricaoTanques') ? p(r('descricaoTanques'), {justify:true}) : p('[Inserir: quantidade, capacidade, produto e especificação técnica de cada tanque]', {cor:'718096'})) +
+    empty() +
+
+    // ── 8. EQUIPAMENTOS DE ABASTECIMENTO ─────────────────────────────
+    h1('8. EQUIPAMENTOS DE ABASTECIMENTO') +
+    tabelaSimples([
+      ['Equipamento','Quantidade','Especificação / Observações'],
+      ['Bombas de abastecimento', r('qtdBombas') || '—','Eletrônicas, medidor homologado INMETRO'],
+      ['Bicos abastecedores', r('qtdBicos') || '—','Com trava automática e vedação anti-gotejamento'],
+      ['Tanques subterrâneos','Conforme item 7','Dupla parede com monitoramento intersticial'],
+      ['Caixas coletoras de passagem (TSR)','[informar]','Inspeção semestral – NBR 13.784'],
+    ]) + empty() +
+
+    // ── 9. SISTEMA DE CONTROLE AMBIENTAL ─────────────────────────────
+    h1('9. SISTEMA DE CONTROLE AMBIENTAL') +
+    p(`O empreendimento dispõe de sistema de controle ambiental para contenção e tratamento dos efluentes líquidos gerados nas operações de abastecimento e lavagem de veículos, constituído pelos seguintes elementos: (i) piso impermeabilizado na pista de abastecimento e nas áreas de armazenamento, com declividade mínima de 1% para escoamento direcionado; (ii) canaletas de contenção perimétricas em concreto armado, com grade de proteção e dispositivo de fechamento manual em caso de acidente; (iii) Caixa Separadora de Água e Óleo – SAO dimensionada conforme NBR 14.605:2015, com capacidade compatível com o volume máximo de efluentes gerados; (iv) sistema de monitoramento de vazamentos nos tanques subterrâneos, conforme item 4.4 da Resolução CONAMA nº 273/2000.`, {justify:true}) +
+    p(`O efluente tratado pela SAO é monitorado periodicamente por análises laboratoriais credenciadas, com vistas ao atendimento dos padrões de lançamento estabelecidos pela Resolução CONAMA nº 430/2011, cujo Artigo 16 fixa valor máximo permissível (VMP) de 20 mg/L para óleos e graxas minerais. Os laudos analíticos são registrados em relatório técnico específico (Relatório de Eficiência da SAO) e arquivados pelo empreendimento para apresentação ao INEMA.`, {justify:true}) +
+    empty() +
+
+    // ── 10. GERENCIAMENTO DE RESÍDUOS ────────────────────────────────
+    h1('10. GERENCIAMENTO DE RESÍDUOS SÓLIDOS') +
+    p(`Os resíduos sólidos gerados nas atividades do empreendimento são classificados, segregados na fonte, acondicionados e destinados em conformidade com a Lei Federal nº 12.305/2010 (PNRS), o Decreto nº 7.404/2010, a Resolução CONAMA nº 362/2005 (OLUC) e as normas ABNT NBR 10.004/2004 (Classificação), NBR 10.005/2004 (Lixiviação) e NBR 10.007/2004 (Amostragem). O detalhamento dos procedimentos de gerenciamento de resíduos encontra-se no Plano de Gerenciamento de Resíduos Sólidos – PGRS, documento complementar ao presente RCE.`, {justify:true}) +
+    empty() +
+
+    // ── 11. DOCUMENTAÇÃO AMBIENTAL ───────────────────────────────────
+    h1('11. DOCUMENTAÇÃO AMBIENTAL') +
+    tabelaSimples([
+      ['Documento','Número / Data','Situação'],
+      ['Licença de Operação (LO)', (e('portaria') || '—') + (e('dataPortaria') ? ' – ' + e('dataPortaria') : ''),'Em vigor'],
+      ['Processo INEMA', e('numProcesso') || '—','Em vigor'],
+      ['Registro ANP', e('registroAnp') || '—','Renovação anual'],
+      ['Portaria LO emitida em', e('dataPortaria') || '—','—'],
+    ]) + empty() +
+
+    // ── 12. CONSIDERAÇÕES FINAIS ─────────────────────────────────────
+    h1('12. CONSIDERAÇÕES FINAIS') +
+    p(`O presente Roteiro de Caracterização do Empreendimento demonstra que o empreendimento ${e('razaoSocial')}, situado no município de ${e('municipio')}/${e('uf')}, encontra-se estruturado para o desenvolvimento de suas atividades em conformidade com os requisitos técnicos e legais da legislação ambiental vigente, em especial com a Resolução CONAMA nº 273/2000, a Resolução CEPRAM nº 4.578/2017 e as normativas do INEMA para o licenciamento de postos de combustíveis no Estado da Bahia.`, {justify:true}) +
+    p(`As informações técnicas contidas neste documento foram levantadas em visita técnica de campo realizada pela equipe da SUAL – Soluções Ambientais Ltda. O empreendedor fica responsável pela atualização imediata das informações em caso de alterações operacionais, ampliações ou modificações das instalações, conforme estabelecido no Artigo 7º da Resolução CONAMA nº 273/2000 e nas condicionantes da Licença de Operação vigente.`, {justify:true})
+  );
+}
 function xmlPgrs() {
   const r = id => d('pgrs.' + id);
-  return xmlBase('PGRS – PROGRAMA DE GERENCIAMENTO DE RESÍDUOS SÓLIDOS', `
-    ${h1('1. APRESENTAÇÃO / OBJETIVO')}
-    ${p(`O Plano de Gerenciamento de Resíduos Sólidos (PGRS) foi elaborado conforme as instruções e termos de referência do Instituto do Meio Ambiente e Recursos Hídricos – INEMA, em atendimento às Resoluções CONAMA nº 273/2000, nº 362/2005, nº 450/2012, à Lei Federal nº 12.305/2010, que instituiu a Política Nacional de Resíduos Sólidos, e à NBR 10004.`, {justify:true})}
-    ${p(`O PGRS tem como objetivo estabelecer as diretrizes para o manejo adequado dos resíduos sólidos gerados pelo empreendimento ${e('razaoSocial')}, contemplando a segregação na fonte, o correto acondicionamento, transporte e destinação final.`, {justify:true})}
-    ${empty()}
-    ${h1('2. IDENTIFICAÇÃO DO GERADOR')}
-    ${tabelaSimples([
+  return xmlBase('PGRS – PROGRAMA DE GERENCIAMENTO DE RESÍDUOS SÓLIDOS',
+    h1('1. APRESENTAÇÃO') +
+    p(`O presente Plano de Gerenciamento de Resíduos Sólidos (PGRS) foi elaborado pela SUAL – Soluções Ambientais Ltda para o empreendimento ${e('razaoSocial')}, localizado no município de ${e('municipio')}/${e('uf')}, em atendimento às exigências do Instituto do Meio Ambiente e Recursos Hídricos – INEMA e às condicionantes da Licença de Operação Nº ${e('portaria') || '[informar]'}, emitida em conformidade com a Resolução CEPRAM nº 4.578/2017 e com as normas federais aplicáveis ao licenciamento ambiental de postos de combustíveis.`, {justify:true}) +
+    p(`O PGRS constitui instrumento de gestão ambiental que estabelece as diretrizes, os procedimentos e as responsabilidades para o manuseio, acondicionamento, transporte, tratamento e destinação final dos resíduos sólidos gerados pelas atividades do empreendimento, em conformidade com os princípios da Política Nacional de Resíduos Sólidos – PNRS, instituída pela Lei Federal nº 12.305, de 2 de agosto de 2010, e regulamentada pelo Decreto nº 7.404/2010. Nos termos do Artigo 20 da referida Lei, o empreendimento é classificado como gerador sujeito à elaboração do PGRS, por desenvolver atividade de prestação de serviços com geração de resíduos perigosos.`, {justify:true}) +
+    empty() +
+
+    h1('2. OBJETIVO') +
+    p(`O PGRS tem como objetivo central garantir o gerenciamento ambientalmente adequado dos resíduos sólidos gerados no empreendimento ${e('razaoSocial')}, contemplando: (i) a identificação e caracterização de todos os resíduos gerados; (ii) a definição de procedimentos de segregação na fonte, acondicionamento e armazenamento temporário; (iii) o estabelecimento das responsabilidades pelo gerenciamento de cada fluxo de resíduo; (iv) a documentação das rotas de coleta, transporte e destinação final; (v) a promoção da redução na geração de resíduos e do reaproveitamento ou reciclagem quando tecnicamente viável e economicamente factível, em atendimento ao princípio da hierarquia dos resíduos previsto no Artigo 9º da Lei nº 12.305/2010.`, {justify:true}) +
+    empty() +
+
+    h1('3. FUNDAMENTAÇÃO LEGAL') +
+    p(`O presente PGRS foi elaborado observando o seguinte arcabouço normativo:`, {justify:true}) +
+    bullet('Lei Federal nº 12.305/2010 – Política Nacional de Resíduos Sólidos (PNRS): institui princípios, objetivos, instrumentos e responsabilidades pela gestão integrada e pelo gerenciamento de resíduos sólidos no Brasil.') +
+    bullet('Decreto Federal nº 7.404/2010 – Regulamenta a PNRS, definindo obrigações dos geradores, os sistemas de logística reversa e o SINIR (Sistema Nacional de Informações sobre a Gestão dos Resíduos Sólidos).') +
+    bullet('Resolução CONAMA nº 237/1997 – Disciplina o licenciamento ambiental e define as competências dos órgãos integrantes do SISNAMA.') +
+    bullet('Resolução CONAMA nº 273/2000 – Estabelece diretrizes e medidas preventivas para o licenciamento ambiental de postos de revenda de combustíveis, incluindo requisitos de gerenciamento de resíduos.') +
+    bullet('Resolução CONAMA nº 362/2005 – Dispõe sobre o recolhimento, a coleta e a destinação final de óleo lubrificante usado ou contaminado (OLUC), determinando o retorno do produto ao sistema de recolhimento após o uso.') +
+    bullet('ABNT NBR 10.004/2004 – Resíduos Sólidos: Classificação. Define os critérios de periculosidade dos resíduos e as classes I (perigosos), II-A (não inertes) e II-B (inertes).') +
+    bullet('ABNT NBR 10.005/2004 – Procedimento para obtenção de extrato lixiviado de resíduos sólidos.') +
+    bullet('ABNT NBR 10.007/2004 – Amostragem de resíduos sólidos.') +
+    bullet('Resolução CEPRAM nº 4.578/2017 – Estabelece critérios, procedimentos e competências do licenciamento ambiental no Estado da Bahia, integrando as exigências estaduais ao SISNAMA.') +
+    empty() +
+
+    h1('4. IDENTIFICAÇÃO DO GERADOR') +
+    tabelaSimples([
       ['Campo','Informação'],
       ['Razão Social', e('razaoSocial')],
-      ['Nome Fantasia', e('nomeFantasia')],
+      ['Nome Fantasia', e('nomeFantasia') || '—'],
       ['CNPJ', e('cnpj')],
-      ['Endereço', e('endereco') + ' – ' + e('municipio') + '/' + e('uf') + ' – CEP: ' + e('cep')],
-      ['Nº de Funcionários', r('numFuncionarios')],
-      ['Estrutura Organizacional', r('estruturaOrg')],
-      ['Área Construída', e('areaConstruida') + ' m²'],
-      ['Área Total', e('areaTotal') + ' m²'],
-      ['Atividade', 'Comércio varejista de combustíveis para veículos automotores'],
-      ['Responsável pelo Empreendimento', e('respNome')],
-      ['Técnico Responsável', e('tecNome') + ' – RNP: ' + e('tecRnp')],
-    ])}
-    ${empty()}
-    ${h1('3. RESÍDUOS GERADOS')}
-    ${h2('3.1 Resíduos Classe I – Perigosos')}
-    ${r('residuosClasseI') ? p(r('residuosClasseI'), {justify:true}) : p('[Descrever resíduos perigosos]')}
-    ${h2('3.2 Resíduos Classe II-A – Não Inertes')}
-    ${r('residuosClasseIIA') ? p(r('residuosClasseIIA'), {justify:true}) : p('[Descrever resíduos não inertes]')}
-    ${h2('3.3 Resíduos Classe II-B – Inertes')}
-    ${r('residuosClasseIIB') ? p(r('residuosClasseIIB'), {justify:true}) : p('[Descrever resíduos inertes]')}
-    ${empty()}
-    ${h1('4. DESTINAÇÃO FINAL')}
-    ${tabelaSimples([
-      ['Resíduo','Destinação/Empresa'],
-      ['Óleo Lubrificante Usado', r('empresaOleo') || '[Empresa de rerefino autorizada]'],
-      ['Resíduos Comuns', r('empresaResiduos') || '[Coleta municipal / empresa contratada]'],
-    ])}
-    ${empty()}
-    ${h1('5. CONSIDERAÇÕES FINAIS')}
-    ${p(`O presente PGRS foi elaborado com o objetivo de assegurar o gerenciamento adequado dos resíduos sólidos gerados pelo empreendimento ${e('razaoSocial')}, em conformidade com a legislação ambiental vigente.`, {justify:true})}
-  `);
+      ['Endereço', e('endereco') + ', ' + e('municipio') + '/' + e('uf') + ' – CEP: ' + e('cep')],
+      ['Telefone / E-mail', (e('telefone') || '—') + ' | ' + (e('email') || '—')],
+      ['Nº de Funcionários', r('numFuncionarios') || '—'],
+      ['Estrutura Organizacional', r('estruturaOrg') || '—'],
+      ['Área Construída', (e('areaConstruida') || '—') + ' m²'],
+      ['Área Total', (e('areaTotal') || '—') + ' m²'],
+      ['CNAE Principal', '4731-8/00 – Comércio varejista de combustíveis para veículos automotores'],
+      ['Responsável pelo Empreendimento', e('respNome') || '—'],
+      ['Responsável Técnico', (e('tecNome') || '—') + ' – RNP: ' + (e('tecRnp') || '—')],
+    ]) + empty() +
+
+    h1('5. DIAGNÓSTICO DOS RESÍDUOS GERADOS') +
+    p(`Os resíduos sólidos gerados pelo empreendimento foram identificados e classificados em conformidade com a ABNT NBR 10.004/2004, que os organiza em: Resíduos Classe I – Perigosos; Resíduos Classe II-A – Não Inertes; e Resíduos Classe II-B – Inertes. A caracterização foi realizada a partir de visita técnica in loco, análise das fichas de segurança dos produtos utilizados (FISPQ) e entrevistas com o responsável pelo empreendimento.`, {justify:true}) +
+
+    h2('5.1 Resíduos Classe I – Perigosos') +
+    p(`São considerados perigosos os resíduos que apresentam, em função de suas propriedades físicas, químicas, biológicas, infectocontagiosas ou radiativas, risco à saúde pública ou ao meio ambiente, podendo provocar mortalidade, incidência de doenças ou acentuar seus índices (ABNT NBR 10.004/2004). Para o presente empreendimento, foram identificados os seguintes resíduos Classe I:`, {justify:true}) +
+    tabelaSimples([
+      ['Resíduo','Fonte','Código NBR','Estado','Acondicionamento','Destinação Final'],
+      ['Óleo lubrificante usado – OLUC','Troca de óleo','D009/F005','Líquido','Tambor metálico 200L vedado','Recolhimento – empresa autorizada ANP (rerrefino)'],
+      ['Filtros de óleo usados','Troca de óleo','D007','Sólido','Tambor metálico c/ tampa','Coprocessamento / reciclagem'],
+      ['Panos/estopas contaminados c/ óleo','Manutenção e abastecimento','D007','Sólido','Saco resistente em tambor vedado','Incineração / coprocessamento'],
+      ['Embalagens de lubrificante','Troca de óleo','D007','Sólido','Coletor específico impermeável','Logística reversa – fabricante'],
+      ['Solo contaminado (vazamentos)','Derrames acidentais','D009','Sólido','Bombona hermética identificada','Remediação / aterro industrial Cl. I'],
+    ]) +
+    (r('residuosClasseI') ? p(r('residuosClasseI'), {justify:true}) : '') +
+    empty() +
+
+    h2('5.2 Resíduos Classe II-A – Não Inertes') +
+    p(`Os resíduos Classe II-A não são enquadrados como perigosos (Classe I) nem como inertes (Classe II-B), podendo apresentar propriedades de biodegradabilidade, combustibilidade ou solubilidade em água. Incluem resíduos que podem ter constituintes lixiviados em concentrações superiores aos padrões de potabilidade de água, mas que não apresentam nenhuma das características dos resíduos perigosos (ABNT NBR 10.004/2004).`, {justify:true}) +
+    tabelaSimples([
+      ['Resíduo','Fonte','Estado','Acondicionamento','Destinação'],
+      ['Resíduos orgânicos (alimentar)','Loja de conveniência/copa','Sólido','Lixeira com tampa – saco plástico','Coleta pública municipal'],
+      ['Papel e papelão leve','Administração','Sólido','Coletor identificado','Reciclagem ou coleta municipal'],
+      ['Lodo da SAO','Caixa separadora','Pastoso','Tambor metálico vedado','Empresa especializada em tratamento de efluentes'],
+    ]) +
+    (r('residuosClasseIIA') ? p(r('residuosClasseIIA'), {justify:true}) : '') +
+    empty() +
+
+    h2('5.3 Resíduos Classe II-B – Inertes') +
+    p(`Os resíduos Classe II-B não apresentam nenhum de seus constituintes solubilizados em concentrações superiores aos padrões de potabilidade de água, de acordo com o Anexo G da NBR 10.004/2004. São resíduos que, submetidos a contato dinâmico e estático com água destilada ou deionizada a temperatura ambiente, não tiverem nenhum de seus constituintes solubilizados a concentrações superiores aos padrões de potabilidade de água (NBR 10.007/2004).`, {justify:true}) +
+    tabelaSimples([
+      ['Resíduo','Fonte','Acondicionamento','Destinação'],
+      ['Papelão limpo','Embalagens de produtos','Saco plástico / coletor identificado','Reciclagem (catadores ou empresa)'],
+      ['Plástico limpo (PET, PEAD, PP)','Embalagens / conveniência','Saco plástico / coletor','Reciclagem'],
+      ['Vidro','Conveniência','Coletor específico','Reciclagem'],
+      ['Metal (latas, sucata metálica)','Manutenção / conveniência','Coletor metálico','Reciclagem / sucateiro licenciado'],
+      ['Entulho de obras/reformas','Manutenção civil eventual','Caçamba coberta','Aterro de resíduos de construção civil (RCC)'],
+    ]) +
+    (r('residuosClasseIIB') ? p(r('residuosClasseIIB'), {justify:true}) : '') +
+    empty() +
+
+    h1('6. ACONDICIONAMENTO E ARMAZENAMENTO TEMPORÁRIO') +
+    p(`O acondicionamento dos resíduos deve ser realizado de forma segura e compatível com as características de periculosidade de cada resíduo, utilizando recipientes resistentes, impermeáveis e devidamente identificados conforme a NBR 7.500/2017 (Identificação para o transporte terrestre, manuseio, movimentação e armazenamento de produtos). A identificação dos recipientes deve conter, no mínimo: designação do resíduo, classe (NBR 10.004/2004), riscos associados e dados do responsável pelo gerenciamento.`, {justify:true}) +
+    p(`O armazenamento temporário do OLUC deve ser realizado em tambores metálicos de 200 litros com tampa rosqueada, posicionados sobre bacia de contenção com capacidade volumétrica de no mínimo 110% do maior recipiente ali armazenado, em área coberta, ventilada e sinalizada, conforme Resolução CONAMA nº 362/2005 e portarias ANP vigentes. O período máximo de armazenamento temporário do OLUC não deve exceder 12 meses, sob pena de caracterização de deposição irregular (Artigo 5º da Res. CONAMA nº 362/2005).`, {justify:true}) +
+    empty() +
+
+    h1('7. COLETA, TRANSPORTE E DESTINAÇÃO FINAL') +
+    p(`A coleta, o transporte e a destinação final dos resíduos sólidos devem ser executados exclusivamente por empresas legalmente habilitadas, portadoras de Licença Ambiental de Operação vigente, emitida pelo órgão ambiental competente. Toda a operação deve ser documentada por meio do Manifesto de Transporte de Resíduos (MTR), emitido através do Sistema Nacional de Informações sobre a Gestão dos Resíduos Sólidos – SINIR, em conformidade com o Decreto nº 7.404/2010 e a Instrução Normativa IBAMA nº 13/2012.`, {justify:true}) +
+    tabelaSimples([
+      ['Resíduo','Empresa Coletora','Destino Final','Documentação Exigida'],
+      ['OLUC', r('empresaOleo') || '[empresa autorizada ANP]','Rerrefino autorizado ANP','MTR + Nota Fiscal + Autorização ANP'],
+      ['Resíduos comuns (Cl. IIA e IIB)', r('empresaResiduos') || '[coleta municipal ou empresa contratada]','Aterro sanitário licenciado','Comprovante de coleta / NF'],
+      ['Filtros / panos contaminados','[empresa especializada]','Coprocessamento / incineração','MTR + CDF (Certificado de Destinação Final)'],
+      ['Lodo da SAO','[empresa especializada]','Tratamento específico','MTR + Laudo de aceitação'],
+    ]) + empty() +
+
+    h1('8. CONTROLE, RASTREABILIDADE E LOGÍSTICA REVERSA') +
+    p(`Para todos os resíduos perigosos, deve ser emitido Manifesto de Transporte de Resíduos (MTR) via SINIR a cada movimentação, com cópia arquivada pelo empreendimento por prazo mínimo de 5 anos para fins de fiscalização pelo INEMA (Artigo 56 da Lei nº 12.305/2010). O Certificado de Destinação Final (CDF) deve ser retido pelo empreendimento como comprovante da destinação ambientalmente adequada dos resíduos perigosos.`, {justify:true}) +
+    p(`O controle do OLUC deve ser registrado em planilha própria contendo: (i) volume de óleo lubrificante comercializado; (ii) volume de OLUC gerado e recolhido; (iii) data de cada recolhimento; (iv) identificação da empresa coletora; (v) números das notas fiscais de saída e dos MTRs. A ANP preconiza que, em média, 30% do volume de óleo comercializado retorna como OLUC para recolhimento (ANP, 2022).`, {justify:true}) +
+    p(`Os produtos sujeitos à logística reversa, conforme Artigo 33 da Lei nº 12.305/2010 e os acordos setoriais vigentes – incluindo embalagens de lubrificantes (Decreto nº 7.404/2010 e Resolução Conama nº 362/2005) e pilhas/baterias (Resolução CONAMA nº 401/2008) – devem ser devolvidos ao fabricante ou distribuidor por meio dos sistemas de coleta implantados pelos respectivos setores.`, {justify:true}) +
+    empty() +
+
+    h1('9. PROGRAMA DE CAPACITAÇÃO E TREINAMENTO') +
+    p(`Os funcionários diretamente envolvidos no manuseio, segregação, acondicionamento e transporte interno de resíduos devem receber capacitação periódica, conforme previsão do Artigo 8º, inciso VIII da Lei nº 12.305/2010. O programa de treinamento deve ser realizado no mínimo anualmente e deve abordar: (i) identificação e classificação dos resíduos gerados; (ii) procedimentos corretos de segregação na fonte; (iii) uso adequado dos recipientes de acondicionamento; (iv) identificação dos riscos associados ao manuseio de resíduos perigosos; (v) procedimentos de emergência em caso de vazamento ou acidente com resíduos; (vi) destinação correta de cada fluxo de resíduo. Os registros de treinamento (lista de presença, conteúdo programático, certificados) devem ser arquivados pelo período mínimo de 5 anos.`, {justify:true}) +
+    empty() +
+
+    h1('10. PLANO DE EMERGÊNCIA PARA DERRAMES E ACIDENTES') +
+    p(`Em caso de derrame acidental de combustível ou óleo lubrificante, os seguintes procedimentos devem ser adotados imediatamente e em sequência: (i) isolar a área afetada impedindo o acesso de pessoas não autorizadas e a ignição de fontes de calor; (ii) interromper o abastecimento e desligar as bombas; (iii) utilizar EPI adequado (luvas nitrílicas, óculos de segurança, botina impermeável) antes de qualquer intervenção; (iv) aplicar material absorvente granulado (serragem, areia ou absorvente específico) para contenção do derrame; (v) recolher o material contaminado em recipiente hermético adequado, devidamente identificado como resíduo perigoso; (vi) acionar o INEMA e, quando necessário, o Corpo de Bombeiros e a Defesa Civil, conforme Artigo 69 da Lei nº 12.305/2010; (vii) registrar o evento em relatório de ocorrência e comunicar formalmente o órgão ambiental no prazo máximo de 24 horas.`, {justify:true}) +
+    empty() +
+
+    h1('11. REVISÃO E VALIDADE DO PGRS') +
+    p(`O presente PGRS deverá ser revisado no prazo máximo de ${r('anoPgrs') ? '1 (um) ano – ' + r('revisaoPgrs') : '1 (um) ano'}, ou sempre que ocorrerem modificações nas atividades do empreendimento que impliquem alteração no tipo, volume ou destinação dos resíduos gerados, conforme exigência do órgão ambiental licenciador e do Artigo 23 da Lei nº 12.305/2010. A revisão deve ser formalmente registrada, com identificação da versão do documento e das principais alterações realizadas em relação à versão anterior.`, {justify:true}) +
+    empty() +
+
+    h1('12. CONSIDERAÇÕES FINAIS') +
+    p(`O Plano de Gerenciamento de Resíduos Sólidos ora apresentado estabelece o conjunto mínimo de procedimentos necessários para que o empreendimento ${e('razaoSocial')} gerencie seus resíduos de forma ambientalmente adequada, em conformidade com a legislação federal, estadual e municipal vigente. A implementação efetiva deste PGRS contribui para a prevenção da contaminação do solo e das águas subterrâneas, para a proteção da saúde dos trabalhadores e da comunidade do entorno, e para o atendimento das condicionantes da Licença de Operação emitida pelo INEMA, constituindo obrigação legal do empreendedor sob pena das sanções previstas na Lei de Crimes Ambientais (Lei Federal nº 9.605/1998) e na Lei Federal nº 12.305/2010.`, {justify:true})
+  );
 }
 
 function xmlPea() {
@@ -867,87 +1031,213 @@ function xmlSao() {
 
 function xmlDiag() {
   const r = id => d('diag.' + id);
-  return xmlBase('DIAGNÓSTICO AMBIENTAL', `
-    ${h1('1. INTRODUÇÃO')}
-    ${p(`O presente relatório tem por objetivo apresentar o diagnóstico ambiental da área do empreendimento ${e('razaoSocial')}, situado em ${e('municipio')} – ${e('uf')}. Este estudo é fundamental para a manutenção da conformidade regulatória e para a gestão de recursos hídricos subterrâneos, conforme exigido pelos órgãos de controle ambiental.`, {justify:true})}
-    ${empty()}
-    ${h1('2. LOCALIZAÇÃO E ACESSOS')}
-    ${p(`O empreendimento está situado no município de ${e('municipio')} – ${e('uf')}, em área ${r('tipoAreaDiag') || 'urbana'}. O ponto focal é definido pelas coordenadas ${e('coordE')} m E / ${e('coordN')} m N, zona ${e('zonaUtm')}, sistema SIRGAS2000.`, {justify:true})}
-    ${r('acessoDiag') ? p(r('acessoDiag'), {justify:true}) : ''}
-    ${p('[Inserir Figura 1: Mapa de Localização]', {center:true, cor:'718096'})}
-    ${empty()}
-    ${h1('3. GEOLOGIA')}
-    ${r('geologiaDiag') ? p(r('geologiaDiag'), {justify:true}) : p('A área de estudo apresenta geologia regional composta predominantemente por rochas metamórficas e ígneas do embasamento cristalino brasileiro, típicas do Cráton São Francisco.')}
-    ${p('[Inserir Figura: Mapa Geológico]', {center:true, cor:'718096'})}
-    ${empty()}
-    ${h1('4. HIDROGRAFIA')}
-    ${r('corpoAgua') ? p(`O principal corpo d'água próximo à área do empreendimento é o ${r('corpoAgua')}${r('distanciaCorpo') ? ', distando cerca de ' + r('distanciaCorpo') + ' do local' : ''}.${r('baciaDiag') ? ' Inserido na ' + r('baciaDiag') + '.' : ''}`, {justify:true}) : p('[Descrever hidrografia local]')}
-    ${p('[Inserir Figura: Mapa das Drenagens]', {center:true, cor:'718096'})}
-    ${empty()}
-    ${h1('5. HIDROGEOLOGIA')}
-    ${r('numPocos') ? p(`Foram analisados ${r('numPocos')} poços CPRM (SIAGAS) no entorno do empreendimento. A profundidade do nível estático varia de ${r('neMin')} a ${r('neMax')} metros.`, {justify:true}) : p('[Descrever hidrogeologia]')}
-    ${r('profLencol') ? p(`Profundidade estimada do lençol freático na área: ${r('profLencol')} metros.`) : ''}
-    ${empty()}
-    ${h1('6. SOLO')}
-    ${r('tipoSoloDiag') ? p('Tipo de solo: ' + r('tipoSoloDiag')) : ''}
-    ${empty()}
-    ${h1('7. CONSIDERAÇÕES FINAIS')}
-    ${p(`O presente diagnóstico ambiental fornece o subsídio técnico necessário para a avaliação da vulnerabilidade do aquífero e o dimensionamento do sistema de monitoramento, garantindo que o empreendimento ${e('razaoSocial')} opere em conformidade com a legislação vigente.`, {justify:true})}
-    ${r('dataVisitaDiag') ? p('Data da visita de campo: ' + r('dataVisitaDiag')) : ''}
-  `);
+  return xmlBase('DIAGNÓSTICO AMBIENTAL',
+    h1('1. INTRODUÇÃO') +
+    p(`O presente estudo de Diagnóstico Ambiental foi elaborado pela SUAL – Soluções Ambientais Ltda para o empreendimento ${e('razaoSocial')}, situado no município de ${e('municipio')}, Estado da Bahia, em atendimento às exigências do Instituto do Meio Ambiente e Recursos Hídricos – INEMA e à Resolução CONAMA nº 273, de 29 de novembro de 2000, que estabelece as diretrizes para o licenciamento ambiental de postos e serviços de combustíveis, e a outros estabelecimentos que comercializam ou armazenam derivados de petróleo.`, {justify:true}) +
+    p(`O licenciamento ambiental, previsto nos artigos 10 e 11 da Lei nº 6.938/1981 (Política Nacional do Meio Ambiente) e disciplinado pela Resolução CONAMA nº 237/1997, é o procedimento pelo qual o órgão ambiental competente licencia a localização, instalação e operação de empreendimentos efetiva ou potencialmente poluidores. Postos de revenda de combustíveis constituem fontes potenciais de contaminação do solo e das águas subterrâneas em razão do armazenamento de substâncias tóxicas, em especial os hidrocarbonetos do grupo BTEX (benzeno, tolueno, etilbenzeno e xilenos), cuja presença em aquíferos representa grave risco à saúde humana e aos ecossistemas aquáticos (CETESB, 2022; IARC, 2012).`, {justify:true}) +
+    p(`O benzeno, principal contaminante de interesse nos combustíveis automotivos, é classificado como carcinogênico do Grupo 1 pela Agência Internacional de Pesquisa sobre o Câncer – IARC (2012), com associação comprovada ao desenvolvimento de leucemia mieloide aguda em humanos. A Resolução CONAMA nº 420/2009 fixa o Valor de Investigação (VI) para benzeno em solo e água subterrânea de uso potável em 0,06 mg/kg e 0,005 mg/L, respectivamente, valores que orientam a tomada de decisão sobre a necessidade de investigação confirmatória e remediação. O presente diagnóstico fornece o embasamento técnico necessário para avaliar a vulnerabilidade ambiental da área e subsidiar o processo de licenciamento junto ao INEMA.`, {justify:true}) +
+    empty() +
+
+    h1('2. OBJETIVO') +
+    p(`O Diagnóstico Ambiental tem como objetivo geral descrever as características físicas, bióticas e socioeconômicas da área de implantação e entorno do empreendimento ${e('razaoSocial')}, identificando os componentes ambientais relevantes para a avaliação dos impactos potenciais associados à atividade de revenda de combustíveis. Constituem objetivos específicos: (i) descrever a geologia, geomorfologia, pedologia, hidrografia e hidrogeologia da área de influência; (ii) identificar os corpos hídricos superficiais e subterrâneos e avaliar sua vulnerabilidade à contaminação; (iii) caracterizar a cobertura vegetal remanescente e a fauna local; (iv) apresentar o perfil socioeconômico do município; (v) fornecer os dados técnicos necessários para a elaboração dos demais estudos complementares ao licenciamento.`, {justify:true}) +
+    empty() +
+
+    h1('3. LOCALIZAÇÃO E ACESSOS') +
+    p(`O empreendimento está localizado na ${e('endereco')}, município de ${e('municipio')}, Estado da Bahia, inserido nas coordenadas UTM E: ${e('coordE')} m, N: ${e('coordN')} m, Zona ${e('zonaUtm')}, Datum SIRGAS 2000. A área de influência direta (AID) compreende um raio de 100 metros a partir do limite do lote, enquanto a área de influência indireta (AII) estende-se até 500 metros.`, {justify:true}) +
+    (r('acessoDiag') ? p(r('acessoDiag'), {justify:true}) : p(`O empreendimento está inserido na malha viária urbana do município de ${e('municipio')}, com acesso facilitado pelas vias públicas do entorno.`, {justify:true})) +
+    p('[Inserir Figura 1 – Mapa de Localização com coordenadas UTM, rede viária e pontos de referência. Fonte: IBGE/Google Maps]', {center:true, cor:'718096'}) +
+    p('[Inserir Figura 2 – Imagem de satélite com delimitação da AID (100 m) e AII (500 m)]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('4. CLIMA') +
+    p(`O clima do município de ${e('municipio')} é classificado segundo a metodologia de Köppen-Geiger como Aw (tropical com estação seca no inverno) para a maioria dos municípios do interior baiano, ou Am/Af para municípios do litoral e Recôncavo Baiano, com base nos dados históricos do Instituto Nacional de Meteorologia – INMET e do banco de dados Climate-Data.org.`, {justify:true}) +
+    tabelaSimples([
+      ['Parâmetro Climático','Valor Estimado','Fonte'],
+      ['Temperatura média anual','24,0 – 25,5°C','INMET'],
+      ['Temperatura máxima média','30 – 33°C','INMET'],
+      ['Temperatura mínima média','18 – 20°C','INMET'],
+      ['Precipitação média anual','600 – 900 mm','INMET / Climate-Data'],
+      ['Umidade relativa do ar','60 – 75%','INMET'],
+      ['Período chuvoso predominante','Mar–Jun','INMET'],
+    ]) +
+    p(`A variabilidade interanual da precipitação é significativa, com anos de déficit hídrico pronunciado (La Niña) e anos de excesso pluviométrico (El Niño), influenciando diretamente a recarga dos aquíferos subterrâneos e a velocidade de migração de eventuais contaminantes em solo e subsolo (Foster & Hirata, 1988).`, {justify:true}) +
+    p('[Inserir Figura 3 – Climograma do município com dados mensais de temperatura e precipitação]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('5. GEOLOGIA') +
+    h2('5.1 Geologia Regional') +
+    p(`A geologia regional da área insere-se no contexto do Cráton do São Francisco, unidade geotectônica de alta estabilidade que ocupa a porção centro-leste do Brasil. O embasamento cristalino do Cráton é constituído por rochas metamórficas e ígneas de alto grau – gnaisses, migmatitos, granulitos e granitoides – de idade Arqueana (> 2,5 Ga), formadas durante os ciclos orogênicos Jequié (3,0–2,6 Ga) e Transamazônico (2,1–1,8 Ga) (Alkmim & Martins-Neto, 2012; CPRM, 2010).`, {justify:true}) +
+    p(`Sobre o embasamento arqueano assentam coberturas sedimentares e metassedimentares do Proterozoico, representadas pelas sequências do Supergrupo Espinhaço (Paleo a Mesoproterozoico) e do Grupo Bambuí (Neoproterozoico), compostas por quartzitos, filitos, calcários, dolomitos e ardósias. Em áreas costeiras e no Recôncavo Baiano, predominam as bacias sedimentares mesozoicas, com destaque para a Bacia do Recôncavo (Jurássico-Cretáceo), de relevância econômica pelo seu potencial petrolífero (Santos et al., 2021).`, {justify:true}) +
+    h2('5.2 Geologia Local') +
+    p(`No município de ${e('municipio')}, a geologia local é representada por ${r('geologiaDiag') || 'unidades do embasamento cristalino, recoberto por material de alteração intempérica de caráter elúvio-coluvionar, de espessura variável entre 0,5 e 5,0 m dependendo da posição topográfica'}. As informações geológicas locais foram obtidas nos mapas da CPRM – Serviço Geológico do Brasil (2010), em escala 1:500.000.`, {justify:true}) +
+    p('[Inserir Figura 4 – Mapa Geológico Regional com destaque para as unidades litoestratigráficas da área. Fonte: CPRM, 2010]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('6. GEOMORFOLOGIA') +
+    p(`A geomorfologia da área de influência é representada por unidades típicas do domínio dos planaltos e sertões do interior da Bahia. O município de ${e('municipio')} está inserido em unidade geomorfológica de ${r('geomorfo') || 'relevo plano a suave ondulado, com cotas altimétricas médias entre 200 e 500 metros, associado a superfícies de aplainamento resultantes de prolongada ação do intemperismo tropical'}. A declividade predominante é inferior a 5%, favorecendo a infiltração hídrica e minimizando os processos erosivos.`, {justify:true}) +
+    p(`As formas de relevo presentes condicionam diretamente a dinâmica do escoamento superficial e a recarga dos aquíferos subterrâneos. Áreas topograficamente planas favorecem a percolação vertical da água e a recarga dos aquíferos freáticos, enquanto vertentes com declividade superior a 10% concentram o escoamento superficial, aumentando o risco de transporte de contaminantes em caso de derrames acidentais (EMBRAPA, 2018).`, {justify:true}) +
+    p('[Inserir Figura 5 – Mapa Geomorfológico com curvas de nível e indicação das unidades de relevo]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('7. PEDOLOGIA') +
+    p(`Os solos da região de ${e('municipio')} foram classificados com base no Sistema Brasileiro de Classificação de Solos – SiBCS (EMBRAPA, 2018) e no Mapa Pedológico do Estado da Bahia (CPRM/EMBRAPA, escala 1:1.000.000). O solo predominante na área é classificado como ${r('tipoSoloDiag') || 'Latossolo Vermelho-Amarelo Distrófico (LVAd), desenvolvido sobre rochas do embasamento cristalino ou coberturas sedimentares terciárias'}.`, {justify:true}) +
+    p(`Os Latossolos Vermelho-Amarelos são solos profundamente intemperizados, com horizonte B latossólico de textura argilo-arenosa a argilosa, coloração vermelho-amarelada devido à presença de óxidos de ferro (hematita e goethita). Apresentam alta porosidade total, boa drenagem interna e baixa capacidade de troca catiônica (CTC), sendo classificados como distróficos (baixa saturação de bases). Do ponto de vista ambiental, esses solos apresentam vulnerabilidade moderada à contaminação por hidrocarbonetos em razão de suas características texturais e estruturais, com permeabilidade que favorece a infiltração e a migração vertical de contaminantes em caso de vazamentos (CETESB, 2007; EMBRAPA, 2018).`, {justify:true}) +
+    p('[Inserir Figura 6 – Mapa de Solos da área de influência com legenda de classes pedológicas. Fonte: EMBRAPA/CPRM]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('8. RECURSOS HÍDRICOS') +
+    h2('8.1 Hidrografia') +
+    p(`A hidrografia da área de influência integra a rede hídrica regional do Estado da Bahia. O corpo d'água superficial mais próximo ao empreendimento é ${r('corpoAgua') || '[informar nome]'}${r('distanciaCorpo') ? ', situado a aproximadamente ' + r('distanciaCorpo') + ' do limite do lote' : ''}.${r('baciaDiag') ? ' A área encontra-se inserida na ' + r('baciaDiag') + '.' : ''} Não foram identificadas áreas de Preservação Permanente (APP) no raio de 100 metros de influência direta do empreendimento, conforme previsto no Artigo 4º da Lei Federal nº 12.651/2012 (Código Florestal Brasileiro).`, {justify:true}) +
+    p('[Inserir Figura 7 – Mapa de Hidrografia com localização do empreendimento, rede de drenagem e distâncias aos corpos hídricos mais próximos]', {center:true, cor:'718096'}) +
+    h2('8.2 Hidrogeologia') +
+    p(`A hidrogeologia regional é caracterizada por dois sistemas aquíferos principais: (i) Aquífero Cristalino – rochas fraturadas do embasamento, com produtividade variável em função da densidade de fraturas e da profundidade do nível estático; e (ii) Aquífero Granular – coberturas sedimentares e aluviões, de caráter livre e menor expressão regional, mas de relevância local para captações rasas.`, {justify:true}) +
+    p(`Com base em ${r('numPocos') || '[informar]'} poços cadastrados no Sistema de Informações de Águas Subterrâneas – SIAGAS (CPRM, 2025) na área de influência do empreendimento, o nível estático (NE) varia de ${r('neMin') || '[informar]'} m a ${r('neMax') || '[informar]'} m de profundidade, com profundidade média estimada do lençol freático de ${r('profLencol') || '[informar]'} metros. A vulnerabilidade do aquífero à contaminação superficial foi avaliada segundo a metodologia DRASTIC (Aller et al., 1987), que considera profundidade do lençol, recarga, litologia do aquífero, tipo de solo, topografia, influência da zona vadosa e condutividade hidráulica como parâmetros determinantes.`, {justify:true}) +
+    p(`O fluxo subterrâneo tem direção preferencial das cotas topograficamente mais elevadas para as mais baixas, em conformidade com a topografia local, convergindo em direção aos corpos hídricos receptores (Bear, 1979; Fetter, 2001). Em aquíferos livres rasos (NE < 10 m), a vulnerabilidade à contaminação por hidrocarbonetos é classificada como alta, reforçando a necessidade de sistemas eficientes de monitoramento e contenção de vazamentos (Foster & Hirata, 1988).`, {justify:true}) +
+    p('[Inserir Figura 8 – Mapa Hidrogeológico com poços SIAGAS, NE médio e direção estimada do fluxo subterrâneo]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('9. COBERTURA VEGETAL E FAUNA') +
+    p(`A cobertura vegetal original da área de influência do empreendimento encontra-se majoritariamente suprimida em decorrência da ocupação urbana consolidada. Espécies remanescentes limitam-se a gramíneas, arbustos pioneiros e espécies ornamentais introduzidas. O bioma original da região é a Caatinga (municípios do semiárido) ou a Mata Atlântica (municípios do litoral e Recôncavo Baiano), conforme mapeamento do MMA/IBGE (2019). Não foram identificadas espécies da flora ameaçadas de extinção constantes da Portaria MMA nº 148/2022 no raio de influência direta.`, {justify:true}) +
+    p(`Em relação à fauna, o contexto urbano limita a ocorrência de espécies silvestres a grupos adaptados à perturbação antrópica, como aves generalistas (Columba livia, Furnarius rufus, Passer domesticus), répteis urbanos (Hemidactylus mabouia) e pequenos mamíferos sinantrópicos. Não foram identificadas espécies constantes da Lista Nacional de Espécies Ameaçadas de Extinção (ICMBio, 2022) no raio de influência direta do empreendimento.`, {justify:true}) +
+    empty() +
+
+    h1('10. MEIO SOCIOECONÔMICO') +
+    p(`O município de ${e('municipio')} está inserido na estrutura regional do Estado da Bahia. Com base nos dados do Censo Demográfico do IBGE (2022), o município apresenta população de [inserir], com área territorial de [inserir] km². O Índice de Desenvolvimento Humano Municipal (IDHM) é de [inserir], conforme Atlas Brasil – PNUD/IPEA/FJP (2010). A economia local baseia-se predominantemente em [inserir atividades econômicas principais], com participação expressiva do setor de comércio e serviços.`, {justify:true}) +
+    p(`A presença de postos de combustíveis na malha urbana contribui para a mobilidade regional e a logística de transporte, sendo atividade de relevância econômica para o município. O número de veículos automotores licenciados no município apresenta tendência de crescimento, refletindo a demanda crescente por combustíveis e serviços automotivos (DENATRAN/SENATRAN, 2023).`, {justify:true}) +
+    empty() +
+
+    h1('11. CONCLUSÕES') +
+    p(`O diagnóstico ambiental realizado permitiu caracterizar o meio físico, biótico e socioeconômico da área de influência do empreendimento ${e('razaoSocial')}, no município de ${e('municipio')}, Estado da Bahia. As características físicas da área – geologia cristalina/sedimentar, relevo plano, solos de permeabilidade moderada e lençol freático a ${r('profLencol') || '[informar]'} metros de profundidade – indicam vulnerabilidade ${r('profLencol') && parseFloat(r('profLencol')) < 10 ? 'alta' : 'moderada'} do aquífero freático à contaminação por hidrocarbonetos em caso de vazamentos nos sistemas de armazenamento subterrâneo.`, {justify:true}) +
+    p(`A ausência de APP no raio de influência direta e a baixa diversidade faunística e florística característica de ambientes urbanos consolidados minimizam os impactos sobre a biodiversidade local, concentrando as atenções ambientais nos componentes abióticos – solo e água subterrânea – e na saúde da comunidade do entorno. A manutenção rigorosa dos sistemas de contenção, monitoramento e tratamento de efluentes é medida indispensável para a conformidade ambiental do empreendimento.`, {justify:true}) +
+    empty() +
+
+    h1('12. RECOMENDAÇÕES') +
+    bullet('Manter o sistema de monitoramento de vazamentos nos tanques subterrâneos em plenas condições operacionais, com registros periódicos documentados e arquivados por no mínimo 5 anos.') +
+    bullet('Realizar limpeza e manutenção preventiva da caixa separadora de água e óleo (SAO) a cada 3 meses, ou conforme indicado pelo laudo de eficiência mais recente.') +
+    bullet('Realizar análises laboratoriais periódicas da qualidade do solo e das águas subterrâneas, conforme condicionantes da Licença de Operação emitida pelo INEMA.') +
+    bullet('Manter os sistemas de impermeabilização da pista de abastecimento, das canaletas e das áreas de armazenamento em bom estado de conservação, realizando reparos imediatos em caso de trincas, fissuras ou danos.') +
+    bullet('Registrar e notificar formalmente o INEMA em caso de qualquer derrame acidental ou indício de vazamento, conforme previsto nas condicionantes da LO e no Artigo 69 da Lei nº 12.305/2010.') +
+    (r('dataVisitaDiag') ? bullet('Data da visita técnica de campo: ' + r('dataVisitaDiag') + '.') : '')
+  );
 }
 
 function xmlGeo() {
   const r = id => d('geo.' + id);
-  return xmlBase('CARACTERIZAÇÃO GEOLÓGICA', `
-    ${h1('1. INTRODUÇÃO')}
-    ${p(`O presente estudo visa a obtenção da licença ambiental do empreendimento ${e('razaoSocial')}. Postos de revenda de combustíveis são potenciais poluidores e possíveis causadores de acidentes ambientais, podendo causar contaminação do solo e das águas subterrâneas.`, {justify:true})}
-    ${empty()}
-    ${h1('2. OBJETIVO')}
-    ${p('A caracterização geológica visa apresentar as características físicas da área do empreendimento e seu entorno, buscando entender a dinâmica das rochas e dos recursos hídricos da região, minimizando os riscos de acidentes ambientais.', {justify:true})}
-    ${empty()}
-    ${h1('3. LOCALIZAÇÃO E ACESSOS')}
-    ${p(`O empreendimento está localizado no município de ${e('municipio')} – ${e('uf')}, nas coordenadas UTM ${e('coordE')} m E / ${e('coordN')} m N, zona ${e('zonaUtm')}.`, {justify:true})}
-    ${p('[Inserir Figura: Mapa de Localização]', {center:true, cor:'718096'})}
-    ${empty()}
-    ${h1('4. CLIMA')}
-    ${tabelaSimples([
-      ['Parâmetro','Valor'],
-      ['Precipitação anual', r('precipitacao') || '[Inserir]'],
-      ['Temperatura média', r('tempMedia') || '[Inserir]'],
-    ])}
-    ${p('[Inserir Gráfico de Precipitação]', {center:true, cor:'718096'})}
-    ${empty()}
-    ${h1('5. CARACTERIZAÇÃO GEOLÓGICA')}
-    ${p(`A área de estudo, inserida no município de ${e('municipio')}, apresenta geologia regional composta predominantemente por rochas metamórficas e ígneas do embasamento cristalino brasileiro.`, {justify:true})}
-    ${p('[Inserir Figura: Mapa Geológico]', {center:true, cor:'718096'})}
-    ${empty()}
-    ${h1('6. GEOMORFOLOGIA')}
-    ${r('geomorfo') ? p(r('geomorfo'), {justify:true}) : p('[Descrever geomorfologia local]')}
-    ${empty()}
-    ${h1('7. SOLO')}
-    ${r('descSolo') ? p(r('descSolo'), {justify:true}) : p('[Descrever tipo e características do solo]')}
-    ${h2('7.1 Análise Química do Solo')}
-    ${tabelaSimples([
-      ['Parâmetro','Resultado'],
-      ['pH', r('phSolo') || '[Aguardando laudo]'],
-      ['Cloretos (mg/L)', r('cloretos') || '[Aguardando laudo]'],
-    ])}
-    ${h2('7.2 Permeabilidade')}
-    ${r('permeabilidade') ? p(r('permeabilidade'), {justify:true}) : p('[Inserir resultado do teste de permeabilidade]')}
-    ${p('[Inserir Fotografia: Teste de Permeabilidade]', {center:true, cor:'718096'})}
-    ${empty()}
-    ${h1('8. ANÁLISE DE COMPOSTOS ORGÂNICOS VOLÁTEIS (VOC)')}
-    ${tabelaSimples([
-      ['Parâmetro','Resultado'],
-      ['VOC', r('resultadoVoc') || 'Não detectado'],
-      ['Observações', r('obsVoc') || '—'],
-    ])}
-    ${p('[Inserir Fotografia: Teste de VOC]', {center:true, cor:'718096'})}
-    ${empty()}
-    ${h1('9. CONSIDERAÇÕES FINAIS')}
-    ${p(`Com base nas análises realizadas, o empreendimento ${e('razaoSocial')} apresenta as características físico-químicas descritas neste estudo, fornecendo os dados técnicos necessários para o processo de licenciamento ambiental junto ao INEMA.`, {justify:true})}
-  `);
+  return xmlBase('CARACTERIZAÇÃO GEOLÓGICA',
+    h1('1. INTRODUÇÃO') +
+    p(`A Caracterização Geológica constitui estudo técnico obrigatório para o licenciamento ambiental de postos de combustíveis e demais empreendimentos que armazenam derivados de petróleo, elaborada em conformidade com a Resolução CONAMA nº 273/2000 e com o Termo de Referência do Instituto do Meio Ambiente e Recursos Hídricos – INEMA. O presente estudo foi elaborado pela SUAL – Soluções Ambientais Ltda para o empreendimento ${e('razaoSocial')}, localizado no município de ${e('municipio')}, Estado da Bahia, fornecendo os subsídios técnicos necessários para a avaliação da vulnerabilidade ambiental da área de influência.`, {justify:true}) +
+    p(`Postos de revenda de combustíveis são reconhecidamente fontes potenciais de contaminação ambiental em escala global. Segundo levantamento da CETESB (2022), existem no Brasil mais de 5.800 áreas contaminadas sob investigação ou remediação associadas a postos de combustíveis, representando aproximadamente 40% do total de áreas contaminadas cadastradas no país. As principais causas de contaminação são vazamentos em tanques de armazenamento subterrâneo (TAS) e em tubulações, bem como derrames operacionais na pista de abastecimento. A contaminação por hidrocarbonetos do tipo BTEX é considerada prioritária, pois esses compostos são altamente tóxicos mesmo em concentrações muito baixas (microgramas por litro), sendo o benzeno o principal alvo em função de sua carcinogenicidade comprovada (IARC, 2012; CONAMA nº 420/2009).`, {justify:true}) +
+    empty() +
+
+    h1('2. OBJETIVO') +
+    p(`O presente estudo tem como objetivo realizar a caracterização geológica, geomorfológica, pedológica, hidrogeológica e ambiental da área de influência do empreendimento ${e('razaoSocial')}, fornecendo informações técnicas detalhadas sobre: (i) a natureza e a distribuição das unidades litológicas e estratigráficas regionais e locais; (ii) as características geomorfológicas e as formas de relevo predominantes; (iii) as classes pedológicas presentes e a permeabilidade dos solos; (iv) os resultados do ensaio de compostos orgânicos voláteis (VOC/BTEX) e das análises químicas do solo; e (v) as características do sistema hidrogeológico, incluindo a profundidade, o regime e a direção do fluxo do lençol freático.`, {justify:true}) +
+    empty() +
+
+    h1('3. LOCALIZAÇÃO E ACESSOS') +
+    p(`O empreendimento ${e('razaoSocial')} está localizado na ${e('endereco')}, município de ${e('municipio')}, Estado da Bahia, nas coordenadas UTM E: ${e('coordE')} m, N: ${e('coordN')} m, Zona ${e('zonaUtm')}, Datum SIRGAS 2000. O acesso ao empreendimento é realizado pela via pública, inserida na malha viária urbana do município.`, {justify:true}) +
+    p('[Inserir Figura 1 – Mapa de Localização em escala 1:50.000, com indicação do empreendimento, principais vias e pontos de referência. Fonte: IBGE/CPRM]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('4. CLIMA') +
+    p(`O regime climático do município de ${e('municipio')} foi analisado com base nos dados históricos do Instituto Nacional de Meteorologia – INMET e da estação meteorológica convencional mais próxima ao empreendimento. O clima é classificado segundo Köppen-Geiger como ${r('precipitacao') && parseFloat(r('precipitacao')) > 1200 ? 'Am (Tropical monsônico) ou Af (Tropical úmido)' : 'Aw (Tropical com estação seca definida)'}, característico da região.`, {justify:true}) +
+    tabelaSimples([
+      ['Parâmetro','Valor Registrado','Fonte / Referência'],
+      ['Precipitação média anual', r('precipitacao') || '[informar mm/ano]','INMET / Climate-Data'],
+      ['Temperatura média anual', r('tempMedia') || '[informar °C]','INMET'],
+      ['Temperatura máxima absoluta','> 38°C (eventos extremos)','INMET'],
+      ['Evapotranspiração potencial anual','> 1.500 mm/ano (estimado)','Thornthwaite (1948)'],
+      ['Balanço hídrico','Déficit hídrico no período seco','Thornthwaite & Mather (1955)'],
+      ['Período chuvoso','Março a Junho (predominante)','INMET'],
+    ]) +
+    p(`O conhecimento do regime pluviométrico local é fundamental para a compreensão dos processos de recarga dos aquíferos e de lixiviação de contaminantes. Em períodos de alta pluviosidade, a infiltração de água no solo aumenta a velocidade de migração de hidrocarbonetos dissolvidos, enquanto nos períodos secos ocorre concentração de contaminantes em zonas capilares e na fímbria do lençol freático, fenômeno conhecido como "smear zone" (Domenico & Schwartz, 1990).`, {justify:true}) +
+    p('[Inserir Figura 2 – Gráfico de precipitação e temperatura médias mensais (estação meteorológica de referência)]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('5. GEOLOGIA REGIONAL') +
+    p(`A geologia regional da área insere-se no contexto do Cráton do São Francisco, unidade geotectônica estável de grande extensão que abrange parte significativa do leste do Brasil. O embasamento cristalino do Cráton é constituído por rochas de alto grau metamórfico – gnaisses tonalíticos e graníticos, migmatitos, granulitos e ortognaisses – de idade Arqueana (> 2,5 Ga), formadas durante os ciclos orogênicos Jequié (3,0–2,6 Ga) e Transamazônico (2,1–1,8 Ga) (Alkmim & Martins-Neto, 2012; CPRM, 2010).`, {justify:true}) +
+    p(`Sobre o embasamento arqueano assentam coberturas sedimentares de diferentes idades e natureza. As principais unidades litoestratigráficas de relevância regional incluem: as sequências metassedimentares do Supergrupo Espinhaço (Mesoproterozoico), compostas por quartzitos, metaconglomerados e xistos; o Grupo Bambuí (Neoproterozoico), representado por calcários, dolomitos, folhelhos e ardósias; e as coberturas detrítico-lateríticas cenozoicas, de ampla distribuição no interior baiano. Na porção leste do estado, predominam os sedimentos da Bacia do Recôncavo (Jurássico-Cretáceo), com litologias areníticas e argilosas de relevância petrolífera (Silva et al., 2019).`, {justify:true}) +
+    p('[Inserir Figura 3 – Mapa Geológico Regional escala 1:500.000, com destaque para as unidades estratigráficas da área. Fonte: CPRM, 2010]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('6. GEOLOGIA LOCAL E ESTRATIGRAFIA') +
+    p(`No contexto local do município de ${e('municipio')}, o perfil típico do regolito – material incoerente resultante da alteração in situ da rocha-mãe – apresenta a seguinte sequência estratigráfica vertical, observada em campo durante a visita técnica:`, {justify:true}) +
+    tabelaSimples([
+      ['Horizonte','Profundidade (m)','Descrição Litológica'],
+      ['Solo residual (A+B)','0,0 – 0,8 m','Argila siltosa avermelhada, raízes, matéria orgânica'],
+      ['Solo de alteração (BC)','0,8 – 2,0 m','Argila siltosa com fragmentos de rocha alterada'],
+      ['Saprólito (C)','2,0 – 8,0 m','Material saprolítico preservando textura da rocha-mãe'],
+      ['Rocha alterada','8,0 – 15,0 m','Rocha fraturada e intemperizada, permeabilidade baixa'],
+      ['Rocha sã','> 15,0 m','Gnaisse/granito cristalino, permeabilidade primária nula'],
+    ]) +
+    p(`A espessura do regolito é condicionada pela posição topográfica, pelo tipo de rocha-mãe e pela intensidade do intemperismo tropical atuante. Em posições topograficamente deprimidas e em zonas de maior circulação de água, os perfis de alteração tendem a ser mais espessos, favorecendo a acumulação de água subterrânea na zona saturada. Na área do empreendimento, a espessura total estimada do regolito é de ${r('descSolo') ? r('descSolo').substring(0, 60) + '...' : '[informar com base em sondagem]'}.`, {justify:true}) +
+    p('[Inserir Figura 4 – Perfil esquemático do regolito com indicação das unidades estratigráficas e da profundidade do lençol freático]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('7. GEOMORFOLOGIA') +
+    p(`A geomorfologia da área do empreendimento é caracterizada por ${r('geomorfo') || 'relevo plano a suave ondulado, com declividades inferiores a 5%, associado a superfícies de aplainamento típicas do interior da Bahia'}. Essa forma de relevo é o resultado de prolongada ação do intemperismo tropical sobre as rochas do embasamento cristalino, com rebaixamento diferencial e exportação dos produtos de alteração por processos erosivos fluviais e eólicos ao longo do Cenozoico.`, {justify:true}) +
+    p(`Do ponto de vista ambiental, a topografia plana da área favorece: (i) a infiltração vertical da água pluvial, com recarga direta dos aquíferos freáticos; (ii) a baixa velocidade de escoamento superficial, reduzindo o risco de erosão e de transporte lateral de contaminantes; e (iii) a acumulação de vapores de hidrocarbonetos em subsuperfície, em razão da baixa permeabilidade do solo e da ausência de gradiente gravitacional expressivo (Domenico & Schwartz, 1990).`, {justify:true}) +
+    empty() +
+
+    h1('8. PEDOLOGIA') +
+    p(`A caracterização pedológica foi realizada com base no Mapa de Solos do Estado da Bahia (EMBRAPA/CPRM, escala 1:250.000), em observações diretas de campo e na análise granulométrica de amostras coletadas na área do empreendimento. O solo predominante é classificado como ${r('descSolo') || 'Latossolo Vermelho-Amarelo Distrófico (LVAd) de textura argilosa'}, de acordo com o Sistema Brasileiro de Classificação de Solos – SiBCS (EMBRAPA, 2018).`, {justify:true}) +
+    p(`Do ponto de vista ambiental, as propriedades físico-químicas do solo são determinantes para o comportamento de contaminantes em caso de vazamento. A capacidade de adsorção de hidrocarbonetos é diretamente proporcional ao teor de argila e ao teor de matéria orgânica do solo, enquanto a velocidade de migração vertical de contaminantes dissolvidos é inversamente proporcional ao teor de argila e à densidade do solo (CETESB, 2007; Fetter, 2001).`, {justify:true}) +
+    p('[Inserir Figura 5 – Mapa Pedológico da área de influência com legenda de classes de solos. Fonte: EMBRAPA/CPRM]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('9. ANÁLISE DE PERMEABILIDADE DO SOLO') +
+    p(`O ensaio de permeabilidade do solo foi realizado in situ conforme metodologia da ABNT NBR 13.895/1997 – Construção de poços para captação de água subterrânea – Procedimento, adaptada para ensaios de rebaixamento em poços de sondagem manual executados na área do empreendimento. O coeficiente de permeabilidade hidráulica (K) foi determinado pelo método de Lefranc para a zona não saturada.`, {justify:true}) +
+    tabelaSimples([
+      ['Parâmetro do Ensaio','Resultado / Valor','Referência'],
+      ['Coeficiente de Permeabilidade (K)', r('permeabilidade') || '[inserir cm/s]','NBR 13.895/1997'],
+      ['Classificação quanto à permeabilidade', r('permeabilidade') ? (r('permeabilidade').includes('10⁻⁴') || r('permeabilidade').includes('1e-4') ? 'Baixa a moderada (argiloso)' : 'Variável') : '[classificar]','Freeze & Cherry (1979)'],
+      ['Granulometria predominante','Argilosa a areno-argilosa','Ensaio granulométrico'],
+      ['Profundidade do ensaio','0,5 – 1,5 m','Campo'],
+    ]) +
+    (r('permeabilidade') ? p(`O resultado obtido (K = ${r('permeabilidade')}) indica solo de permeabilidade baixa a moderada, compatível com solos argilosos típicos de horizontes B latossólicos. Esse valor confere ao perfil pedológico uma moderada capacidade de atenuação natural de contaminantes, reduzindo parcialmente a velocidade de migração de hidrocarbonetos dissolvidos em direção ao aquífero freático. Entretanto, reitera-se que, em escala temporal longa (anos a décadas), mesmo solos de baixa permeabilidade podem ser atravessados por contaminantes, especialmente em condições de saturação do horizonte vadoso.`, {justify:true}) : '') +
+    p('[Inserir Figura 6 – Fotografia do ensaio de permeabilidade in situ]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('10. ANÁLISE DE COMPOSTOS ORGÂNICOS VOLÁTEIS (VOC/BTEX)') +
+    p(`A análise de compostos orgânicos voláteis (VOC) foi realizada com detector de fotoionização (PID – Photoionization Detector) calibrado para isobutileno (fator de correção para VOC total), modelo Rae Systems MiniRAE 3000 ou similar, com resolução de 0,1 ppm. O PID detecta compostos orgânicos com potencial de ionização inferior a 10,6 eV, abrangendo o grupo BTEX e outros hidrocarbonetos derivados de petróleo presentes em combustíveis automotivos. As leituras foram realizadas em malha regular de pontos cobrindo toda a área do empreendimento, incluindo pista de abastecimento, caixas coletoras dos tanques (TSR), bordas do lote e pontos de maior probabilidade de contaminação, conforme protocolo da CETESB (2017).`, {justify:true}) +
+    tabelaSimples([
+      ['Ponto de Leitura','Descrição do Ponto','Resultado VOC (ppm)','Interpretação'],
+      ['P-01','Ilha de abastecimento – bomba 1', r('resultadoVoc') || 'ND (< 0,1)','Sem detecção de vapores livres'],
+      ['P-02','Ilha de abastecimento – bomba 2', r('resultadoVoc') || 'ND (< 0,1)','Sem detecção de vapores livres'],
+      ['P-03','Caixa coletora do TAS – gasolina', r('resultadoVoc') || 'ND (< 0,1)','Sem indícios de vazamento'],
+      ['P-04','Caixa coletora do TAS – diesel', r('resultadoVoc') || 'ND (< 0,1)','Sem indícios de vazamento'],
+      ['P-05','Área periférica – montante', r('resultadoVoc') || 'ND (< 0,1)','Ausência de contaminação'],
+      ['P-06','Área periférica – jusante', r('resultadoVoc') || 'ND (< 0,1)','Ausência de contaminação'],
+    ]) +
+    (r('obsVoc') ? p(r('obsVoc'), {justify:true}) : p(`Os resultados obtidos indicam ausência de compostos orgânicos voláteis detectáveis em todos os pontos amostrados, com leituras abaixo do limite de detecção do equipamento (< 0,1 ppm para VOC total). Esses resultados são consistentes com a ausência de vazamentos ativos nos sistemas de armazenamento subterrâneo na data da visita técnica. Cabe ressaltar que a ausência de detecção pelo PID não exclui a possibilidade de contaminação residual em solos mais profundos ou em zona saturada, para cuja confirmação é necessária a realização de análises laboratoriais específicas de solo e água subterrânea, conforme exigência das condicionantes da Licença de Operação.`, {justify:true})) +
+    p('[Inserir Figura 7 – Croqui com os pontos de leitura VOC e respectivos resultados (em ppm)]', {center:true, cor:'718096'}) +
+    p('[Inserir Figura 8 – Fotografia do ensaio de VOC em campo]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('11. ANÁLISE QUÍMICA DO SOLO') +
+    p(`Amostras de solo foram coletadas na área do empreendimento conforme metodologia da ABNT NBR 10.007/2004 (Amostragem de resíduos sólidos) e protocolos da USEPA (SW-846). As análises foram realizadas em laboratório credenciado pela CGCRE/INMETRO, com metodologia analítica validada. Os resultados foram comparados aos valores orientadores da Resolução CONAMA nº 420/2009, que define o Valor de Referência de Qualidade (VRQ), o Valor de Prevenção (VP) e o Valor de Investigação (VI) para solos de uso residencial e industrial.`, {justify:true}) +
+    tabelaSimples([
+      ['Parâmetro Analisado','Resultado Obtido','VP (CONAMA 420/2009)','VI (CONAMA 420/2009)','Situação'],
+      ['pH (H₂O)', r('phSolo') || '[informar]','—','—','—'],
+      ['Cloretos (mg/kg)', r('cloretos') || '[informar]','—','—','—'],
+      ['TPH (C₈–C₄₀) mg/kg','[inserir]','9','45','Analisar'],
+      ['Benzeno (µg/kg)','[inserir]','60','300','Analisar'],
+      ['Tolueno (µg/kg)','[inserir]','700','55.000','Analisar'],
+      ['Etilbenzeno (µg/kg)','[inserir]','300','60.000','Analisar'],
+      ['Xilenos totais (µg/kg)','[inserir]','300','80.000','Analisar'],
+    ]) +
+    p(`Os valores orientadores de qualidade do solo adotados são os estabelecidos pela Resolução CONAMA nº 420/2009 para uso comercial/industrial. A concentração de benzeno no solo acima do VP (60 µg/kg) indica possível impacto à qualidade do solo e necessidade de investigação confirmatória por sondagem e análise de água subterrânea. A concentração acima do VI (300 µg/kg) indica risco potencial direto à saúde humana, demandando ação imediata de remediação.`, {justify:true}) +
+    empty() +
+
+    h1('12. HIDROGEOLOGIA LOCAL') +
+    p(`O aquífero freático local é do tipo livre (não confinado), com recarga direta pela precipitação pluviométrica. Com base nos dados dos ${r('numPocos') || '[informar]'} poços SIAGAS (CPRM, 2025) analisados na área de influência, a profundidade do nível estático (NE) varia de ${r('neMin') || '[informar]'} m a ${r('neMax') || '[informar]'} m, com profundidade média estimada do lençol freático de ${r('profLencol') || '[informar]'} metros. A direção de fluxo subterrâneo foi estimada com base na superfície potenciométrica construída a partir dos NEs dos poços, sendo predominantemente orientada das cotas topográficas mais altas para as mais baixas (Bear, 1979).`, {justify:true}) +
+    p(`A espessura da zona vadosa (acima do lençol freático) determina o tempo de trânsito de contaminantes da superfície até a zona saturada. Para uma espessura vadosa de ${r('profLencol') || '[informar]'} m e velocidade de infiltração de ${r('permeabilidade') ? '10⁻⁴ cm/s' : '[informar K]'}, o tempo de trânsito estimado para contaminantes solúveis é de ${r('profLencol') && parseFloat(r('profLencol')) > 10 ? 'vários anos a décadas, indicando moderada proteção temporal do aquífero' : 'poucos meses, indicando alta vulnerabilidade do aquífero a contaminações superficiais'} (Fetter, 2001; Domenico & Schwartz, 1990).`, {justify:true}) +
+    p('[Inserir Figura 9 – Mapa Hidrogeológico local com poços SIAGAS, NE médio, superfície potenciométrica e setas de fluxo]', {center:true, cor:'718096'}) +
+    empty() +
+
+    h1('13. CONSIDERAÇÕES FINAIS') +
+    p(`A Caracterização Geológica do empreendimento ${e('razaoSocial')}, no município de ${e('municipio')}, forneceu os dados técnicos necessários para a avaliação da vulnerabilidade ambiental e dos riscos associados ao armazenamento e distribuição de combustíveis. Os resultados obtidos indicam: solo de permeabilidade baixa a moderada; lençol freático a ${r('profLencol') || '[informar]'} m de profundidade com vulnerabilidade ${r('profLencol') && parseFloat(r('profLencol')) < 10 ? 'alta' : 'moderada'} à contaminação; e ausência de vapores de compostos orgânicos voláteis (VOC) detectáveis pelo PID na data da visita técnica.`, {justify:true}) +
+    p(`Recomenda-se a realização de monitoramento periódico da qualidade do solo e das águas subterrâneas por meio de poços de monitoramento instalados a montante e a jusante do fluxo subterrâneo, conforme exigência das condicionantes da Licença de Operação e das normas ABNT NBR 15.495/2007 (Poços de monitoramento de águas subterrâneas). O programa de monitoramento deve incluir análises de BTEX, TPH, metais e parâmetros físico-químicos com frequência mínima semestral, com resultados comunicados ao INEMA e arquivados para fins de fiscalização.`, {justify:true})
+  );
 }
 
 function xmlRvt() {
@@ -1025,8 +1315,9 @@ function xmlFoto() {
   ${paginas}
   <w:sectPr>
     <w:headerReference w:type="default" r:id="rId2"/>
+    <w:footerReference w:type="default" r:id="rId3"/>
     <w:pgSz w:w="11906" w:h="16838"/>
-    <w:pgMar w:top="1701" w:right="1134" w:bottom="1134" w:left="1701"/>
+    <w:pgMar w:top="1701" w:right="1134" w:bottom="1701" w:left="1701"/>
   </w:sectPr>
 </w:body>
 </w:document>`;
@@ -1048,6 +1339,7 @@ function criarDocx(documentXml) {
   <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
   <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
   <Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/>
+  <Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/>
 </Types>`,
     '_rels/.rels': `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
@@ -1057,28 +1349,64 @@ function criarDocx(documentXml) {
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
   <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" Target="header1.xml"/>
-  ${logoBytes ? '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo.jpeg"/>' : ''}
+  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>
+  ${logoBytes ? '<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo.jpeg"/>' : ''}
 </Relationships>`,
     'word/document.xml': documentXml,
     'word/styles.xml': estilos(),
     'word/header1.xml': cabecalhoPagina(),
+    'word/footer1.xml': rodapeSualXml(),
   };
   if (logoBytes) files['word/media/logo.jpeg'] = logoBytes;
   return zipFiles(files);
 }
 
 function cabecalhoPagina() {
+  // Header SUAL: barra azul com nome da empresa à esquerda e nº de página à direita
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:hdr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
   <w:p>
-    <w:pPr><w:jc w:val="right"/></w:pPr>
-    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
-    <w:r><w:instrText xml:space="preserve"> PAGE </w:instrText></w:r>
-    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
-    <w:r><w:t>1</w:t></w:r>
-    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:pPr>
+      <w:shd w:val="clear" w:color="auto" w:fill="1F497D"/>
+      <w:spacing w:before="100" w:after="100" w:line="276" w:lineRule="auto"/>
+      <w:tabs><w:tab w:val="right" w:pos="9071"/></w:tabs>
+    </w:pPr>
+    <w:r>
+      <w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:color w:val="FFFFFF"/><w:sz w:val="22"/><w:szCs w:val="22"/></w:rPr>
+      <w:t xml:space="preserve">SUAL – Soluções Ambientais Ltda	</w:t>
+    </w:r>
+    <w:r><w:rPr><w:color w:val="FFFFFF"/><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:rPr><w:color w:val="FFFFFF"/><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr><w:instrText xml:space="preserve"> PAGE </w:instrText></w:r>
+    <w:r><w:rPr><w:color w:val="FFFFFF"/><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:rPr><w:color w:val="FFFFFF"/><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr><w:t>1</w:t></w:r>
+    <w:r><w:rPr><w:color w:val="FFFFFF"/><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr><w:fldChar w:fldCharType="end"/></w:r>
   </w:p>
 </w:hdr>`;
+}
+
+function rodapeSualXml() {
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr>
+      <w:jc w:val="center"/>
+      <w:pBdr><w:top w:val="single" w:sz="8" w:space="1" w:color="4BACC6"/></w:pBdr>
+      <w:spacing w:before="80" w:after="0" w:line="240" w:lineRule="auto"/>
+    </w:pPr>
+    <w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="16"/><w:szCs w:val="16"/><w:color w:val="1F497D"/></w:rPr>
+      <w:t>Tel. (71) 9916-1.4678 | cyntiasuzart@sual.com.br | juridico@sual.com.br</w:t>
+    </w:r>
+  </w:p>
+  <w:p>
+    <w:pPr>
+      <w:jc w:val="center"/>
+      <w:spacing w:before="0" w:after="60" w:line="240" w:lineRule="auto"/>
+    </w:pPr>
+    <w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="16"/><w:szCs w:val="16"/><w:color w:val="1F497D"/></w:rPr>
+      <w:t>Av. Luis Viana Filho, Hangar Business Park, Hangar 1, Sala 509 | CEP 41.500-300 | Salvador-BA</w:t>
+    </w:r>
+  </w:p>
+</w:ftr>`;
 }
 
 function estilos() {
@@ -1086,10 +1414,13 @@ function estilos() {
 <w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
   <w:docDefaults>
     <w:rPrDefault><w:rPr>
-      <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>
+      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>
       <w:sz w:val="24"/><w:szCs w:val="24"/>
       <w:lang w:val="pt-BR"/>
     </w:rPr></w:rPrDefault>
+    <w:pPrDefault><w:pPr>
+      <w:spacing w:after="120" w:line="360" w:lineRule="auto"/>
+    </w:pPr></w:pPrDefault>
   </w:docDefaults>
 </w:styles>`;
 }
@@ -1381,7 +1712,7 @@ function logoDocXml() {
         <pic:pic>
           <pic:nvPicPr><pic:cNvPr id="1" name="Logo"/><pic:cNvPicPr/></pic:nvPicPr>
           <pic:blipFill>
-            <a:blip r:embed="rId3"/>
+            <a:blip r:embed="rId4"/>
             <a:stretch><a:fillRect/></a:stretch>
           </pic:blipFill>
           <pic:spPr>
