@@ -921,123 +921,280 @@ function xmlPgrs() {
 
 function xmlPea() {
   const r = id => d('pea.' + id);
-  return xmlBase('PEA – PROGRAMA DE EDUCAÇÃO AMBIENTAL', `
-    ${h1('1. APRESENTAÇÃO')}
-    ${p(`O Programa de Educação Ambiental (PEA) do empreendimento ${e('razaoSocial')} foi elaborado visando atender às exigências legais e às condicionantes da Licença de Operação, promovendo a consciência ambiental entre funcionários e comunidade do entorno.`, {justify:true})}
-    ${empty()}
-    ${h1('2. DADOS DO PROGRAMA')}
-    ${tabelaSimples([
+  return xmlBase('PEA – PROGRAMA DE EDUCAÇÃO AMBIENTAL',
+    h1('1. APRESENTAÇÃO') +
+    p(`O Programa de Educação Ambiental (PEA) do empreendimento ${e('razaoSocial')} foi elaborado pela SUAL – Soluções Ambientais Ltda em atendimento ao disposto na Resolução CONAMA nº 273/2000, ao Artigo 8º, inciso VIII da Lei Federal nº 12.305/2010 (Política Nacional de Resíduos Sólidos) e às condicionantes da Licença de Operação Nº ${e('portaria') || '[informar]'}, emitida pelo INEMA. A promoção da Educação Ambiental é obrigação do empreendedor, constituindo instrumento essencial para a construção de uma cultura institucional voltada à prevenção de acidentes e à gestão ambiental responsável.`, {justify:true}) +
+    p(`A Política Nacional de Educação Ambiental, instituída pela Lei Federal nº 9.795/1999 e regulamentada pelo Decreto nº 4.281/2002, define Educação Ambiental como os processos por meio dos quais o indivíduo e a coletividade constroem valores sociais, conhecimentos, habilidades, atitudes e competências voltadas para a conservação do meio ambiente, bem de uso comum do povo, essencial à sadia qualidade de vida e sua sustentabilidade. Em postos de combustíveis, o PEA deve abordar especialmente os riscos ambientais associados ao armazenamento e manuseio de combustíveis, incluindo os impactos de derramamentos sobre o solo e as águas subterrâneas.`, {justify:true}) +
+    empty() +
+
+    h1('2. OBJETIVO') +
+    p(`O PEA tem como objetivos: (i) capacitar os funcionários do empreendimento sobre os impactos ambientais das atividades do posto e as medidas preventivas adotadas; (ii) sensibilizar a comunidade do entorno sobre a importância da gestão ambiental responsável; (iii) promover a segregação correta de resíduos e o cumprimento dos procedimentos ambientais internos; (iv) atender às condicionantes da Licença de Operação e às exigências do INEMA.`, {justify:true}) +
+    empty() +
+
+    h1('3. IDENTIFICAÇÃO DO EMPREENDIMENTO E DO PROGRAMA') +
+    tabelaSimples([
       ['Campo','Informação'],
       ['Empreendimento', e('razaoSocial')],
-      ['Público-alvo', r('publicoAlvo') || 'Funcionários e comunidade do entorno'],
-      ['Data de Realização', r('dataPea')],
-      ['Local', r('localPea') || e('municipio')],
-      ['Carga Horária', r('cargaHoraria')],
-      ['Instrutor / Responsável', r('instrutorPea') || e('tecNome')],
-    ])}
-    ${empty()}
-    ${h1('3. TEMAS ABORDADOS')}
-    ${r('temasPea') ? r('temasPea').split(',').map(t => bullet(t.trim())).join('') : bullet('[Inserir temas abordados]')}
-    ${empty()}
-    ${h1('4. AÇÕES DESENVOLVIDAS')}
-    ${r('acoesPea') ? p(r('acoesPea'), {justify:true}) : p('[Descrever ações realizadas]')}
-    ${empty()}
-    ${h1('5. PRÓXIMO CICLO')}
-    ${p('Data prevista do próximo PEA: ' + (r('proximoPea') || '[A definir]'))}
-    ${empty()}
-    ${h1('6. CONSIDERAÇÕES FINAIS')}
-    ${p(`O presente PEA reafirma o compromisso do empreendimento ${e('razaoSocial')} com a responsabilidade ambiental, conforme as diretrizes do INEMA e a legislação vigente.`, {justify:true})}
-  `);
+      ['CNPJ', e('cnpj')],
+      ['Endereço', e('endereco') + ', ' + e('municipio') + '/' + e('uf')],
+      ['Público-alvo', r('publicoAlvo') || 'Funcionários do empreendimento e comunidade do entorno'],
+      ['Data de Realização', r('dataPea') || '[informar]'],
+      ['Local de Realização', r('localPea') || e('municipio')],
+      ['Carga Horária Total', r('cargaHoraria') || '[informar horas]'],
+      ['Instrutor / Responsável Técnico', r('instrutorPea') || e('tecNome')],
+      ['Periodicidade', 'Anual (mínimo)'],
+    ]) + empty() +
+
+    h1('4. FUNDAMENTAÇÃO LEGAL') +
+    bullet('Lei Federal nº 9.795/1999 – Política Nacional de Educação Ambiental: institui a EA como componente essencial na formação cidadã e no exercício das atividades produtivas.') +
+    bullet('Decreto Federal nº 4.281/2002 – Regulamenta a Lei nº 9.795/1999, definindo responsabilidades dos setores público e privado na promoção da EA.') +
+    bullet('Resolução CONAMA nº 273/2000 – Estabelece condicionantes ambientais para postos de combustíveis, incluindo a realização de programas de educação ambiental.') +
+    bullet('Lei Federal nº 12.305/2010 – Art. 8º, VIII: a EA é instrumento da PNRS, devendo ser promovida pelos geradores de resíduos.') +
+    bullet('Resolução CEPRAM nº 4.578/2017 – Estabelece condicionantes de licenciamento no Estado da Bahia, incluindo programas de EA como condicionante da LO.') +
+    empty() +
+
+    h1('5. TEMAS ABORDADOS') +
+    p(`Os temas abordados no PEA foram selecionados em função das atividades desenvolvidas no empreendimento e dos riscos ambientais associados à operação de posto de combustíveis. A seleção observa as diretrizes do Programa Nacional de Educação Ambiental – ProNEA (MMA, 2014) e as recomendações do INEMA:`, {justify:true}) +
+    (r('temasPea')
+      ? r('temasPea').split(',').map(t => bullet(t.trim())).join('')
+      : bullet('Segregação de resíduos sólidos na fonte e destinação correta por classe (NBR 10.004/2004)') +
+        bullet('Riscos de contaminação do solo e das águas subterrâneas por hidrocarbonetos (BTEX)') +
+        bullet('Procedimentos de emergência em caso de derrames acidentais de combustíveis') +
+        bullet('Uso correto dos equipamentos de proteção individual (EPI) e coletiva (EPC)') +
+        bullet('Consumo consciente de água e energia nas operações do posto') +
+        bullet('Política Nacional de Resíduos Sólidos e responsabilidade compartilhada') +
+        bullet('Logística reversa de óleos lubrificantes usados (OLUC) e embalagens') +
+        bullet('Legislação ambiental aplicável e responsabilidade civil e criminal')) +
+    empty() +
+
+    h1('6. METODOLOGIA E AÇÕES DESENVOLVIDAS') +
+    p(`As ações de educação ambiental foram desenvolvidas por meio de metodologia participativa e dialógica, combinando exposições teóricas, atividades práticas, materiais visuais e dinâmicas de grupo, em conformidade com as diretrizes pedagógicas do ProNEA (MMA, 2014). As atividades foram realizadas nas instalações do próprio empreendimento, garantindo a contextualização dos temas à realidade dos participantes.`, {justify:true}) +
+    (r('acoesPea') ? p(r('acoesPea'), {justify:true}) :
+      p(`Foram realizadas as seguintes ações: (i) palestra educativa com apresentação multimídia abordando os riscos ambientais das atividades do posto; (ii) distribuição de material informativo sobre segregação de resíduos e procedimentos de emergência; (iii) fixação de cartazes educativos nas áreas de trabalho (pista de abastecimento, depósito de resíduos, copa); (iv) treinamento prático sobre o uso correto dos coletores de resíduos e dos EPIs; (v) simulação de procedimento de contenção de derrame acidental.`, {justify:true})) +
+    empty() +
+
+    h1('7. REGISTRO E DOCUMENTAÇÃO') +
+    p(`Todas as atividades do PEA foram devidamente registradas por meio de: (i) lista de presença com nome, CPF e assinatura de cada participante; (ii) conteúdo programático detalhado; (iii) registro fotográfico das atividades; (iv) avaliação de eficácia com formulário de feedback preenchido pelos participantes. A documentação encontra-se arquivada no empreendimento e disponível para apresentação ao INEMA em caso de fiscalização.`, {justify:true}) +
+    empty() +
+
+    h1('8. PRÓXIMO CICLO E CONTINUIDADE') +
+    p(`O PEA deverá ser repetido com periodicidade mínima anual, com atualização dos temas conforme as novas condicionantes da Licença de Operação e as mudanças nas práticas operacionais do empreendimento. Novos funcionários admitidos deverão receber treinamento de integração ambiental em até 30 dias após o início das atividades.`, {justify:true}) +
+    p(`Data prevista do próximo PEA: ${r('proximoPea') || '[a definir no prazo de 12 meses]'}.`, {justify:true}) +
+    empty() +
+
+    h1('9. CONSIDERAÇÕES FINAIS') +
+    p(`O Programa de Educação Ambiental ora apresentado demonstra o compromisso do empreendimento ${e('razaoSocial')} com a gestão ambiental responsável e com o cumprimento das condicionantes da Licença de Operação emitida pelo INEMA. A implementação contínua e documentada do PEA contribui para a formação de uma cultura organizacional voltada à prevenção de acidentes, à redução de impactos ambientais e ao cumprimento da legislação ambiental federal e estadual vigente.`, {justify:true})
+  );
 }
 
 function xmlPgr() {
   const r = id => d('pgr.' + id);
-  return xmlBase('PGR – PROGRAMA DE GERENCIAMENTO DE RISCOS', `
-    ${h1('1. APRESENTAÇÃO')}
-    ${p(`O Programa de Gerenciamento de Riscos (PGR) do empreendimento ${e('razaoSocial')} foi elaborado em conformidade com a Resolução CEPRAM nº 4.578/2017 e a NR-01, com o objetivo de proteger os funcionários, o público em geral e o meio ambiente.`, {justify:true})}
-    ${empty()}
-    ${h1('2. IDENTIFICAÇÃO E AVALIAÇÃO DE RISCOS')}
-    ${h2('2.1 Riscos Físicos')}
-    ${r('riscFisicos') ? p(r('riscFisicos'), {justify:true}) : p('[Descrever riscos físicos]')}
-    ${h2('2.2 Riscos Químicos')}
-    ${r('riscQuimicos') ? p(r('riscQuimicos'), {justify:true}) : p('[Descrever riscos químicos]')}
-    ${h2('2.3 Riscos Ergonômicos')}
-    ${r('riscErgonomicos') ? p(r('riscErgonomicos'), {justify:true}) : p('[Descrever riscos ergonômicos]')}
-    ${h2('2.4 Riscos de Acidentes')}
-    ${r('riscAcidentes') ? p(r('riscAcidentes'), {justify:true}) : p('[Descrever riscos de acidentes]')}
-    ${empty()}
-    ${h1('3. MEDIDAS DE CONTROLE')}
-    ${h2('3.1 EPIs')}
-    ${r('epis') ? p(r('epis'), {justify:true}) : p('[Listar EPIs]')}
-    ${h2('3.2 EPCs')}
-    ${r('epcs') ? p(r('epcs'), {justify:true}) : p('[Listar EPCs]')}
-    ${h2('3.3 Treinamentos')}
-    ${r('treinamentos') ? p(r('treinamentos'), {justify:true}) : p('[Listar treinamentos]')}
-    ${empty()}
-    ${h1('4. PERÍODO DE VIGÊNCIA')}
-    ${tabelaSimples([
-      ['Início','Fim'],
-      [r('dataInicioPgr') || e('mesAno'), r('dataFimPgr') || ''],
-    ])}
-  `);
+  return xmlBase('PGR – PROGRAMA DE GERENCIAMENTO DE RISCOS',
+    h1('1. APRESENTAÇÃO') +
+    p(`O Programa de Gerenciamento de Riscos (PGR) do empreendimento ${e('razaoSocial')} foi elaborado pela SUAL – Soluções Ambientais Ltda em conformidade com a Norma Regulamentadora NR-01 (Portaria MTE nº 672/2021), que tornou obrigatória a elaboração do PGR para todos os empregadores e instituições que admitam trabalhadores como empregados, substituindo o Programa de Prevenção de Riscos Ambientais (PPRA). O PGR deve contemplar o gerenciamento de riscos ocupacionais – físicos, químicos, biológicos, ergonômicos e de acidentes – visando à preservação da saúde e da integridade física dos trabalhadores.`, {justify:true}) +
+    p(`Postos de combustíveis apresentam perfil de risco ocupacional elevado em decorrência da exposição a vapores de hidrocarbonetos (BTEX), do manuseio de líquidos inflamáveis, da exposição solar prolongada e do risco de incêndio ou explosão. A NR-20 (Portaria MTE nº 727/2019) estabelece requisitos específicos de segurança para atividades com líquidos combustíveis e inflamáveis, complementando o PGR no contexto dos postos de combustíveis. O presente documento observa, ainda, as disposições da Resolução CEPRAM nº 4.578/2017 e as condicionantes da Licença de Operação Nº ${e('portaria') || '[informar]'}.`, {justify:true}) +
+    empty() +
+
+    h1('2. OBJETIVO') +
+    p(`O PGR tem como objetivos: (i) identificar, avaliar e controlar os riscos ocupacionais presentes nas atividades do empreendimento; (ii) definir medidas de prevenção e proteção adequadas a cada risco identificado; (iii) estabelecer os requisitos de capacitação dos trabalhadores; (iv) implementar procedimentos de emergência; e (v) garantir o monitoramento periódico da eficácia das medidas de controle adotadas.`, {justify:true}) +
+    empty() +
+
+    h1('3. IDENTIFICAÇÃO DO EMPREENDIMENTO') +
+    tabelaSimples([
+      ['Campo','Informação'],
+      ['Razão Social', e('razaoSocial')],
+      ['CNPJ', e('cnpj')],
+      ['Endereço', e('endereco') + ', ' + e('municipio') + '/' + e('uf')],
+      ['CNAE Principal', '4731-8/00 – Comércio varejista de combustíveis para veículos automotores'],
+      ['Grau de Risco (NR-04)', 'Grau 3 (atividade com líquidos inflamáveis – NR-20)'],
+      ['Período de Vigência', (r('dataInicioPgr') || '[início]') + ' a ' + (r('dataFimPgr') || '[fim]')],
+    ]) + empty() +
+
+    h1('4. FUNDAMENTAÇÃO LEGAL') +
+    bullet('NR-01 (Portaria MTE nº 672/2021) – Disposições gerais e gerenciamento de riscos ocupacionais.') +
+    bullet('NR-06 (Portaria MTE nº 789/2018) – Equipamentos de proteção individual (EPI).') +
+    bullet('NR-09 (Portaria SSST nº 25/1994) – Avaliação e controle das exposições ocupacionais a agentes físicos, químicos e biológicos.') +
+    bullet('NR-15 (Portaria MTE nº 3.214/1978, Anexos 11 e 13) – Limites de tolerância para benzeno e outros compostos orgânicos.') +
+    bullet('NR-20 (Portaria MTE nº 727/2019) – Segurança e saúde no trabalho com inflamáveis e combustíveis.') +
+    bullet('NR-23 (Portaria MTb nº 3.214/1978) – Proteção contra incêndios.') +
+    bullet('Resolução CONAMA nº 273/2000 – Licenciamento ambiental de postos de combustíveis.') +
+    bullet('Resolução CEPRAM nº 4.578/2017 – Licenciamento ambiental no Estado da Bahia.') +
+    empty() +
+
+    h1('5. IDENTIFICAÇÃO E AVALIAÇÃO DE RISCOS') +
+    p(`A identificação dos perigos e a avaliação dos riscos foram realizadas conforme a metodologia da NR-01 (Portaria MTE nº 672/2021), considerando as atividades e funções desenvolvidas no empreendimento, os agentes e fatores de risco presentes, e a probabilidade e gravidade dos danos potenciais.`, {justify:true}) +
+
+    h2('5.1 Riscos Físicos') +
+    p(`Riscos físicos são agentes ou fatores ambientais de natureza física que podem comprometer a segurança e a saúde do trabalhador (NR-09).`, {justify:true}) +
+    (r('riscFisicos') ? p(r('riscFisicos'), {justify:true}) :
+      p(`Os principais riscos físicos identificados no empreendimento incluem: (i) Ruído – proveniente dos motores de veículos, bombas de abastecimento e compressores, com potencial de provocar perda auditiva induzida pelo ruído (PAIR) em exposições prolongadas acima de 85 dB(A) (NR-15, Anexo 1); (ii) Calor – exposição solar direta na pista de abastecimento, com risco de estresse térmico e insolação, especialmente nos meses de verão (temp. média > 30°C); (iii) Radiação ultravioleta (UV) – exposição solar crônica associada ao risco de câncer de pele e fotodermatoses; (iv) Vibrações – transmitidas pelo manuseio de mangueiras e bicos de abastecimento em operação.`, {justify:true})) +
+
+    h2('5.2 Riscos Químicos') +
+    p(`Riscos químicos são substâncias, compostos ou produtos que possam penetrar no organismo pela via respiratória, pelas mucosas ou pela pele, causando danos à saúde (NR-09).`, {justify:true}) +
+    (r('riscQuimicos') ? p(r('riscQuimicos'), {justify:true}) :
+      p(`Os principais riscos químicos identificados incluem: (i) Vapores de combustíveis – a gasolina contém benzeno (cancerígeno Grupo 1 – IARC), tolueno, etilbenzeno e xilenos (BTEX); a inalação crônica de benzeno está associada a leucemia mieloide aguda e aplasia medular; o Limite de Tolerância (LT) do benzeno no Brasil é de 0,5 ppm (NR-15, Anexo 11); (ii) Óleo lubrificante e graxas – contato dérmico pode causar dermatite de contato e absorção percutânea de compostos cancerígenos; (iii) Produtos de limpeza e solventes – utilizados na manutenção e limpeza do estabelecimento, com risco de irritação de mucosas e pele.`, {justify:true})) +
+
+    h2('5.3 Riscos Ergonômicos') +
+    (r('riscErgonomicos') ? p(r('riscErgonomicos'), {justify:true}) :
+      p(`Os riscos ergonômicos identificados incluem: (i) Postura estática prolongada – frentistas permanecem em pé por longos períodos, expondo-se a lombalgia e fadigamento muscular; (ii) Movimentação manual de cargas – manuseio de tambores de lubrificante (até 200 kg) e galões de combustível, com risco de lesão musculoesquelética (LER/DORT); (iii) Jornada de trabalho – turnos rotativos podem causar alterações do ciclo circadiano, aumentando o risco de acidentes por fadiga.`, {justify:true})) +
+
+    h2('5.4 Riscos de Acidentes') +
+    (r('riscAcidentes') ? p(r('riscAcidentes'), {justify:true}) :
+      p(`Os principais riscos de acidentes incluem: (i) Incêndio e explosão – principal risco em postos de combustíveis, decorrente da inflamabilidade dos combustíveis (ponto de fulgor da gasolina: -43°C; diesel: 52°C); (ii) Queimaduras – por contato direto com combustível inflamado ou por respingos de líquido quente; (iii) Queda no mesmo nível – piso escorregadio por derramamento de combustível ou óleo na pista; (iv) Choque elétrico – contato com instalações elétricas defeituosas ou descarga estática em operações de transferência de combustível; (v) Atropelamento – manobra de veículos na pista de abastecimento.`, {justify:true})) +
+    empty() +
+
+    h1('6. MEDIDAS DE PREVENÇÃO E PROTEÇÃO') +
+    h2('6.1 Equipamentos de Proteção Individual (EPI)') +
+    p(`Os EPIs devem ser fornecidos gratuitamente pelo empregador, em perfeito estado de conservação e funcionamento, treinados quanto ao uso correto, conforme exigido pela NR-06 (Portaria MTE nº 789/2018). O CA (Certificado de Aprovação) de cada EPI deve estar vigente.`, {justify:true}) +
+    (r('epis') ? p(r('epis'), {justify:true}) :
+      tabelaSimples([
+        ['EPI','Risco Controlado','CA / Norma'],
+        ['Luvas nitrílicas (resistentes a hidrocarbonetos)','Contato com combustíveis e óleos','CA válido – NBR 13.716'],
+        ['Óculos de proteção incolor','Respingos de combustível','CA válido – NBR 15.027'],
+        ['Botina de segurança impermeável','Queda de objetos, respingos','CA válido – NBR 19.952'],
+        ['Colete refletivo','Atropelamento na pista','CA válido – NBR 15.292'],
+        ['Protetor solar FPS 50+','Radiação UV solar','ANVISA'],
+        ['Protetor auricular (se ruído > 85 dB)','Ruído excessivo','CA válido – NBR 10.018'],
+      ])) +
+
+    h2('6.2 Equipamentos de Proteção Coletiva (EPC)') +
+    (r('epcs') ? p(r('epcs'), {justify:true}) :
+      p(`Os EPCs instalados no empreendimento incluem: (i) Extintores de incêndio do tipo CO₂ e pó BC, distribuídos conforme NBR 12.693/2013 (Sistemas de proteção por extintores de incêndio) e IT nº 21/2014 do CBMBA, com manutenção semestral documentada; (ii) Sinalização de segurança e riscos conforme NBR 7.195/1995, incluindo proibição de fumar, proibição de acender fogo e indicação de saídas de emergência; (iii) Aterramento e equipotencialização elétrica em todas as estruturas metálicas do sistema de armazenamento, conforme NBR 5.410/2004 e ABNT NBR 13.786/2014; (iv) Iluminação de emergência nas áreas críticas.`, {justify:true})) +
+
+    h2('6.3 Treinamentos e Capacitações') +
+    (r('treinamentos') ? p(r('treinamentos'), {justify:true}) :
+      p(`Os treinamentos obrigatórios incluem: (i) NR-20 – Segurança com Inflamáveis e Combustíveis: obrigatório para todos os trabalhadores que operam na pista de abastecimento, com carga horária mínima de 8h e reciclagem anual; (ii) NR-06 – Uso de EPIs: treinamento no ato da admissão e sempre que houver mudança nas condições de trabalho; (iii) Brigada de Incêndio – conforme IT nº 17/2014 do CBMBA, com exercícios simulados semestrais; (iv) Primeiros Socorros – incluindo técnicas de RCP, controle de hemorragias e queimaduras; (v) Procedimentos de emergência ambiental – contenção de derrames e acionamento do INEMA.`, {justify:true})) +
+    empty() +
+
+    h1('7. PLANO DE RESPOSTA A EMERGÊNCIAS') +
+    p(`O empreendimento deverá manter Plano de Resposta a Emergências (PRE) documentado e afixado em local visível, contemplando os procedimentos para: (i) incêndio ou explosão: evacuar área, acionar Corpo de Bombeiros (193), cortar suprimento de energia e de combustível, combate inicial com extintores se seguro; (ii) derrame de combustível: isolar área, absorver com material específico, recolher em recipiente adequado, acionar INEMA em 24 horas (Lei nº 9.605/1998, Art. 69); (iii) acidente com vítima: acionar SAMU (192), prestar primeiros socorros, não remover vítima com fratura; (iv) vazamento em tanques: desativar bombas, acionar técnico especializado e INEMA imediatamente.`, {justify:true}) +
+    empty() +
+
+    h1('8. PERÍODO DE VIGÊNCIA E REVISÃO') +
+    tabelaSimples([
+      ['Campo','Data'],
+      ['Início de vigência', r('dataInicioPgr') || e('mesAno') || '[informar]'],
+      ['Término de vigência', r('dataFimPgr') || '[informar]'],
+      ['Próxima revisão', '[máximo 1 ano ou após acidente / mudança operacional]'],
+    ]) +
+    p(`O PGR deverá ser revisado e atualizado anualmente ou sempre que ocorrer mudança nas condições de trabalho que possa alterar o perfil de risco do empreendimento, conforme previsto na NR-01 (item 1.5.7). A revisão deve ser documentada com data, identificação do revisor e registro das principais alterações em relação à versão anterior.`, {justify:true}) +
+    empty() +
+
+    h1('9. CONSIDERAÇÕES FINAIS') +
+    p(`O presente Programa de Gerenciamento de Riscos estabelece o conjunto de medidas preventivas e corretivas necessárias para garantir a segurança e a saúde dos trabalhadores do empreendimento ${e('razaoSocial')}, em conformidade com a legislação de segurança do trabalho e ambiental vigente. A implementação efetiva do PGR, aliada ao monitoramento contínuo das condições de trabalho e à capacitação permanente dos funcionários, constitui a principal estratégia de prevenção de acidentes e doenças ocupacionais em postos de combustíveis.`, {justify:true})
+  );
 }
 
 function xmlCond() {
   const r = id => d('cond.' + id);
   const respostas = r('respostasCond') || '';
-  const blocos = respostas.split('\n').filter(l => l.trim()).map(linha => p(linha, {justify:true})).join('');
-  return xmlBase('RELATÓRIO DE CUMPRIMENTO DE CONDICIONANTES', `
-    ${h1('IDENTIFICAÇÃO')}
-    ${tabelaSimples([
+  const blocos = respostas.split('\n').filter(l => l.trim()).map((linha, i) => {
+    const isCond = linha.match(/^CONDICIONANTE\s+\d+/i);
+    return isCond ? h2(linha.split(':')[0].trim()) + (linha.includes(':') ? p(linha.substring(linha.indexOf(':')+1).trim(), {justify:true}) : '') : p(linha, {justify:true});
+  }).join('');
+
+  return xmlBase('RELATÓRIO DE CUMPRIMENTO DE CONDICIONANTES',
+    h1('1. IDENTIFICAÇÃO DO EMPREENDIMENTO') +
+    tabelaSimples([
       ['Campo','Informação'],
       ['Empreendimento', e('razaoSocial')],
+      ['Nome Fantasia', e('nomeFantasia') || '—'],
       ['CNPJ', e('cnpj')],
-      ['Portaria / LO', e('portaria')],
-      ['Data da Portaria', e('dataPortaria')],
-      ['Processo', e('numProcesso')],
-      ['Contato', r('contatoCond') || e('telefone')],
-      ['Qtd. de Condicionantes', r('qtdCond')],
-      ['Válido até', r('validadeCond')],
-    ])}
-    ${empty()}
-    ${h1('CONDICIONANTES E RESPOSTAS')}
-    ${blocos || p('[Inserir respostas às condicionantes no campo de configuração]', {cor:'718096'})}
-  `);
+      ['Endereço', e('endereco') + ', ' + e('municipio') + '/' + e('uf')],
+      ['Portaria / LO Nº', e('portaria') || '—'],
+      ['Data da Portaria', e('dataPortaria') || '—'],
+      ['Processo INEMA', e('numProcesso') || '—'],
+      ['Contato do Empreendimento', r('contatoCond') || e('telefone')],
+      ['Qtd. de Condicionantes', r('qtdCond') || '—'],
+      ['Válido até', r('validadeCond') || '—'],
+      ['Responsável Técnico', e('tecNome') + ' – RNP: ' + e('tecRnp')],
+    ]) + empty() +
+
+    h1('2. APRESENTAÇÃO') +
+    p(`O presente Relatório de Cumprimento de Condicionantes foi elaborado pela SUAL – Soluções Ambientais Ltda para o empreendimento ${e('razaoSocial')}, em atendimento às condicionantes estabelecidas na Licença de Operação Nº ${e('portaria') || '[informar]'}, emitida pelo Instituto do Meio Ambiente e Recursos Hídricos – INEMA, conforme Portaria de ${e('dataPortaria') || '[informar data]'}.`, {justify:true}) +
+    p(`O licenciamento ambiental é o instrumento pelo qual o INEMA controla as atividades efetiva ou potencialmente poluidoras, estabelecendo condicionantes que devem ser cumpridas pelo empreendedor durante toda a vigência da licença. O não cumprimento das condicionantes constitui infração ambiental, sujeita às sanções previstas na Lei Federal nº 9.605/1998 (Lei de Crimes Ambientais) e na Lei Estadual nº 10.431/2006, podendo resultar na suspensão ou cancelamento da licença.`, {justify:true}) +
+    p(`As respostas apresentadas neste relatório foram elaboradas com base nos documentos comprobatórios disponíveis no empreendimento, nas visitas técnicas realizadas pela SUAL e nos laudos analíticos emitidos por laboratórios credenciados. Todos os documentos de comprovação encontram-se arquivados no empreendimento e disponíveis para apresentação ao INEMA quando solicitado.`, {justify:true}) +
+    empty() +
+
+    h1('3. CONDICIONANTES E RESPOSTAS') +
+    p(`A seguir são apresentadas as respostas a cada uma das ${r('qtdCond') || '[informar]'} condicionantes estabelecidas na Licença de Operação Nº ${e('portaria') || '[informar]'}, com indicação da situação de atendimento (ATENDIDA / PARCIALMENTE ATENDIDA / PENDENTE).`, {justify:true}) +
+    empty() +
+    (blocos || p('[Inserir as respostas às condicionantes no campo de configuração do documento, no formato:\nCONDICIONANTE 01: [resposta detalhada]\nCONDICIONANTE 02: [resposta detalhada]]', {cor:'718096'})) +
+    empty() +
+
+    h1('4. CONSIDERAÇÕES FINAIS') +
+    p(`Com base no presente Relatório de Cumprimento de Condicionantes, o empreendimento ${e('razaoSocial')} demonstra o atendimento às condicionantes da Licença de Operação Nº ${e('portaria') || '[informar]'}, emitida pelo INEMA. O empreendimento reafirma seu compromisso com a gestão ambiental responsável e com o cumprimento integral das exigências legais, mantendo a documentação comprobatória arquivada e disponível para fiscalização.`, {justify:true}) +
+    p(`O próximo relatório de cumprimento de condicionantes deverá ser apresentado ao INEMA conforme o prazo estabelecido na Licença de Operação vigente, ou quando solicitado pelo órgão ambiental competente.`, {justify:true})
+  );
 }
 
 function xmlSao() {
   const r = id => d('sao.' + id);
-  return xmlBase('RELATÓRIO DE EFICIÊNCIA DA CAIXA SEPARADORA ÁGUA/ÓLEO', `
-    ${h1('1. INTRODUÇÃO')}
-    ${p(`O presente estudo visa o monitoramento da eficiência da caixa separadora (SAO) do empreendimento ${e('razaoSocial')}, uma vez que as atividades de armazenamento, abastecimento e lavação de combustíveis são consideradas potencialmente poluidoras.`, {justify:true})}
-    ${p('A atividade está sujeita a licenciamento ambiental conforme Resolução CONAMA nº 273/2000, com monitoramento dos efluentes conforme Resolução CONAMA nº 430/2011.', {justify:true})}
-    ${empty()}
-    ${h1('2. METODOLOGIA')}
-    ${p('A SAO (Caixa Separadora Água/Óleo) remove óleos em estado livre por diferença de densidade. O efluente bruto passa por compartimentos de separação onde o óleo é retido e o efluente tratado é direcionado para a saída.', {justify:true})}
-    ${empty()}
-    ${h1('3. ANÁLISE LABORATORIAL')}
-    ${p('Data de coleta: ' + (r('dataColetaSao') || '[Inserir data]'))}
-    ${r('laboratorioSao') ? p('Laboratório: ' + r('laboratorioSao')) : ''}
-    ${empty()}
-    ${h2('3.1 Resultados')}
-    ${tabelaSimples([
-      ['Parâmetro','Entrada (Bruto)','Saída (Tratado)','VMP CONAMA 430'],
-      ['pH', r('phEntrada'), r('phSaida'), '5 a 9'],
-      ['DQO (mg/L)', r('dqoEntrada'), r('dqoSaida'), '—'],
-      ['Óleos e Graxas (mg/L)', r('ogEntrada'), r('ogSaida'), '≤ 20'],
-      ['Sólidos em Suspensão', r('ssEntrada'), r('ssSaida'), '—'],
-    ])}
-    ${empty()}
-    ${h2('3.2 Eficiência')}
-    ${tabelaSimples([
-      ['Parâmetro','Eficiência','Enquadramento'],
-      ['Óleos e Graxas', r('eficienciaOg'), r('enquadramento') || 'Conforme CONAMA 430/2011'],
-    ])}
-    ${empty()}
-    ${h1('4. CONSIDERAÇÕES FINAIS')}
-    ${p(`Com base nos resultados obtidos, a caixa separadora água/óleo do empreendimento ${e('razaoSocial')} apresentou ${r('enquadramento') || 'resultado conforme'} os padrões estabelecidos pela Resolução CONAMA nº 430/2011.`, {justify:true})}
-    ${r('obsSao') ? p('Observações: ' + r('obsSao'), {justify:true}) : ''}
-  `);
+
+  // Calcular eficiência de óleos e graxas se disponível
+  const ogEnt = parseFloat(r('ogEntrada')) || 0;
+  const ogSai = parseFloat(r('ogSaida')) || 0;
+  const eficCalc = ogEnt > 0 ? ((ogEnt - ogSai) / ogEnt * 100).toFixed(1) + '%' : (r('eficienciaOg') || '—');
+  const enquadrado = ogSai <= 20;
+
+  return xmlBase('RELATÓRIO DE EFICIÊNCIA DA CAIXA SEPARADORA ÁGUA/ÓLEO',
+    h1('1. INTRODUÇÃO') +
+    p(`O presente Relatório de Eficiência da Caixa Separadora de Água e Óleo (SAO) foi elaborado pela SUAL – Soluções Ambientais Ltda para o empreendimento ${e('razaoSocial')}, situado no município de ${e('municipio')}, Estado da Bahia. O estudo tem por objetivo avaliar a eficiência do sistema de tratamento de efluentes líquidos gerados nas atividades de abastecimento de veículos, em atendimento às exigências da Resolução CONAMA nº 273/2000 e aos padrões de lançamento estabelecidos pela Resolução CONAMA nº 430/2011.`, {justify:true}) +
+    p(`As atividades de revenda de combustíveis geram efluentes líquidos contaminados por óleos e graxas minerais, sólidos em suspensão e compostos orgânicos voláteis, provenientes do escoamento pluvial sobre a pista de abastecimento e das águas de lavagem. O lançamento desses efluentes em corpos hídricos sem o tratamento adequado constitui infração ambiental e pode causar impactos significativos sobre a qualidade da água e os ecossistemas aquáticos (CETESB, 2022). O Art. 16 da Resolução CONAMA nº 430/2011 estabelece o Valor Máximo Permissível (VMP) de 20 mg/L para óleos e graxas minerais em efluentes lançados em corpos receptores de água doce.`, {justify:true}) +
+    empty() +
+
+    h1('2. FUNDAMENTAÇÃO LEGAL') +
+    bullet('Resolução CONAMA nº 237/1997 – Disciplina o licenciamento ambiental de atividades potencialmente poluidoras.') +
+    bullet('Resolução CONAMA nº 273/2000 – Estabelece requisitos para o licenciamento de postos de combustíveis, incluindo a instalação e manutenção de SAO.') +
+    bullet('Resolução CONAMA nº 430/2011 – Condições e padrões de lançamento de efluentes: VMP de 20 mg/L para óleos e graxas minerais (Art. 16, §3º).') +
+    bullet('ABNT NBR 14.605/2015 – Postos de serviço: dimensionamento e instalação da caixa separadora de água e óleo.') +
+    bullet('Resolução CEPRAM nº 4.578/2017 – Condicionantes de licenciamento ambiental no Estado da Bahia.') +
+    empty() +
+
+    h1('3. DESCRIÇÃO DO SISTEMA SAO') +
+    p(`A Caixa Separadora de Água e Óleo (SAO), também denominada CSAO ou Caixa Separadora de Água/Óleo com Câmara de Retenção de Sólidos, é um equipamento projetado para remover óleos em estado livre de efluentes líquidos por diferença de densidade. O óleo, menos denso que a água (densidade ≈ 0,85 g/cm³ para óleo mineral vs. 1,00 g/cm³ para água), migra para a superfície por flotação gravitacional, sendo retido no equipamento enquanto o efluente tratado segue para o ponto de lançamento.`, {justify:true}) +
+    p(`O sistema é constituído por três compartimentos em série: (i) Câmara de entrada e decantação de sólidos grosseiros – reduz a velocidade do fluxo e retém sólidos sedimentáveis; (ii) Câmara de separação água/óleo – câmara principal com lâminas coalescentes que favorecem a separação e retenção do óleo livre; (iii) Câmara de saída – coleta o efluente já tratado, dotada de saída tubular posicionada abaixo da superfície, impedindo o arraste de óleo. A SAO está dimensionada conforme a ABNT NBR 14.605:2015, com capacidade compatível com o volume máximo de efluentes gerados nas operações de abastecimento.`, {justify:true}) +
+    empty() +
+
+    h1('4. ANÁLISE LABORATORIAL') +
+    h2('4.1 Dados da Coleta') +
+    tabelaSimples([
+      ['Campo','Informação'],
+      ['Empreendimento', e('razaoSocial')],
+      ['Data de Coleta', r('dataColetaSao') || '[informar]'],
+      ['Laboratório Responsável', r('laboratorioSao') || '[informar]'],
+      ['Método de Coleta', 'Amostragem pontual em ponto de entrada e saída da SAO'],
+      ['Norma de Amostragem', 'ABNT NBR 9.898/1987 e Standard Methods (SMWW, 23ª ed.)'],
+      ['Técnico Responsável', e('tecNome') + ' – RNP: ' + e('tecRnp')],
+    ]) + empty() +
+
+    h2('4.2 Resultados das Análises') +
+    p(`As análises laboratoriais foram realizadas em amostras coletadas nos pontos de entrada (efluente bruto) e saída (efluente tratado) da SAO, seguindo os protocolos do Standard Methods for the Examination of Water and Wastewater (SMWW, 23ª ed.) e dos métodos EPA (SW-846). Os resultados obtidos estão apresentados na tabela a seguir, com comparação aos padrões estabelecidos pela Resolução CONAMA nº 430/2011:`, {justify:true}) +
+    tabelaSimples([
+      ['Parâmetro','Unidade','Entrada (Bruto)','Saída (Tratado)','VMP CONAMA 430/2011','Situação'],
+      ['pH','—', r('phEntrada') || '—', r('phSaida') || '—','5,0 a 9,0', r('phSaida') && parseFloat(r('phSaida')) >= 5 && parseFloat(r('phSaida')) <= 9 ? 'Conforme' : 'Verificar'],
+      ['DQO','mg/L', r('dqoEntrada') || '—', r('dqoSaida') || '—','—','—'],
+      ['Óleos e Graxas Minerais','mg/L', r('ogEntrada') || '—', r('ogSaida') || '—','≤ 20 mg/L', r('ogSaida') && parseFloat(r('ogSaida')) <= 20 ? '✓ Conforme' : '✗ Não conforme'],
+      ['Sólidos em Suspensão Totais','mg/L', r('ssEntrada') || '—', r('ssSaida') || '—','—','—'],
+    ]) + empty() +
+
+    h2('4.3 Eficiência do Sistema') +
+    tabelaSimples([
+      ['Parâmetro','Eficiência de Remoção','Enquadramento CONAMA 430/2011'],
+      ['Óleos e Graxas Minerais', eficCalc, r('enquadramento') || (enquadrado ? 'Conforme (≤ 20 mg/L)' : 'Não conforme (> 20 mg/L)')],
+    ]) +
+    p(`${ogEnt > 0 ? `A eficiência de remoção de óleos e graxas calculada foi de ${eficCalc}, com concentração de saída de ${r('ogSaida') || '[informar]'} mg/L, ${enquadrado ? 'atendendo ao VMP de 20 mg/L estabelecido pelo Art. 16, §3º da Resolução CONAMA nº 430/2011' : 'não atendendo ao VMP de 20 mg/L — recomenda-se manutenção imediata e nova coleta para verificação'}.` : 'Inserir análise da eficiência com base nos resultados laboratoriais.'}`, {justify:true}) +
+    (r('obsSao') ? p(`Observações técnicas: ${r('obsSao')}`, {justify:true}) : '') +
+    empty() +
+
+    h1('5. MANUTENÇÃO E PERIODICIDADE') +
+    p(`Para garantir a eficiência operacional da SAO e o atendimento contínuo aos padrões de lançamento da Resolução CONAMA nº 430/2011, recomenda-se: (i) limpeza periódica da câmara de retenção de óleo a cada 3 meses, ou sempre que o nível de óleo retido atingir 50% da capacidade; (ii) limpeza da câmara de sólidos a cada 6 meses; (iii) inspeção visual mensal de toda a estrutura, tubulações e tampas de inspeção; (iv) amostragem laboratorial semestral para monitoramento da eficiência, com emissão de laudo técnico; (v) descarte do óleo retido como OLUC, por empresa coletora autorizada pela ANP, conforme Resolução CONAMA nº 362/2005.`, {justify:true}) +
+    empty() +
+
+    h1('6. CONSIDERAÇÕES FINAIS') +
+    p(`Com base nos resultados analíticos apresentados neste relatório, ${r('ogSaida') && parseFloat(r('ogSaida')) <= 20 ? `a caixa separadora de água e óleo do empreendimento ${e('razaoSocial')} demonstrou eficiência satisfatória, com concentração de óleos e graxas na saída de ${r('ogSaida')} mg/L, valor inferior ao VMP de 20 mg/L estabelecido pela Resolução CONAMA nº 430/2011, atestando a conformidade ambiental do sistema de tratamento de efluentes.` : `recomenda-se a realização de manutenção corretiva imediata na SAO do empreendimento ${e('razaoSocial')}, seguida de nova amostragem para comprovação do atendimento aos padrões da Resolução CONAMA nº 430/2011.`}`, {justify:true}) +
+    p(`A SUAL – Soluções Ambientais Ltda coloca-se à disposição do empreendimento e do INEMA para esclarecimentos adicionais sobre os resultados apresentados e as recomendações técnicas constantes deste relatório.`, {justify:true})
+  );
 }
 
 function xmlDiag() {
@@ -1253,69 +1410,129 @@ function xmlGeo() {
 
 function xmlRvt() {
   const r = id => d('rvt.' + id);
-  function areaBloco(nome, campo) {
+  function areaBloco(titulo, campo) {
     const texto = r(campo);
-    if (!texto) return '';
-    return `${h2(nome)}${p(texto, {justify:true})}${p('[Inserir Registro Fotográfico]', {center:true, cor:'718096'})}${empty()}`;
+    if (!texto) return h2(titulo) + p('[Inserir análise e observações desta área]', {cor:'718096'}) + p('[Inserir Registro Fotográfico]', {center:true, cor:'718096'}) + empty();
+    return h2(titulo) + p(texto, {justify:true}) + p('[Inserir Registro Fotográfico da área]', {center:true, cor:'718096'}) + empty();
   }
-  return xmlBase('RELATÓRIO DE VISITA TÉCNICA', `
-    ${h1('IDENTIFICAÇÃO')}
-    ${tabelaSimples([
+  return xmlBase('RELATÓRIO DE VISITA TÉCNICA',
+    h1('1. IDENTIFICAÇÃO') +
+    tabelaSimples([
       ['Campo','Informação'],
-      ['Nº do Relatório', r('numRvt')],
+      ['Nº do Relatório', r('numRvt') || e('numRelatorio') || '—'],
       ['Empreendimento', e('razaoSocial')],
+      ['Nome Fantasia', e('nomeFantasia') || '—'],
       ['CNPJ', e('cnpj')],
-      ['Data da Vistoria', r('dataVistoria')],
-      ['Turno', r('turnoVistoria')],
-      ['Representante', r('representanteVistoria')],
-    ])}
-    ${empty()}
-    ${h1('INTRODUÇÃO')}
-    ${p(`O relatório de visita técnica tem como principal objetivo levantar as inconformidades das áreas dentro do empreendimento ${e('razaoSocial')}. Após a análise, orientações são indicadas especificamente para cada área, cabendo ao empreendimento realizar as adequações necessárias.`, {justify:true})}
-    ${empty()}
-    ${h1('ÁREAS VISTORIADAS')}
-    ${areaBloco('Ilha de Abastecimento', 'areaIlha')}
-    ${areaBloco('Canaletas e Sistema de Drenagem', 'areaCanaleta')}
-    ${areaBloco('Caixa Separadora Água/Óleo (SAO)', 'areaSao')}
-    ${areaBloco('Tanques Subterrâneos', 'areaTanques')}
-    ${areaBloco('Armazenamento de Resíduos', 'areaResiduos')}
-    ${areaBloco('Outras Áreas', 'areaOutras')}
-    ${h1('CONCLUSÃO E RECOMENDAÇÕES')}
-    ${r('conclusaoRvt') ? p(r('conclusaoRvt'), {justify:true}) : p('[Inserir conclusão geral da visita]')}
-  `);
+      ['Endereço', e('endereco') + ', ' + e('municipio') + '/' + e('uf')],
+      ['Coordenadas UTM', 'E: ' + e('coordE') + ' m | N: ' + e('coordN') + ' m | Zona ' + e('zonaUtm')],
+      ['Data da Vistoria', r('dataVistoria') || '[informar]'],
+      ['Turno', r('turnoVistoria') || '[informar]'],
+      ['Representante Presente', r('representanteVistoria') || e('respNome') || '[informar]'],
+      ['Técnico Responsável', e('tecNome') + ' – RNP: ' + e('tecRnp')],
+      ['Portaria / LO', e('portaria') || '—'],
+    ]) + empty() +
+
+    h1('2. INTRODUÇÃO E OBJETIVO') +
+    p(`O presente Relatório de Visita Técnica foi elaborado pela SUAL – Soluções Ambientais Ltda como resultado de inspeção técnica in loco realizada nas instalações do empreendimento ${e('razaoSocial')}, situado no município de ${e('municipio')}, Estado da Bahia, em ${r('dataVistoria') || '[data]'}, turno ${r('turnoVistoria') || '[turno]'}. A visita técnica constitui instrumento de acompanhamento e monitoramento ambiental, exigido nas condicionantes da Licença de Operação Nº ${e('portaria') || '[informar]'}, emitida pelo Instituto do Meio Ambiente e Recursos Hídricos – INEMA.`, {justify:true}) +
+    p(`O objetivo da visita técnica é realizar levantamento detalhado das condições ambientais e operacionais do empreendimento, identificando não conformidades, avaliando o status de atendimento às condicionantes da LO e emitindo recomendações técnicas para a adequação e melhoria contínua dos sistemas de controle ambiental. A metodologia adotada inclui inspeção visual de todas as áreas críticas, entrevistas com o responsável do empreendimento, verificação de documentação e registro fotográfico das condições observadas.`, {justify:true}) +
+    empty() +
+
+    h1('3. METODOLOGIA') +
+    p(`A vistoria técnica foi realizada por profissional habilitado da SUAL – Soluções Ambientais Ltda, mediante inspeção visual sistemática de todas as áreas do empreendimento, seguindo roteiro de verificação baseado na Resolução CONAMA nº 273/2000 e nas condicionantes específicas da LO. Foram avaliados: (i) estado de conservação das instalações de armazenamento e distribuição de combustíveis; (ii) condições operacionais dos sistemas de controle ambiental (SAO, canaletas, piso impermeabilizado); (iii) adequação dos sistemas de monitoramento de vazamentos; (iv) condições de armazenamento e gestão de resíduos sólidos; (v) cumprimento das condicionantes de licenciamento; e (vi) documentação ambiental disponível no empreendimento.`, {justify:true}) +
+    empty() +
+
+    h1('4. ÁREAS VISTORIADAS') +
+    areaBloco('4.1 Ilha de Abastecimento', 'areaIlha') +
+    areaBloco('4.2 Canaletas e Sistema de Drenagem', 'areaCanaleta') +
+    areaBloco('4.3 Caixa Separadora de Água e Óleo (SAO)', 'areaSao') +
+    areaBloco('4.4 Tanques de Armazenamento Subterrâneo (TAS)', 'areaTanques') +
+    areaBloco('4.5 Armazenamento e Gestão de Resíduos Sólidos', 'areaResiduos') +
+    areaBloco('4.6 Outras Áreas (Administração, Conveniência, Sanitários)', 'areaOutras') +
+
+    h1('5. QUADRO RESUMO DE CONFORMIDADE') +
+    tabelaSimples([
+      ['Área / Item','Situação','Recomendação'],
+      ['Ilha de abastecimento', r('areaIlha') ? 'Vistoriado' : '—','—'],
+      ['Canaletas e drenagem', r('areaCanaleta') ? 'Vistoriado' : '—','—'],
+      ['SAO', r('areaSao') ? 'Vistoriado' : '—','—'],
+      ['TAS / Tanques', r('areaTanques') ? 'Vistoriado' : '—','—'],
+      ['Resíduos sólidos', r('areaResiduos') ? 'Vistoriado' : '—','—'],
+      ['Documentação ambiental', e('portaria') ? 'LO Nº ' + e('portaria') + ' verificada' : '—','—'],
+    ]) + empty() +
+
+    h1('6. CONCLUSÃO E RECOMENDAÇÕES TÉCNICAS') +
+    (r('conclusaoRvt') ? p(r('conclusaoRvt'), {justify:true}) :
+      p(`Com base na vistoria técnica realizada em ${r('dataVistoria') || '[data]'} nas instalações do empreendimento ${e('razaoSocial')}, no município de ${e('municipio')}, conclui-se que o empreendimento apresenta condições operacionais [satisfatórias/regulares/insatisfatórias], com os itens de não conformidade identificados e registrados nas seções anteriores deste relatório. As recomendações técnicas emitidas visam à correção das não conformidades identificadas e à melhoria contínua dos sistemas de controle ambiental.`, {justify:true})) +
+    empty() +
+    bullet('Apresentar ao INEMA cópia deste relatório de visita técnica, conforme prazo estabelecido nas condicionantes da LO.') +
+    bullet('Implementar as ações corretivas recomendadas nas áreas com não conformidades identificadas, no prazo máximo de 30 dias, salvo quando especificado diferente neste relatório.') +
+    bullet('Manter registro fotográfico atualizado das condições de todas as áreas críticas, com frequência mínima trimestral.') +
+    bullet('Realizar análise laboratorial da SAO conforme periodicidade exigida pela LO ou, no mínimo, semestralmente.')
+  );
 }
 
 function xmlFoto() {
   let paginas = '';
+  const fotos = [];
   for (let n = 1; n <= 8; n++) {
     const desc = d(`foto.fotoDesc${n}`);
     const data = d(`foto.fotoData${n}`);
     if (!desc && n > 1) continue;
-    paginas += `
-      ${p(e('razaoSocial').toUpperCase(), {bold:true, center:true, size:'28'})}
-      ${p('RELATÓRIO FOTOGRÁFICO', {bold:true, center:true, size:'26'})}
-      ${empty()}
-      ${tabelaSimples([
-        ['Campo','Informação'],
-        ['Telefone', e('telefone')],
-        ['Nome de contato', e('tecNome')],
-        ['Responsável pelas fotos', e('tecNome')],
-        ['RNP', e('tecRnp')],
-      ])}
-      ${empty()}
-      ${p('FOTOGRAFIA', {bold:true, center:true, size:'28'})}
-      ${empty()}
-      ${tabelaSimples([
-        ['Descrição', desc || `Foto ${n}`],
-        ['Local e data', data || e('municipio') + ', ' + (e('mesAno') || '')],
-      ])}
-      ${empty()}
-      ${p('[Inserir fotografia aqui]', {center:true, cor:'718096', size:'20'})}
-      ${empty()}
-      ${p('Assinatura do Responsável: ' + '_'.repeat(40), {center:true})}
-      ${n < 8 ? pb() : ''}
-    `;
+    fotos.push({ n, desc: desc || `Fotografia ${n}`, data: data || (e('municipio') + ', ' + (e('mesAno') || '')) });
   }
+  if (fotos.length === 0) fotos.push({ n:1, desc:'[Inserir descrição da fotografia]', data: e('municipio') + ', ' + (e('mesAno') || '') });
+
+  // Capa do relatório fotográfico
+  const capaFoto = `
+    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="480" w:after="80" w:line="240" w:lineRule="auto"/></w:pPr>
+      <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:sz w:val="36"/><w:szCs w:val="36"/><w:color w:val="1F497D"/></w:rPr>
+        <w:t>RELATÓRIO FOTOGRÁFICO</w:t></w:r></w:p>
+    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="80"/></w:pPr>
+      <w:r><w:rPr><w:rFonts w:ascii="Cambria" w:hAnsi="Cambria"/><w:b/><w:sz w:val="26"/><w:color w:val="4F81BD"/></w:rPr>
+        <w:t>${esc(e('razaoSocial').toUpperCase())}</w:t></w:r></w:p>
+    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="60"/></w:pPr>
+      <w:r><w:rPr><w:sz w:val="22"/><w:color w:val="718096"/></w:rPr>
+        <w:t>CNPJ: ${esc(e('cnpj'))}</w:t></w:r></w:p>
+    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="60"/></w:pPr>
+      <w:r><w:rPr><w:sz w:val="22"/><w:color w:val="718096"/></w:rPr>
+        <w:t>${esc(e('municipio') + (e('uf') ? ' – ' + e('uf') : ''))}</w:t></w:r></w:p>
+    <w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="360"/></w:pPr>
+      <w:r><w:rPr><w:sz w:val="22"/><w:color w:val="1F497D"/></w:rPr>
+        <w:t>${esc(e('mesAno') || new Date().getFullYear().toString())}</w:t></w:r></w:p>
+    ${tabelaSimples([
+      ['Campo','Informação'],
+      ['Endereço', e('endereco')],
+      ['Coordenadas UTM', 'E: ' + e('coordE') + ' m | N: ' + e('coordN') + ' m | Zona ' + e('zonaUtm')],
+      ['Técnico Responsável', e('tecNome')],
+      ['RNP', e('tecRnp')],
+      ['Portaria / LO', e('portaria') || '—'],
+      ['Data da Visita', fotos[0]?.data || e('mesAno') || '—'],
+    ])}
+  `;
+
+  // Páginas de fotos
+  fotos.forEach(({ n, desc, data }) => {
+    paginas += `
+      ${pb()}
+      ${p(`FOTOGRAFIA ${String(n).padStart(2,'0')} de ${String(fotos.length).padStart(2,'0')}`, {bold:true, center:true, size:'22', cor:'1F497D'})}
+      ${empty()}
+      ${tabelaSimples([
+        ['Descrição', desc],
+        ['Local e Data', data],
+        ['Empreendimento', e('razaoSocial')],
+        ['Responsável Técnico', e('tecNome') + ' – RNP: ' + e('tecRnp')],
+      ])}
+      ${empty()}
+      ${p('[Inserir fotografia neste espaço]', {center:true, cor:'718096', size:'20'})}
+      ${empty()}
+      ${empty()}
+      ${p('Assinatura do Responsável Técnico: ' + '_'.repeat(40), {center:true})}
+      ${p(e('tecNome') || '', {center:true})}
+      ${p('RNP: ' + (e('tecRnp') || ''), {center:true})}
+      ${p('SUAL – Soluções Ambientais Ltda', {center:true, cor:'1F497D'})}
+    `;
+  });
+
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
   xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
@@ -1323,6 +1540,7 @@ function xmlFoto() {
   xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
   xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
 <w:body>
+  ${capaFoto}
   ${paginas}
   <w:sectPr>
     <w:headerReference w:type="default" r:id="rId2"/>
