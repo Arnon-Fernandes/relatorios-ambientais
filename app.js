@@ -10,6 +10,77 @@ const SUAL_FOOTER_XML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:ftr xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex" xmlns:cx1="http://schemas.microsoft.com/office/drawing/2015/9/8/chartex" xmlns:cx2="http://schemas.microsoft.com/office/drawing/2015/10/21/chartex" xmlns:cx3="http://schemas.microsoft.com/office/drawing/2016/5/9/chartex" xmlns:cx4="http://schemas.microsoft.com/office/drawing/2016/5/10/chartex" xmlns:cx5="http://schemas.microsoft.com/office/drawing/2016/5/11/chartex" xmlns:cx6="http://schemas.microsoft.com/office/drawing/2016/5/12/chartex" xmlns:cx7="http://schemas.microsoft.com/office/drawing/2016/5/13/chartex" xmlns:cx8="http://schemas.microsoft.com/office/drawing/2016/5/14/chartex" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:aink="http://schemas.microsoft.com/office/drawing/2016/ink" xmlns:am3d="http://schemas.microsoft.com/office/drawing/2017/model3d" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:oel="http://schemas.microsoft.com/office/2019/extlst" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" xmlns:w16cex="http://schemas.microsoft.com/office/word/2018/wordml/cex" xmlns:w16cid="http://schemas.microsoft.com/office/word/2016/wordml/cid" xmlns:w16="http://schemas.microsoft.com/office/word/2018/wordml" xmlns:w16du="http://schemas.microsoft.com/office/word/2023/wordml/word16du" xmlns:w16sdtdh="http://schemas.microsoft.com/office/word/2020/wordml/sdtdatahash" xmlns:w16sdtfl="http://schemas.microsoft.com/office/word/2024/wordml/sdtformatlock" xmlns:w16se="http://schemas.microsoft.com/office/word/2015/wordml/symex" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 w15 w16se w16cid w16 w16cex w16sdtdh w16sdtfl w16du wp14"><w:p w14:paraId="7571F991" w14:textId="77777777" w:rsidR="006E138B" w:rsidRPr="000D5083" w:rsidRDefault="006E138B" w:rsidP="006E138B"><w:pPr><w:spacing w:line="192" w:lineRule="exact"/><w:ind w:left="1494" w:right="1448"/><w:jc w:val="center"/><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr></w:pPr><w:bookmarkStart w:id="0" w:name="_Hlk187176904"/><w:bookmarkStart w:id="1" w:name="_Hlk187176905"/></w:p><w:p w14:paraId="4B5C14E2" w14:textId="3956D0D8" w:rsidR="00984FD0" w:rsidRDefault="004C2216" w:rsidP="00984FD0"><w:pPr><w:pStyle w:val="Corpodetexto"/><w:spacing w:line="20" w:lineRule="exact"/><w:ind w:left="-105"/><w:rPr><w:sz w:val="2"/></w:rPr></w:pPr><w:r><w:rPr><w:noProof/><w:sz w:val="2"/></w:rPr><mc:AlternateContent><mc:Choice Requires="wpg"><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0" wp14:anchorId="2923DF50" wp14:editId="24570490"><wp:extent cx="5476875" cy="9525"/><wp:effectExtent l="9525" t="0" r="9525" b="9525"/><wp:docPr id="1982017131" name="Group 2"/><wp:cNvGraphicFramePr><a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"/></wp:cNvGraphicFramePr><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup"><wpg:wgp><wpg:cNvGrpSpPr><a:grpSpLocks/></wpg:cNvGrpSpPr><wpg:grpSpPr bwMode="auto"><a:xfrm><a:off x="0" y="0"/><a:ext cx="5476875" cy="9525"/><a:chOff x="0" y="0"/><a:chExt cx="8625" cy="15"/></a:xfrm></wpg:grpSpPr><wps:wsp><wps:cNvPr id="1686061944" name="Line 3"/><wps:cNvCnPr><a:cxnSpLocks noChangeShapeType="1"/></wps:cNvCnPr><wps:spPr bwMode="auto"><a:xfrm><a:off x="0" y="8"/><a:ext cx="8625" cy="0"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:noFill/><a:ln w="9525"><a:solidFill><a:srgbClr val="44526A"/></a:solidFill><a:round/><a:headEnd/><a:tailEnd/></a:ln><a:extLst><a:ext uri="{909E8E84-426E-40DD-AFC4-6F175D3DCCD1}"><a14:hiddenFill xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main"><a:noFill/></a14:hiddenFill></a:ext></a:extLst></wps:spPr><wps:bodyPr/></wps:wsp></wpg:wgp></a:graphicData></a:graphic></wp:inline></w:drawing></mc:Choice><mc:Fallback><w:pict><v:group w14:anchorId="472B0FCA" id="Group 2" o:spid="_x0000_s1026" style="width:431.25pt;height:.75pt;mso-position-horizontal-relative:char;mso-position-vertical-relative:line" coordsize="8625,15" o:gfxdata="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&#xA;SwUGAAAAAAQABADzAAAAgQUAAAAA&#xA;"><v:line id="Line 3" o:spid="_x0000_s1027" style="position:absolute;visibility:visible;mso-wrap-style:square" from="0,8" to="8625,8" o:connectortype="straight" o:gfxdata="UEsDBBQABgAIAAAAIQDb4fbL7gAAAIUBAAATAAAAW0NvbnRlbnRfVHlwZXNdLnhtbHyQz07DMAyH&#xA;70i8Q+QralM4IITa7kDhCAiNB7ASt43WOlEcyvb2pNu4IODoPz9/n1xv9vOkForiPDdwXVagiI23&#xA;jocG3rdPxR0oScgWJ8/UwIEENu3lRb09BBKV0ywNjCmFe63FjDSjlD4Q50nv44wpl3HQAc0OB9I3&#xA;VXWrjedEnIq03oC27qjHjympx31un0wiTQLq4bS4shrAECZnMGVTvbD9QSnOhDInjzsyuiBXWQP0&#xA;r4R18jfgnHvJr4nOknrFmJ5xzhraRtHWf3Kkpfz/yGo5S+H73hkquyhdjr3R8m2lj09svwAAAP//&#xA;AwBQSwMEFAAGAAgAAAAhAFr0LFu/AAAAFQEAAAsAAABfcmVscy8ucmVsc2zPwWrDMAwG4Ptg72B0&#xA;X5TuUMaI01uh19I+gLGVxCy2jGSy9e1nemrHjpL4P0nD4SetZiPRyNnCruvBUPYcYp4tXC/Htw8w&#xA;Wl0ObuVMFm6kcBhfX4Yzra62kC6xqGlKVgtLreUTUf1CyWnHhXKbTCzJ1VbKjMX5LzcTvvf9HuXR&#xA;gPHJNKdgQU5hB+ZyK23zHztFL6w81c5zQp6m6P9TMfB3PtPWFCczVQtB9N4U2rp2HOA44NMz4y8A&#xA;AAD//wMAUEsDBBQABgAIAAAAIQADdLv1xwAAAOMAAAAPAAAAZHJzL2Rvd25yZXYueG1sRE9PS8Mw&#xA;FL8LfofwBl7EJdMR1rpsyNhgJ8HZg8dH82zqmpfSZF399kYQPL7f/7feTr4TIw2xDWxgMVcgiOtg&#xA;W24MVO+HhxWImJAtdoHJwDdF2G5ub9ZY2nDlNxpPqRE5hGOJBlxKfSllrB15jPPQE2fuMwweUz6H&#xA;RtoBrzncd/JRKS09tpwbHPa0c1SfTxdv4MPtjtVhX+nitf5ST9xIWdyPxtzNppdnEImm9C/+cx9t&#xA;nq9XWulFsVzC708ZALn5AQAA//8DAFBLAQItABQABgAIAAAAIQDb4fbL7gAAAIUBAAATAAAAAAAA&#xA;AAAAAAAAAAAAAABbQ29udGVudF9UeXBlc10ueG1sUEsBAi0AFAAGAAgAAAAhAFr0LFu/AAAAFQEA&#xA;AAsAAAAAAAAAAAAAAAAAHwEAAF9yZWxzLy5yZWxzUEsBAi0AFAAGAAgAAAAhAAN0u/XHAAAA4wAA&#xA;AA8AAAAAAAAAAAAAAAAABwIAAGRycy9kb3ducmV2LnhtbFBLBQYAAAAAAwADALcAAAD7AgAAAAA=&#xA;" strokecolor="#44526a"/><w10:anchorlock/></v:group></w:pict></mc:Fallback></mc:AlternateContent></w:r></w:p><w:p w14:paraId="269A1006" w14:textId="77777777" w:rsidR="00984FD0" w:rsidRDefault="00984FD0" w:rsidP="00984FD0"><w:pPr><w:spacing w:before="148" w:line="194" w:lineRule="exact"/><w:ind w:left="3629" w:right="3609"/><w:jc w:val="center"/><w:rPr><w:sz w:val="16"/></w:rPr></w:pPr><w:bookmarkStart w:id="2" w:name="_Hlk187176830"/><w:bookmarkStart w:id="3" w:name="_Hlk187176831"/><w:r><w:rPr><w:color w:val="0000FF"/><w:spacing w:val="-1"/><w:w w:val="105"/><w:sz w:val="16"/></w:rPr><w:t>7199161.4678</w:t></w:r></w:p><w:p w14:paraId="2CC4BE65" w14:textId="734224CB" w:rsidR="00984FD0" w:rsidRDefault="00984FD0" w:rsidP="00984FD0"><w:pPr><w:spacing w:line="192" w:lineRule="exact"/><w:ind w:left="1494" w:right="1448"/><w:jc w:val="center"/><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr></w:pPr><w:r><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t>cyntiasuzart@sual.com.br</w:t></w:r><w:r><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t>|</w:t></w:r><w:r><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t>juridico@sual.com.br</w:t></w:r></w:p><w:p w14:paraId="3512DC2F" w14:textId="769962D8" w:rsidR="006E138B" w:rsidRDefault="000D5083" w:rsidP="006E138B"><w:pPr><w:spacing w:line="192" w:lineRule="exact"/><w:ind w:left="1494" w:right="1448"/><w:jc w:val="center"/></w:pPr><w:proofErr w:type="spellStart"/><w:r w:rsidRPr="000D5083"><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t>Av</w:t></w:r><w:proofErr w:type="spellEnd"/><w:r w:rsidRPr="000D5083"><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t xml:space="preserve"> </w:t></w:r><w:proofErr w:type="spellStart"/><w:r w:rsidRPr="000D5083"><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t>Luis</w:t></w:r><w:proofErr w:type="spellEnd"/><w:r w:rsidRPr="000D5083"><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t xml:space="preserve"> Viana Filho</w:t></w:r><w:r><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t xml:space="preserve">, </w:t></w:r><w:r w:rsidRPr="000D5083"><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t xml:space="preserve">Hangar Business </w:t></w:r><w:proofErr w:type="spellStart"/><w:r w:rsidRPr="000D5083"><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t>Park</w:t></w:r><w:proofErr w:type="spellEnd"/><w:r w:rsidRPr="000D5083"><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t xml:space="preserve"> Hangar 1 Sala 509</w:t></w:r><w:r><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t xml:space="preserve"> | CEP </w:t></w:r><w:r w:rsidRPr="000D5083"><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t>41.500-300</w:t></w:r><w:r><w:rPr><w:color w:val="0000FF"/><w:sz w:val="16"/></w:rPr><w:t xml:space="preserve"> | Salvador-BA</w:t></w:r><w:bookmarkEnd w:id="0"/><w:bookmarkEnd w:id="1"/><w:bookmarkEnd w:id="2"/><w:bookmarkEnd w:id="3"/></w:p></w:ftr>`;
 
 // ============================================================
+// MAPAS GERADOS PELO SERVIDOR LOCAL (porta 3457)
+// ============================================================
+let MAPAS_GERADOS = null;  // { localizacao, geologico, hidrografia, hidrogeologico }
+const MAPA_SERVER = 'http://localhost:3457';
+
+async function gerarMapas() {
+  const btn = document.getElementById('btnGerarMapas');
+  const msg = document.getElementById('mapaMsg');
+  if (!e('coordE') || !e('coordN')) {
+    if (msg) { msg.textContent = '⚠️ Preencha as coordenadas UTM primeiro.'; msg.style.color='var(--vermelho)'; }
+    return;
+  }
+  // Verificar se servidor está rodando
+  try {
+    const test = await fetch(MAPA_SERVER + '/status', {signal: AbortSignal.timeout(2000)});
+    if (!test.ok) throw new Error('Servidor offline');
+  } catch(e) {
+    if (msg) { msg.textContent = '❌ Servidor de mapas offline. Inicie o "mapa-server" no Claude Code.'; msg.style.color='var(--vermelho)'; }
+    return;
+  }
+  if (btn) { btn.disabled=true; btn.textContent='🗺️ Gerando mapas…'; }
+  if (msg) { msg.textContent = 'Gerando 4 mapas com os shapefiles da BASEGIS…'; msg.style.color='var(--azul-claro)'; }
+  try {
+    coletarEmpresa();
+    const res = await fetch(MAPA_SERVER + '/mapas', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        coordE: parseFloat(e('coordE')),
+        coordN: parseFloat(e('coordN')),
+        zonaUtm: e('zonaUtm') || '24L',
+        municipio: e('municipio'),
+        razaoSocial: e('razaoSocial'),
+      })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    MAPAS_GERADOS = await res.json();
+    if (msg) { msg.textContent = '✅ 4 mapas gerados! Serão inseridos automaticamente no relatório.'; msg.style.color='var(--verde)'; }
+    toast('Mapas gerados com sucesso!');
+  } catch(err) {
+    if (msg) { msg.textContent = '❌ Erro: ' + err.message; msg.style.color='var(--vermelho)'; }
+  } finally {
+    if (btn) { btn.disabled=false; btn.textContent='🗺️ GERAR MAPAS'; }
+  }
+}
+
+function mapaDocXml(b64, rId, titulo, widthEmu, heightEmu) {
+  if (!b64) return '';
+  const cx = widthEmu  || 5400000;   // ~15cm
+  const cy = heightEmu || 4320000;   // ~12cm
+  return \`<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="120" w:after="120" w:line="240" w:lineRule="auto"/></w:pPr><w:r><w:drawing>
+  <wp:inline distT="0" distB="0" distL="0" distR="0">
+    <wp:extent cx="\${cx}" cy="\${cy}"/>
+    <wp:docPr id="\${rId}" name="\${titulo}"/>
+    <wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr>
+    <a:graphic>
+      <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+        <pic:pic>
+          <pic:nvPicPr><pic:cNvPr id="\${rId}" name="\${titulo}"/><pic:cNvPicPr/></pic:nvPicPr>
+          <pic:blipFill><a:blip r:embed="mRId\${rId}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>
+          <pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="\${cx}" cy="\${cy}"/></a:xfrm>
+            <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+          </pic:spPr>
+        </pic:pic>
+      </a:graphicData>
+    </a:graphic>
+  </wp:inline>
+</w:drawing></w:r></w:p>\`;
+}
+
+// ============================================================
 // DOCUMENTOS DISPONÍVEIS
 // ============================================================
 // ============================================================
@@ -1347,7 +1418,7 @@ function xmlDiag() {
     h1('3. LOCALIZAÇÃO E ACESSOS') +
     p(`O empreendimento está localizado na ${e('endereco')}, município de ${e('municipio')}, Estado da Bahia, inserido nas coordenadas UTM E: ${e('coordE')} m, N: ${e('coordN')} m, Zona ${e('zonaUtm')}, Datum SIRGAS 2000. A área de influência direta (AID) compreende um raio de 100 metros a partir do limite do lote, enquanto a área de influência indireta (AII) estende-se até 500 metros.`, {justify:true}) +
     (r('acessoDiag') ? p(r('acessoDiag'), {justify:true}) : p(`O empreendimento está inserido na malha viária urbana do município de ${e('municipio')}, com acesso facilitado pelas vias públicas do entorno.`, {justify:true})) +
-    p('[Inserir Figura 1 – Mapa de Localização com coordenadas UTM, rede viária e pontos de referência. Fonte: IBGE/Google Maps]', {center:true, cor:'718096'}) +
+    (MAPAS_GERADOS?.localizacao ? mapaDocXml(MAPAS_GERADOS.localizacao, 1, 'Mapa de Localização') + p('Figura 1 – Mapa de Localização. Datum: SIRGAS 2000. Fonte: IBGE 2006 / SUAL.', {center:true, size:'20', cor:'555555'}) : p('[Inserir Figura 1 – Mapa de Localização]', {center:true, cor:'718096'})) +
     p('[Inserir Figura 2 – Imagem de satélite com delimitação da AID (100 m) e AII (500 m)]', {center:true, cor:'718096'}) +
     empty() +
 
@@ -1371,7 +1442,7 @@ function xmlDiag() {
     p(`A geologia regional do município de ${e('municipio')} é caracterizada por ${geo_regional}. As informações geológicas foram obtidas nos mapas da CPRM – Serviço Geológico do Brasil (2010), em escala 1:500.000.`, {justify:true}) +
     h2('5.2 Geologia Local') +
     p(`No contexto local, ${geo_local}`, {justify:true}) +
-    p('[Inserir Figura 4 – Mapa Geológico Regional com destaque para as unidades litoestratigráficas da área. Fonte: CPRM, 2010]', {center:true, cor:'718096'}) +
+    (MAPAS_GERADOS?.geologico ? mapaDocXml(MAPAS_GERADOS.geologico, 2, 'Mapa Geológico') + p('Figura 2 – Mapa Geológico Regional. Fonte: CPRM/CBPM – Litologia 1:1.000.000.', {center:true, size:'20', cor:'555555'}) : p('[Inserir Figura – Mapa Geológico]', {center:true, cor:'718096'})) +
     empty() +
 
     h1('6. GEOMORFOLOGIA') +
@@ -1389,11 +1460,11 @@ function xmlDiag() {
     h1('8. RECURSOS HÍDRICOS') +
     h2('8.1 Hidrografia') +
     p(`A hidrografia da área de influência integra a rede hídrica regional do Estado da Bahia. O corpo d'água superficial mais próximo ao empreendimento é ${hid_corpo}${hid_dist !== '[informar distância]' ? ', situado a aproximadamente ' + hid_dist + ' do limite do lote' : ''}. A área encontra-se inserida na ${hid_bacia}. Não foram identificadas áreas de Preservação Permanente (APP) no raio de 100 metros de influência direta do empreendimento, conforme previsto no Artigo 4º da Lei Federal nº 12.651/2012 (Código Florestal Brasileiro).`, {justify:true}) +
-    p('[Inserir Figura 7 – Mapa de Hidrografia com localização do empreendimento, rede de drenagem e distâncias aos corpos hídricos mais próximos]', {center:true, cor:'718096'}) +
+    (MAPAS_GERADOS?.hidrografia ? mapaDocXml(MAPAS_GERADOS.hidrografia, 3, 'Mapa Hidrografia') + p('Figura 3 – Mapa de Hidrografia. Fonte: SNIRH/ANA 1:1.000.000.', {center:true, size:'20', cor:'555555'}) : p('[Inserir Figura – Mapa de Hidrografia]', {center:true, cor:'718096'})) +
     h2('8.2 Hidrogeologia') +
     p(`A hidrogeologia do município de ${e('municipio')} é caracterizada pelo ${hg_aquifero}. ${hg_pocos} O nível estático (NE) varia de ${hg_ne_min} a ${hg_ne_max}, com profundidade média estimada do lençol freático de ${hg_prof}. A vulnerabilidade do aquífero à contaminação superficial foi avaliada segundo a metodologia DRASTIC (Aller et al., 1987).`, {justify:true}) +
     p(`O fluxo subterrâneo tem direção preferencial das cotas topograficamente mais elevadas para as mais baixas, em conformidade com a topografia local, convergindo em direção aos corpos hídricos receptores (Bear, 1979; Fetter, 2001). Em aquíferos livres rasos (NE < 10 m), a vulnerabilidade à contaminação por hidrocarbonetos é classificada como alta, reforçando a necessidade de sistemas eficientes de monitoramento e contenção de vazamentos (Foster & Hirata, 1988).`, {justify:true}) +
-    p('[Inserir Figura 8 – Mapa Hidrogeológico com poços SIAGAS, NE médio e direção estimada do fluxo subterrâneo]', {center:true, cor:'718096'}) +
+    (MAPAS_GERADOS?.hidrogeologico ? mapaDocXml(MAPAS_GERADOS.hidrogeologico, 4, 'Mapa Hidrogeológico') + p('Figura 4 – Mapa Hidrogeológico. Fonte: CPRM/SIAGAS – Poços 2003.', {center:true, size:'20', cor:'555555'}) : p('[Inserir Figura – Mapa Hidrogeológico]', {center:true, cor:'718096'})) +
     empty() +
 
     h1('9. COBERTURA VEGETAL E FAUNA') +
@@ -1456,7 +1527,7 @@ function xmlGeo() {
 
     h1('3. LOCALIZAÇÃO E ACESSOS') +
     p(`O empreendimento ${e('razaoSocial')} está localizado na ${e('endereco')}, município de ${e('municipio')}, Estado da Bahia, nas coordenadas UTM E: ${e('coordE')} m, N: ${e('coordN')} m, Zona ${e('zonaUtm')}, Datum SIRGAS 2000. O acesso ao empreendimento é realizado pela via pública, inserida na malha viária urbana do município.`, {justify:true}) +
-    p('[Inserir Figura 1 – Mapa de Localização em escala 1:50.000, com indicação do empreendimento, principais vias e pontos de referência. Fonte: IBGE/CPRM]', {center:true, cor:'718096'}) +
+    (MAPAS_GERADOS?.localizacao ? mapaDocXml(MAPAS_GERADOS.localizacao, 1, 'Mapa de Localização') + p('Figura 1 – Mapa de Localização. Datum: SIRGAS 2000. Fonte: IBGE 2006 / SUAL.', {center:true, size:'20', cor:'555555'}) : p('[Inserir Figura 1 – Mapa de Localização]', {center:true, cor:'718096'})) +
     empty() +
 
     h1('4. CLIMA') +
@@ -1551,7 +1622,7 @@ function xmlGeo() {
     h1('12. HIDROGEOLOGIA LOCAL') +
     p(`O aquífero freático local é do tipo livre (não confinado), com recarga direta pela precipitação pluviométrica. Com base nos dados dos ${r('numPocos') || '[informar]'} poços SIAGAS (CPRM, 2025) analisados na área de influência, a profundidade do nível estático (NE) varia de ${r('neMin') || '[informar]'} m a ${r('neMax') || '[informar]'} m, com profundidade média estimada do lençol freático de ${r('profLencol') || '[informar]'} metros. A direção de fluxo subterrâneo foi estimada com base na superfície potenciométrica construída a partir dos NEs dos poços, sendo predominantemente orientada das cotas topográficas mais altas para as mais baixas (Bear, 1979).`, {justify:true}) +
     p(`A espessura da zona vadosa (acima do lençol freático) determina o tempo de trânsito de contaminantes da superfície até a zona saturada. Para uma espessura vadosa de ${r('profLencol') || '[informar]'} m e velocidade de infiltração de ${r('permeabilidade') ? '10⁻⁴ cm/s' : '[informar K]'}, o tempo de trânsito estimado para contaminantes solúveis é de ${r('profLencol') && parseFloat(r('profLencol')) > 10 ? 'vários anos a décadas, indicando moderada proteção temporal do aquífero' : 'poucos meses, indicando alta vulnerabilidade do aquífero a contaminações superficiais'} (Fetter, 2001; Domenico & Schwartz, 1990).`, {justify:true}) +
-    p('[Inserir Figura 9 – Mapa Hidrogeológico local com poços SIAGAS, NE médio, superfície potenciométrica e setas de fluxo]', {center:true, cor:'718096'}) +
+    (MAPAS_GERADOS?.hidrogeologico ? mapaDocXml(MAPAS_GERADOS.hidrogeologico, 4, 'Mapa Hidrogeológico') + p('Figura 4 – Mapa Hidrogeológico. Fonte: CPRM/SIAGAS – Poços 2003.', {center:true, size:'20', cor:'555555'}) : p('[Inserir Figura – Mapa Hidrogeológico]', {center:true, cor:'718096'})) +
     empty() +
 
     h1('13. CONSIDERAÇÕES FINAIS') +
@@ -1754,6 +1825,31 @@ function criarDocx(documentXml) {
     'word/media/image1.jpeg': sualLogoBytes,
   };
   if (logoBytes) files['word/media/logo.jpeg'] = logoBytes;
+
+  // Mapas gerados pelo servidor local (se disponíveis)
+  if (MAPAS_GERADOS) {
+    const mapNames = ['localizacao','geologico','hidrografia','hidrogeologico'];
+    mapNames.forEach((nome, i) => {
+      if (MAPAS_GERADOS[nome]) {
+        const imgBytes = base64ToBytes(MAPAS_GERADOS[nome]);
+        files[`word/media/mapa_${nome}.png`] = imgBytes;
+      }
+    });
+    // Adicionar content type PNG se ainda não tiver
+    files['[Content_Types].xml'] = files['[Content_Types].xml'].replace(
+      '</Types>',
+      '  <Default Extension="png" ContentType="image/png"/>\n</Types>'
+    );
+    // Adicionar relationships para os mapas
+    const mapaRels = ['localizacao','geologico','hidrografia','hidrogeologico']
+      .filter(n => MAPAS_GERADOS[n])
+      .map((nome,i) => `  <Relationship Id="mRId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/mapa_${nome}.png"/>`)
+      .join('\n');
+    files['word/_rels/document.xml.rels'] = files['word/_rels/document.xml.rels'].replace(
+      '</Relationships>', mapaRels + '\n</Relationships>'
+    );
+  }
+
   return zipFiles(files);
 }
 

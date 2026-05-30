@@ -216,10 +216,16 @@
     <div class="field"><label>E-mail</label><input id="email" type="email" placeholder="posto@email.com" oninput="salvarAuto()"></div>
 
     <div class="section-title">Coordenadas UTM (SIRGAS 2000)</div>
-    <button class="btn btn-outline btn-sm" onclick="capturarGps()" type="button" id="btnGps" style="margin-bottom:10px">
-      📍 OBTER COORDENADAS
-    </button>
-    <p class="hint" id="gpsMsg" style="margin-bottom:8px"></p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <button class="btn btn-outline btn-sm" onclick="capturarGps()" type="button" id="btnGps">
+        📍 OBTER COORDENADAS
+      </button>
+      <button class="btn btn-outline btn-sm" onclick="gerarMapas()" type="button" id="btnGerarMapas" style="background:#E8F4E8;border-color:#2E7D32;color:#2E7D32">
+        🗺️ GERAR MAPAS
+      </button>
+    </div>
+    <p class="hint" id="gpsMsg" style="margin-bottom:4px"></p>
+    <p class="hint" id="mapaMsg" style="margin-bottom:8px"></p>
     <div class="row">
       <div class="field"><label>Coord. E (m)</label><input id="coordE" placeholder="507427.00" oninput="salvarAuto()"></div>
       <div class="field"><label>Coord. N (m)</label><input id="coordN" placeholder="8644776.00" oninput="salvarAuto()"></div>
